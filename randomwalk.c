@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include "classification.h"
 
 #define N .1
 #define NE .2
