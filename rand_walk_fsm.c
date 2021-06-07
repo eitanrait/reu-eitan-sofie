@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
+#include "classification.h"
 
 #define N 0
 #define NE 1
@@ -21,6 +22,7 @@
 typedef struct {
     int i;
     int j;
+    char region;
 } point_t;
 
 struct FSM {
@@ -30,16 +32,16 @@ struct FSM {
 typedef const struct FSM FSM_t;
 
 FSM_t states[10] = {
-	{{0, 1}, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}}, 	// N
-	{{1, 1}, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}}, 	// NE
-	{{1, 0}, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},	// E
-	{{1, -1}, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},	// SE
-	{{0, -1}, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},	// S
-	{{-1, -1}, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},	// SW
-	{{-1, 0}, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},	// W
-	{{-1, 1}, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},	// NW
-	{{0, 0}, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},	// STAY
-	{{0, 0}, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},	// GONE (?)
+	{{0, 1}, {N, NE, E, SE, S, SW, W, NW, STAY, GONE}},		// N
+	{{1, 1}, {N, NE, E, SE, S, SW, W, NW, STAY, GONE}}, 	// NE
+	{{1, 0}, {N, NE, E, SE, S, SW, W, NW, STAY, GONE}},		// E
+	{{1, -1}, {N, NE, E, SE, S, SW, W, NW, STAY, GONE}},	// SE
+	{{0, -1}, {N, NE, E, SE, S, SW, W, NW, STAY, GONE}},	// S
+	{{-1, -1}, {N, NE, E, SE, S, SW, W, NW, STAY, GONE}},	// SW
+	{{-1, 0}, {N, NE, E, SE, S, SW, W, NW, STAY, GONE}},	// W
+	{{-1, 1}, {N, NE, E, SE, S, SW, W, NW, STAY, GONE}},	// NW
+	{{0, 0}, {N, NE, E, SE, S, SW, W, NW, STAY, GONE}},		// STAY
+	{{0, 0}, {N, NE, E, SE, S, SW, W, NW, STAY, GONE}},		// GONE 
 
 };
 
@@ -58,6 +60,7 @@ int main() {
 	point_t p;
 	p.i = init_i;	// setting initial point
 	p.j = init_j;
+	p.region = inRegion(p.i, p.j);
 
 	// csv file init 
 	FILE *fpt;
@@ -80,16 +83,17 @@ int main() {
 		p.j += states[stateIndex].offset[1];
 		
 		// check if in region A (or other exeptions for stopping)
+		p.region = inRegion(p.i, p.j);
 
 		// output 
-		printf(" prob: %d  p.i: %d, p.j: %d\n", prob,p.i, p.j);
-		fprintf(fpt, "%d, %d\n", p.i, p.j);	// print to csv file
+		printf(" prob: %d  p.i: %d, p.j: %d region: %c\n", prob,p.i, p.j, p.region);
+		fprintf(fpt, "%d, %d, %c\n", p.i, p.j, p.region);	// print to csv file
 
 		prob = rand() % 10;	// next state
 
 	} 
 
 	// possible to create graph?
-	//fclose(fpt);
+	//fclose(fpt);	// needs new csv file names
 	return 0;
 }
