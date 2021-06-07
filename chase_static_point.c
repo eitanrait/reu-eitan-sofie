@@ -36,7 +36,7 @@ void findPath(int x0, int y0, int x1, int y1) {
 			y = y + 1;
 			g = g + diag_inc;
 
-		} else {	// if fault value is negative
+		} else {	// if error is negative
 
 			// go in x direction
 			g = g + right_inc;
@@ -49,6 +49,8 @@ void findPath(int x0, int y0, int x1, int y1) {
 
 }
 
+/*
+// main to test the function findPath()
 int main() {
 	// call draw line with two points
 	// find the path from p1 to p2 assuming p1.x < p2.x and slope is 0 < m <= 1
@@ -60,3 +62,4 @@ int main() {
 
 	return 0;
 }
+*/
