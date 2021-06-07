@@ -8,7 +8,10 @@ typedef struct {
 } point_t;
 
 void synthesizeChasing(int x0, int y0, int x1, int y1) {
+	
 	// should call findLine() from chase_static_point
+	// X can move with a random walk
+
 }
 
 int main() {
