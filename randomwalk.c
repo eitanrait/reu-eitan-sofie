@@ -14,7 +14,7 @@
 #define STAY .9
 #define GONE 1
 
-void randomwalk(int x, int y, float prob) {
+void randomwalk(int * x, int * y, float prob) {
 
   if (prob >= 0 && prob < N)
     y++;
@@ -52,5 +52,4 @@ void randomwalk(int x, int y, float prob) {
   points[t].j = p.j;
   points[t].region = p.region; 
 */
-  return 0;
 }
