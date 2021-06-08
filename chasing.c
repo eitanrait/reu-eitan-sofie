@@ -70,7 +70,7 @@ void synthesizeChasing() {
   	//int X_coord[2];
   	int* coordPtr;
   	int t = 0;	// for testing
-  	printf("Y       X\n");
+  	printf("Y              X\n");
 	while (Y.i < X.i && t < SIZE) {
 
 		// get current location of X
@@ -80,14 +80,16 @@ void synthesizeChasing() {
 
 		// get new line
 		findPath(Y.i, Y.j, X.i, X.j);
+
 		// could check if first invisible
 		Y.i = points[1].i;
 		Y.j = points[1].j;
-		printf("%d, %d  %d, %d\n", Y.i, Y.j, X.i, X.j);
 
 		// check the zones 
-
+		Y.region = inRegion(Y.i, Y.j);
+		X.region = inRegion(X.i, X.j);
 		
+		printf("%c: %d, %d  %c: %d, %d\n", Y.region, Y.i, Y.j, X.region, X.i, X.j);
 		prob = (rand() % 100) *.01;
 		t++;
 
