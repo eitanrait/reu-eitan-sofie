@@ -5,15 +5,15 @@
 #include "classification.h"
 #include "chase_static_point.h"
 
-#define N .1
-#define NE .2
-#define E .3
-#define SE .4
-#define S .5
-#define SW .6
-#define W .7 
-#define NW .8
-#define STAY .9
+#define N .2
+#define NE .4
+#define E .6
+#define SE .7
+#define S .75
+#define SW .8
+#define W .85 
+#define NW .9
+#define STAY .95
 #define GONE 1
 #define I 210
 #define J 720

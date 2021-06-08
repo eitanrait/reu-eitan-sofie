@@ -3,16 +3,19 @@
 #include <stdlib.h>
 //#include "chase_static_point.h"	// moved findLine() to this file
 #include "randomwalk.h"
+#include "classification.h"
 
-#define SIZE 50
+#define SIZE 100
 
 typedef struct {
   int i;
   int j;
-  char visible[11];
+  char region;
 } point_t;
 
 point_t points[SIZE];
+point_t X;
+point_t Y;
 
 // use the Bresenham algorithm for drawing a line
 // to find the fastest pasth from pixel a to b 
@@ -55,7 +58,9 @@ void findPath(int x0, int y0, int x1, int y1) {
 
 }
 
-void synthesizeChasing(int Y_x, int Y_y, int X_x, int X_y) {
+// inputs: int Y_x, int Y_y, int X_x, int X_y
+// using global variables point_t X and Y for inputs atm 
+void synthesizeChasing() {
 	
 	// calls findPath() which modifies points to get a new line 
 	// X can move with a random walk
@@ -66,22 +71,26 @@ void synthesizeChasing(int Y_x, int Y_y, int X_x, int X_y) {
   	int* coordPtr;
   	int t = 0;	// for testing
   	printf("Y       X\n");
-	while (Y_x < X_x && t < 25) {
+	while (Y.i < X.i && t < SIZE) {
 
 		// get current location of X
-		coordPtr = randomPoint(X_x, X_y, prob);
-		X_x = *coordPtr;
-		X_y = *(coordPtr + 1);
+		coordPtr = randomPoint(X.i, X.j, prob);
+		X.i = *coordPtr;
+		X.j = *(coordPtr + 1);
 
 		// get new line
-		findPath(Y_x, Y_y, X_x, X_y);
+		findPath(Y.i, Y.j, X.i, X.j);
 		// could check if first invisible
-		Y_x = points[1].i;
-		Y_y = points[1].j;
-		printf("%d, %d  %d, %d\n", Y_x, Y_y, X_x, X_y);
+		Y.i = points[1].i;
+		Y.j = points[1].j;
+		printf("%d, %d  %d, %d\n", Y.i, Y.j, X.i, X.j);
 
+		// check the zones 
+
+		
 		prob = (rand() % 100) *.01;
 		t++;
+
 
 	}
 
@@ -92,14 +101,14 @@ int main() {
 	// initial points of Boat X and Y
 	// note that Boat Y is chasing X 
 	// thus Y.i < X.i because we are using Brenenham's algorithm
-	point_t X;
-	point_t Y;
 
-	Y.i = 10;
-	Y.j = 10;
-	X.i = 25;
-	X.j = 15;
+	// Y is in B and X is in A
+	Y.i = 1600;
+	Y.j = 2500;
+	X.i = 2047;
+	X.j = 2047;
 
+	// seed time
 	srand(time(0));
 
 	synthesizeChasing(Y.i, Y.j, X.i, X.j);	
