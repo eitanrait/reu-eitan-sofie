@@ -12,7 +12,7 @@ point_t points[SIZE];
 
 // use the Bresenham algorithm for drawing a line
 // to find the fastest pasth from pixel a to b 
-void findPath(int x0, int y0, int x1, int y1) { 
+point_t* findPath(int x0, int y0, int x1, int y1) { 
     int A, B, g, x, y, t;
 
     t = 0;
@@ -47,9 +47,43 @@ void findPath(int x0, int y0, int x1, int y1) {
 
 	}
 
+	return points;
+
 }
 
-/*
+void findNextPointOnLine(int x0, int y0, int x1, int y1) {
+	int A, B, g, x, y, t;
+
+    t = 0;
+ 	B = x0 - x1;
+	A = y1 - y0;
+ 
+	x = x0;
+	y = y0;
+ 
+	g = 2 * A + B;	// initial biased error
+	int diag_inc = 2 * (A + B);
+	int right_inc = 2 * A; 
+
+	if(g >= 0) {
+
+		// go in y direction
+		y = y + 1;
+		g = g + diag_inc;
+
+	} else {	// if error is negative
+
+		// go in x direction
+		g = g + right_inc;
+
+	}
+	x = x + 1;	// increment in x direction
+	t = t + 1;	// increment array index
+
+	
+}
+
+
 // main to test the function findPath()
 int main() {
 	// call draw line with two points
@@ -62,4 +96,4 @@ int main() {
 
 	return 0;
 }
-*/
+
