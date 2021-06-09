@@ -61,8 +61,18 @@ void findPath(int x0, int y0, int x1, int y1) {
 
 // inputs: int Y_x, int Y_y, int X_x, int X_y
 // using global variables point_t X and Y for inputs atm 
+// X does random walk
 void synthesizeChasing() {
 	
+	// csv file init
+	FILE *fpt;
+	fpt = fopen("chasing_random_walk.csv", "w+");
+	if(fpt == NULL) {
+    	// get out code
+    	exit(1);
+	}
+	fprintf(fpt, "X.i, X.j, Y.i, Y.j\n");
+
 	// calls findPath() which modifies points to get a new line 
 	// X can move with a random walk
   	float prob = (rand() % 100) *.01;
@@ -91,6 +101,7 @@ void synthesizeChasing() {
 		X.region = inRegion(X.i, X.j);
 		
 		printf("%c: %d, %d  %c: %d, %d\n", Y.region, Y.i, Y.j, X.region, X.i, X.j);
+		fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
 		prob = (rand() % 100) *.01;
 		t++;
 
@@ -104,6 +115,10 @@ void synthesizeChasing() {
 	}
 
 }
+
+// chasing while X goes straight up
+// csv file output
+
 
 int main() {
 
