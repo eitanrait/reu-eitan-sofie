@@ -62,7 +62,7 @@ void findPath(int x0, int y0, int x1, int y1) {
 // inputs: int Y_x, int Y_y, int X_x, int X_y
 // using global variables point_t X and Y for inputs atm 
 // X does random walk
-void synthesizeChasing() {
+void synthesizeChasingRandom() {
 	
 	// csv file init
 	FILE *fpt;
@@ -116,8 +116,100 @@ void synthesizeChasing() {
 
 }
 
-// chasing while X goes straight up
+// chasing while X goes diagonally up
 // csv file output
+void synthesizeChasingDiagonal() {
+	
+	// csv file init
+	FILE *fpt;
+	fpt = fopen("chasing_diagonal1.csv", "w+");
+	if(fpt == NULL) {
+    	// get out code
+    	exit(1);
+	}
+	fprintf(fpt, "X.i, X.j, Y.i, Y.j\n");
+
+  	printf("Y              X\n");
+  	int t = 0;
+	while (1) {
+
+		// get current location of X
+		X.i = X.i + 1;
+		X.j = X.j + 1;
+
+		// get new line
+		findPath(Y.i, Y.j, X.i, X.j);
+
+		// could check if first invisible
+		Y.i = points[1].i;
+		Y.j = points[1].j;
+
+		// check the zones 
+		// maybe need to change this concept
+		// A is pretty much just X since Y is trying to get to X
+		Y.region = inRegion(Y.i, Y.j);
+		X.region = inRegion(X.i, X.j);
+		
+		printf("%c: %d, %d  %c: %d, %d\n", Y.region, Y.i, Y.j, X.region, X.i, X.j);
+		fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
+
+		// check for breaking 
+		if ((Y.i == X.i && Y.j == X.j) || t > 50) {
+			break;
+		}
+
+		sleep(1); 	// sleep for 1 second "time driven simulation"
+		t++;
+
+	}
+
+}
+
+void synthesizeChasingStraightUp() {
+
+	// csv file init
+	FILE *fpt;
+	fpt = fopen("chasing_straight_up.csv", "w+");
+	if(fpt == NULL) {
+    	// get out code
+    	exit(1);
+	}
+	fprintf(fpt, "X.i, X.j, Y.i, Y.j\n");
+
+  	printf("Y              X\n");
+  	int t = 0;
+	while (1) {
+
+		// get current location of X
+		X.j = X.j + 1;
+
+		// get new line
+		findPath(Y.i, Y.j, X.i, X.j);
+
+		// could check if first invisible
+		Y.i = points[1].i;
+		Y.j = points[1].j;
+
+		// check the zones 
+		// maybe need to change this concept
+		// A is pretty much just X since Y is trying to get to X
+		Y.region = inRegion(Y.i, Y.j);
+		X.region = inRegion(X.i, X.j);
+		
+		printf("%c: %d, %d  %c: %d, %d\n", Y.region, Y.i, Y.j, X.region, X.i, X.j);
+		fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
+
+		// check for breaking 
+		if ((Y.i == X.i && Y.j == X.j) || t > 60) {
+			break;
+		}
+
+		sleep(1); 	// sleep for 1 second "time driven simulation"
+		t++;
+
+	}
+
+}
 
 
 int main() {
@@ -134,7 +226,9 @@ int main() {
 	// seed time
 	srand(0);
 
-	synthesizeChasing(Y.i, Y.j, X.i, X.j);	
+	//synthesizeChasingRandom();
+	//synthesizeChasingDiagonal();
+	synthesizeChasingStraightUp();	
 	return 0;
 
 }
