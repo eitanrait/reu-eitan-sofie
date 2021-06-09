@@ -5,27 +5,22 @@
 
 #define FALSE 0
 #define TRUE 1
-#define N .1
-#define NE .2
-#define E .3
-#define SE .4
-#define S .5
-#define SW .6
-#define W .7
-#define NW .8
-#define STAY .9
-#define GONE 1
+#define N .33
+#define NE .67
+#define E 1
+#define SE 0
+#define S 0
+#define SW 0
+#define W 0
+#define NW 0
+#define STAY 0
+#define GONE 0
 
 typedef struct {
   int i;
   int j;
-  char visible[11];
+  char region;
 } point_t;
-
-/*void synthesizeChasing(int x0, int y0, int x1, int y1) {
-	// should call findPath() from chase_static_point
-        findPath(x0,y0,x1,y1);
-	}*/
 
 void findPath(point_t * point0, point_t * point1) { 
 
@@ -93,12 +88,15 @@ int main() {
 	srand(time(0));
 	prob = (rand() % 100)*.01;
 
-	while(halt == FALSE && Y.i < X.i) {	  
+	printf("Y.i:%d, Y.j%d, X.i:%d, X.j:%d\n", Y.i, Y.j, X.i, X.j);
+
+	while(halt == FALSE) {	  
 	  findPath(&Y, &X);  
 	  randomwalk(&X, prob);
 	  prob = (rand() % 100)*.01;
 	  printf("Y.i:%d, Y.j%d, X.i:%d, X.j:%d\n", Y.i, Y.j, X.i, X.j);
-
+	  if (Y.i >= X.i || Y.j >= X.j)
+	    halt = TRUE;
 	}
 	
 	return 0;
