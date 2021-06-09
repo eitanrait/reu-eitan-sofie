@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-//#include "chase_static_point.h"	// moved findLine() to this file
+#include <unistd.h>
+//#include <windows.h>
 #include "randomwalk.h"
 #include "classification.h"
 
@@ -64,14 +65,12 @@ void synthesizeChasing() {
 	
 	// calls findPath() which modifies points to get a new line 
 	// X can move with a random walk
-	srand(time(0));
   	float prob = (rand() % 100) *.01;
 
-  	//int X_coord[2];
   	int* coordPtr;
   	int t = 0;	// for testing
   	printf("Y              X\n");
-	while (Y.i < X.i && t < SIZE) {
+	while (1) {
 
 		// get current location of X
 		coordPtr = randomPoint(X.i, X.j, prob);
@@ -86,6 +85,8 @@ void synthesizeChasing() {
 		Y.j = points[1].j;
 
 		// check the zones 
+		// maybe need to change this concept
+		// A is pretty much just X since Y is trying to get to X
 		Y.region = inRegion(Y.i, Y.j);
 		X.region = inRegion(X.i, X.j);
 		
@@ -93,6 +94,12 @@ void synthesizeChasing() {
 		prob = (rand() % 100) *.01;
 		t++;
 
+		// check for breaking 
+		if (Y.i == X.i && Y.j == X.j) {
+			break;
+		}
+
+		sleep(1); 	// sleep for 1 second "time driven simulation"
 
 	}
 
@@ -104,14 +111,13 @@ int main() {
 	// note that Boat Y is chasing X 
 	// thus Y.i < X.i because we are using Brenenham's algorithm
 
-	// Y is in B and X is in A
-	Y.i = 1600;
-	Y.j = 2500;
-	X.i = 2047;
-	X.j = 2047;
+	Y.i = 10;
+	Y.j = 10;
+	X.i = 44;
+	X.j = 33;
 
 	// seed time
-	srand(time(0));
+	srand(0);
 
 	synthesizeChasing(Y.i, Y.j, X.i, X.j);	
 	return 0;
