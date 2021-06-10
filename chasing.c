@@ -2,7 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
-//#include <windows.h>
+#include <stdbool.h>
 #include "randomwalk.h"
 #include "classification.h"
 
@@ -59,10 +59,52 @@ void findPath(int x0, int y0, int x1, int y1) {
 
 }
 
+void MyLine(int xs, int ys, int xe, int ye)
+{
+
+    int x = xs;
+	int y = ys;
+	int dx = abs(xe - xs);
+	int dy = abs(ye - ys);
+	int s1 = xe > xs ? 1 : -1;
+	int s2 = ye > ys ? 1 : -1;
+	int t = 0;
+ 
+	 bool interchange = false; // No interchange by default dx, dy
+	 if (dy> dx) // When the slope is greater than 1, dx and dy are swapped
+	{
+		int temp = dx;
+		dx = dy;
+		dy = temp;
+		interchange = true;
+	}
+ 
+	int e = 2 * dy - dx;
+	for(int i = 0; i <= dx; i++)
+	{
+		points[t].i = x;
+		points[t].j = y;
+		t++;
+		if (e >= 0)
+		{
+			 if (!interchange) // When the slope is <1, select the upper and lower pixels
+				y += s2;
+			 else // When the slope> 1, select the left and right pixels
+				x += s1;
+			e -= 2 * dx;
+		}
+		if (!interchange)
+			 x += s1; // When the slope <1, select x as the step size
+		else
+			 y += s2; // When the slope> 1, select y as the step size
+		e += 2 * dy;
+	}
+}
+
 // inputs: int Y_x, int Y_y, int X_x, int X_y
 // using global variables point_t X and Y for inputs atm 
 // X does random walk
-void synthesizeChasingRandom() {
+void chasingRandom() {
 	
 	// csv file init
 	FILE *fpt;
@@ -118,7 +160,7 @@ void synthesizeChasingRandom() {
 
 // chasing while X goes diagonally up
 // csv file output
-void synthesizeChasingDiagonal() {
+void chasingDiagonal() {
 	
 	// csv file init
 	FILE *fpt;
@@ -165,7 +207,7 @@ void synthesizeChasingDiagonal() {
 
 }
 
-void synthesizeChasingStraightUp() {
+void chasingStraightUp() {
 
 	// csv file init
 	FILE *fpt;
@@ -176,12 +218,26 @@ void synthesizeChasingStraightUp() {
 	}
 	fprintf(fpt, "X.i, X.j, Y.i, Y.j\n");
 
-  	printf("Y              X\n");
+  	printf("Y      X\n");
+  	printf("%d, %d   %d, %d\n", Y.i, Y.j, X.i, X.j);	// initial point
   	int t = 0;
+
 	while (1) {
 
 		// get current location of X
-		X.j = X.j + 1;
+		// slow down the movement of X by changing pos every other time unit 
+		if (t%2 == 1) {		// every other step
+			X.j = X.j + 1;	// move up
+		}
+
+		if (X.i == X.j) {	// if the current point is on the diagonal
+			// start moving diagonally up
+			X.i++;
+		}
+		if ((Y.i+1 == X.i) && (Y.j + 1 == X.j)) {
+			printf("directly diagonal\n");
+			// should stop the program?
+		} 
 
 		// get new line
 		findPath(Y.i, Y.j, X.i, X.j);
@@ -196,7 +252,7 @@ void synthesizeChasingStraightUp() {
 		Y.region = inRegion(Y.i, Y.j);
 		X.region = inRegion(X.i, X.j);
 		
-		printf("%c: %d, %d  %c: %d, %d\n", Y.region, Y.i, Y.j, X.region, X.i, X.j);
+		printf("%d, %d   %d, %d\n", Y.i, Y.j, X.i, X.j);
 		fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
 
 		// check for breaking 
@@ -204,7 +260,7 @@ void synthesizeChasingStraightUp() {
 			break;
 		}
 
-		sleep(1); 	// sleep for 1 second "time driven simulation"
+		sleep(1); 	// sleep for 1 second "time driven simulation?"
 		t++;
 
 	}
@@ -218,17 +274,18 @@ int main() {
 	// note that Boat Y is chasing X 
 	// thus Y.i < X.i because we are using Brenenham's algorithm
 
-	Y.i = 10;
-	Y.j = 10;
+	Y.i = 11;
+	Y.j = 11;
 	X.i = 44;
 	X.j = 33;
 
 	// seed time
 	srand(0);
 
-	//synthesizeChasingRandom();
-	//synthesizeChasingDiagonal();
-	synthesizeChasingStraightUp();	
+	//chasingRandom();
+	//chasingDiagonal();
+	chasingStraightUp();	
+
 	return 0;
 
 }
