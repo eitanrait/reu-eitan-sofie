@@ -69,7 +69,7 @@ void updateX(char s, int t) {
 		}
 
 		if (X.i == X.j) {	// if the current point is on the diagonal
-			// start moving diagonally up
+			// start moving diagonally to side
 			X.i++;
 		}
 
@@ -91,7 +91,7 @@ void updateX(char s, int t) {
 
 // got from 
 // https://www.programmersought.com/article/58075286669/
-// to check if any difference when we take into account the slopes
+// to check if any difference when we take into account the magintude slopes
 void MyLine(int xs, int ys, int xe, int ye)
 {
 
@@ -113,7 +113,7 @@ void MyLine(int xs, int ys, int xe, int ye)
 	}
  
 	int e = 2 * dy - dx;
-	for(int i = 0; i <= dx; i++)
+	for(int i = 0; i <= dx; i++)	// dx
 	{
 		points[t].i = x;
 		points[t].j = y;
@@ -132,6 +132,73 @@ void MyLine(int xs, int ys, int xe, int ye)
 			 y += s2; // When the slope> 1, select y as the step size
 		e += 2 * dy;
 	}
+}
+
+// copy eitan's bresenham
+int Sign(int a, int b) {
+  int c;
+  c = a-b;
+
+  if(c > 0)
+    return 1;
+  else if(c < 0)
+    return -1;
+  else
+    return 0;
+}
+
+// use the Bresenham algorithm for drawing a line                                                                                                                                                  
+// to find the fastest path from pixel a to b                                                                                                                                                     
+void findPathE(int x1, int y1, int x2, int y2) {
+  int A, B, E, x, y, t, deltX, deltY, s1, s2, temp, interchange;
+  t = 0;
+  x = x1;
+  y = y1;
+  deltX = abs(x2-x1);
+  deltY = abs(y2-y1);
+  s1 = Sign(x2,x1);
+  s2 = Sign(y2,y1);
+  
+  if(deltY > deltX) {
+    temp = deltX;
+    deltX = deltY;
+    deltY = temp;
+    interchange = 1;
+  }
+  else {
+    interchange = 0;
+  }
+
+  E = 2 * deltY - deltX;
+  A = 2 * deltY;
+  B = 2 * deltY - 2 * deltX;
+
+  //int diag_inc = 2 * (A + B);                                                                                                                                                                     
+  //int right_inc = 2 * A;                                                                                                                                                                          
+
+  points[t].i = x;
+  points[t].j = y;
+
+  for (int i=0;i<deltX;i++) {
+    if ( E < 0 ) {
+      if ( interchange == 1 ) {
+        y = y + s2;
+      }
+      else {
+        x = x + s1;
+      }
+      E = E + A;
+    }
+    else {
+      y = y + s2;
+      x = x + s1;
+      E = E + B;
+    }
+    
+    t++;
+    points[t].i = x;
+    points[t].j = y;
+  }
 }
 
 // inputs: int Y_x, int Y_y, int X_x, int X_y
@@ -214,7 +281,7 @@ void chasingDiagonal() {
 		updateX('d', t);
 
 		// get new line
-		findPath(Y.i, Y.j, X.i, X.j);
+		MyLine(Y.i, Y.j, X.i, X.j);
 
 		// could check if first invisible
 		Y.i = points[1].i;
@@ -268,7 +335,7 @@ void chasingStraightUp() {
 		} 
 
 		// get new line
-		findPath(Y.i, Y.j, X.i, X.j);
+		MyLine(Y.i, Y.j, X.i, X.j);
 
 		// could check if first invisible
 		Y.i = points[1].i;
@@ -288,34 +355,32 @@ void chasingStraightUp() {
 			break;
 		}
 
-		sleep(1); 	// sleep for 1 second "time driven simulation?"
+		//sleep(1); 	// sleep for 1 second "time driven simulation?"
 		t++;
 
 	}
 
 }
 
+// initial points of Boat X and Y
+// note that Boat Y is chasing X 
+// thus Y.i < X.i because we are using Brenenham's algorithm
 void initPoint() {
-	Y.i = 1;
-	Y.j = 1;
-	X.i = 4;
-	X.j = 3;
+	Y.i = 11;
+	Y.j = 11;
+	X.i = 44;
+	X.j = 33;
 }
 
 int main() {
 
-	// initial points of Boat X and Y
-	// note that Boat Y is chasing X 
-	// thus Y.i < X.i because we are using Brenenham's algorithm
-
-	initPoint();
-
 	// seed time
 	srand(0);
 
-	chasingRandom();
-	initPoint();
-	chasingDiagonal();
+	//initPoint();
+	//chasingRandom();
+	//initPoint();
+	//chasingDiagonal();
 	initPoint();
 	chasingStraightUp();	
 
