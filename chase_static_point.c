@@ -49,12 +49,13 @@ void findPath(int x0, int y0, int x1, int y1) {
 
 }
 
-/*
+
 // main to test the function findPath()
 int main() {
 	// call draw line with two points
 	// find the path from p1 to p2 assuming p1.x < p2.x and slope is 0 < m <= 1
 	// (10, 10) -> (25, 10)
+
 	findPath(10, 10, 25, 20);
 	for (int k = 0; k < SIZE; k++) {
 		printf("%d, %d\n", points[k].i, points[k].j);
@@ -62,4 +63,4 @@ int main() {
 
 	return 0;
 }
-*/
+
