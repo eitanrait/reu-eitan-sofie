@@ -6,7 +6,7 @@
 #include "randomwalk.h"
 #include "classification.h"
 
-#define SIZE 100
+#define SIZE 300
 
 typedef struct {
   int i;
@@ -24,9 +24,9 @@ int Sign(int a, int b) {
   
   if(c > 0)
     return 1;
-  if(c < 0)
+  else if(c < 0)
     return -1;
-  if(c == 0)
+  else
     return 0;
 }
 
@@ -35,6 +35,7 @@ int Sign(int a, int b) {
 // assuming x0 < x1
 void findPath(int x1, int y1, int x2, int y2) { 
   int A, B, E, x, y, t, deltX, deltY, s1, s2, temp, interchange;
+  t = 0;
   x = x1;
   y = y1;
   deltX = abs(x2-x1);
@@ -56,12 +57,6 @@ void findPath(int x1, int y1, int x2, int y2) {
   A = 2 * deltY;
   B = 2 * deltY - 2 * deltX;
   
-  //int diag_inc = 2 * (A + B);
-  //int right_inc = 2 * A; 
-  
-  points[t].i = x;
-  points[t].j = y;
-
   for (int i=1;i<deltX;i++) {
     if ( E < 0 ) {
       if ( interchange == 1 ) {
@@ -70,7 +65,7 @@ void findPath(int x1, int y1, int x2, int y2) {
       else {
 	x = x + s1;
       }
-      E = E + A:
+      E = E + A;
     }
     else {
       y = y + s2;
@@ -80,29 +75,6 @@ void findPath(int x1, int y1, int x2, int y2) {
     points[t].i = x;
     points[t].j = y;
   }
-  /* while (x <= x1 && t < SIZE) {
-    points[t].i = x;
-    points[t].j = y;
-    
-    if(g >= 0) {
-      
-      // go in y direction
-      y = y + 1;
-      g = g + diag_inc;
-      
-    } else {	// if error is negative
-      
-      // go in x direction
-      g = g + right_inc;
-      
-    }
-    x = x + 1;	// increment in x direction
-
-
-    t = t + 1;	// increment array index
-    
-    } 
-*/
    
 }
 
@@ -157,7 +129,7 @@ void synthesizeChasingRandom() {
       break;
     }
     
-    sleep(1); 	// sleep for 1 second "time driven simulation"
+    //    sleep(1); 	// sleep for 1 second "time driven simulation"
     
   }
   
@@ -205,7 +177,7 @@ void synthesizeChasingDiagonal() {
       break;
     }
     
-    sleep(1); 	// sleep for 1 second "time driven simulation"
+    //    sleep(1); 	// sleep for 1 second "time driven simulation"
     t++;
     
   }
@@ -228,7 +200,8 @@ void synthesizeChasingStraightUp() {
   while (1) {
     
     // get current location of X
-    X.j = X.j + 1;
+    if(t % 2 == 1)
+      X.j = X.j + 1;
     
     // get new line
     findPath(Y.i, Y.j, X.i, X.j);
@@ -247,11 +220,11 @@ void synthesizeChasingStraightUp() {
     fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
     
     // check for breaking 
-    if ((Y.i == X.i && Y.j == X.j) || t > 60) {
+    if ((Y.i == X.i && Y.j == X.j) || t > 600) {
       break;
     }
     
-    sleep(1); 	// sleep for 1 second "time driven simulation"
+    //    sleep(1); 	// sleep for 1 second "time driven simulation"
     t++;
     
   }
@@ -267,15 +240,14 @@ int main() {
   
   Y.i = 10;
   Y.j = 10;
-  X.i = 44;
-  X.j = 33;
+  X.i = 100;
+  X.j = -30;
   
   // seed time
   srand(0);
   
   //synthesizeChasingRandom();
   //synthesizeChasingDiagonal();
-  //synthesizeChasingStraightUp();	
-  return 0;
-  
+  synthesizeChasingStraightUp();	
+  return 0;  
 }

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define SIZE 100
+#define SIZE 150
 
 typedef struct {
   int i;
@@ -26,8 +26,8 @@ int Sign(int a, int b) {
     return 0;
 }
 
-// use the Bresenham algorithm for drawing a line                                                                                                                                                  
-// to find the fastest path from pixel a to b                                                                                                                                                     
+// use the Bresenham algorithm for drawing a line                                                                                                                                                
+// to find the fastest path from pixel a to b                                                                                                                                                    
 void findPath(int x1, int y1, int x2, int y2) {
   int A, B, E, x, y, t, deltX, deltY, s1, s2, temp, interchange;
   t = 0;
@@ -52,9 +52,7 @@ void findPath(int x1, int y1, int x2, int y2) {
   A = 2 * deltY;
   B = 2 * deltY - 2 * deltX;
 
-  //int diag_inc = 2 * (A + B);                                                                                                                                                                     
-  //int right_inc = 2 * A;                                                                                                                                                                          
-
+  //int diag_inc = 2 * (A + B);                                                                  //int right_inc = 2 * A;                                                                                                                                                   
   points[t].i = x;
   points[t].j = y;
 
@@ -85,7 +83,7 @@ int main() {
         // find the path from p1 to p2 assuming p1.x < p2.x and slope is 0 < m <= 1                                                                                                                 
         // (10, 10) -> (25, 10)                                                                                                                                                                     
 
-        findPath(10, 10, 5, 4);
+        findPath(10, 10, -5, -100);
         for (int k = 0; k < SIZE; k++) {
                 printf("%d, %d\n", points[k].i, points[k].j);
         }
