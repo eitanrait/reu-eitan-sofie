@@ -221,6 +221,7 @@ void chasingRandom() {
 
   	int* coordPtr;
   	int t = 0;	// for testing
+  	printf("chasing 'skewed' random\n");
   	printf("Y              X\n");
 	while (1) {
 
@@ -252,7 +253,7 @@ void chasingRandom() {
 			break;
 		}
 
-		sleep(1); 	// sleep for 1 second "time driven simulation"
+		//sleep(1); 	// sleep for 1 second "time driven simulation"
 
 	}
 
@@ -279,9 +280,14 @@ void chasingDiagonal() {
 
 		// get current location of X
 		updateX('d', t);
+		
+		// not worrying about speed
+		//X.i += 1;
+		//X.j += 1;
 
 		// get new line
-		MyLine(Y.i, Y.j, X.i, X.j);
+		//findPath(Y.i, Y.j, X.i, X.j);
+		findPathE(Y.i, Y.j, X.i, X.j);
 
 		// could check if first invisible
 		Y.i = points[1].i;
@@ -297,7 +303,7 @@ void chasingDiagonal() {
 		fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
 
 		// check for breaking 
-		if ((Y.i == X.i && Y.j == X.j) || t > 500) {
+		if ((Y.i == X.i && Y.j == X.j)) {
 			break;
 		}
 
@@ -327,7 +333,7 @@ void chasingStraightUp() {
 	while (1) {
 
 		// get current location of X
-		updateX('s', t);
+		//updateX('s', t);
 
 		if ((Y.i+1 == X.i) && (Y.j + 1 == X.j)) {
 			printf("directly diagonal\n");
@@ -335,7 +341,7 @@ void chasingStraightUp() {
 		} 
 
 		// get new line
-		MyLine(Y.i, Y.j, X.i, X.j);
+		findPath(Y.i, Y.j, X.i, X.j);
 
 		// could check if first invisible
 		Y.i = points[1].i;
@@ -366,10 +372,10 @@ void chasingStraightUp() {
 // note that Boat Y is chasing X 
 // thus Y.i < X.i because we are using Brenenham's algorithm
 void initPoint() {
-	Y.i = 11;
-	Y.j = 11;
-	X.i = 44;
-	X.j = 33;
+	Y.i = 10;
+	Y.j = 10;
+	X.i = 25;
+	X.j = 30;
 }
 
 int main() {
@@ -379,10 +385,10 @@ int main() {
 
 	//initPoint();
 	//chasingRandom();
-	//initPoint();
-	//chasingDiagonal();
 	initPoint();
-	chasingStraightUp();	
+	chasingDiagonal();
+	//initPoint();
+	//chasingStraightUp();	
 
 	return 0;
 
