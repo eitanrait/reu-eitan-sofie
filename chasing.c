@@ -1,3 +1,6 @@
+// to compile
+// gcc -Wall chasing.c classification.c randomwalk.c -o chase
+
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
@@ -61,17 +64,19 @@ void findPath(int x0, int y0, int x1, int y1) {
 
 void updateX(char s, int t) {
 
-	if (s == 's') {		// straight up
+	if (s == 'u') {		// straight up
 
 		// slow down the movement of X by changing pos every other time unit 
 		if (t%2 == 1) {		// every other step
 			X.j = X.j + 1;	// move up
 		}
 
+		/*
 		if (X.i == X.j) {	// if the current point is on the diagonal
 			// start moving diagonally to side
 			X.i++;
 		}
+		*/
 
 	} else if (s == 'd') {	// diagonally initially
 
@@ -80,9 +85,17 @@ void updateX(char s, int t) {
 			X.j = X.j + 1;
 		}
 
+		/*
 		if (X.i == X.j) {	// if the current point is on the diagonal
 			// start moving diagonally up
 			X.i++;
+		}
+		*/
+
+	} else if (s == 'v') {	// straight down
+
+		if (t%2 == 1) {
+			X.j = X.j - 1;
 		}
 
 	}
@@ -231,7 +244,7 @@ void chasingRandom() {
 		X.j = *(coordPtr + 1);
 
 		// get new line
-		findPath(Y.i, Y.j, X.i, X.j);
+		findPathE(Y.i, Y.j, X.i, X.j);
 
 		// could check if first invisible
 		Y.i = points[1].i;
@@ -270,12 +283,14 @@ void chasingDiagonal() {
     	// get out code
     	exit(1);
 	}
+
 	fprintf(fpt, "X.i, X.j, Y.i, Y.j\n");
 
 	printf("chase diagonal\n");
   	printf("Y      X\n");
   	printf("%d, %d   %d, %d\n", Y.i, Y.j, X.i, X.j);	// initial point
   	int t = 0;
+
 	while (1) {
 
 		// get current location of X
@@ -333,7 +348,7 @@ void chasingStraightUp() {
 	while (1) {
 
 		// get current location of X
-		//updateX('s', t);
+		updateX('u', t);
 
 		if ((Y.i+1 == X.i) && (Y.j + 1 == X.j)) {
 			printf("directly diagonal\n");
@@ -341,7 +356,7 @@ void chasingStraightUp() {
 		} 
 
 		// get new line
-		findPath(Y.i, Y.j, X.i, X.j);
+		findPathE(Y.i, Y.j, X.i, X.j);
 
 		// could check if first invisible
 		Y.i = points[1].i;
@@ -357,7 +372,61 @@ void chasingStraightUp() {
 		fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
 
 		// check for breaking 
-		if ((Y.i == X.i && Y.j == X.j) || t > 500) {
+		if ((Y.i == X.i && Y.j == X.j)) {	// no cut off for time
+			break;
+		}
+
+		//sleep(1); 	// sleep for 1 second "time driven simulation?"
+		t++;
+
+	}
+
+}
+
+void chasingStraightDown() {
+
+	// csv file init
+	FILE *fpt;
+	fpt = fopen("csv_files/chasing_straight_down.csv", "w+");
+	if(fpt == NULL) {
+    	// get out code
+    	exit(1);
+	}
+	fprintf(fpt, "X.i, X.j, Y.i, Y.j\n");
+
+	printf("chase straight down\n");
+  	printf("Y      X\n");
+  	printf("%d, %d   %d, %d\n", Y.i, Y.j, X.i, X.j);	// initial point
+  	int t = 0;
+
+	while (1) {
+
+		// get current location of X
+		updateX('v', t);
+
+		if ((Y.i+1 == X.i) && (Y.j + 1 == X.j)) {
+			printf("directly diagonal\n");
+			// should stop the program?
+		} 
+
+		// get new line
+		findPathE(Y.i, Y.j, X.i, X.j);
+
+		// could check if first invisible
+		Y.i = points[1].i;
+		Y.j = points[1].j;
+
+		// check the zones 
+		// maybe need to change this concept
+		// A is pretty much just X since Y is trying to get to X
+		Y.region = inRegion(Y.i, Y.j);
+		X.region = inRegion(X.i, X.j);
+		
+		printf("%d, %d   %d, %d\n", Y.i, Y.j, X.i, X.j);
+		fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
+
+		// check for breaking 
+		if ((Y.i == X.i && Y.j == X.j)) {	// no cut off for time
 			break;
 		}
 
@@ -372,10 +441,10 @@ void chasingStraightUp() {
 // note that Boat Y is chasing X 
 // thus Y.i < X.i because we are using Brenenham's algorithm
 void initPoint() {
-	Y.i = 10;
-	Y.j = 10;
-	X.i = 25;
-	X.j = 30;
+	Y.i = 0;
+	Y.j = 0;
+	X.i = 400;
+	X.j = 300;
 }
 
 int main() {
@@ -387,8 +456,10 @@ int main() {
 	//chasingRandom();
 	initPoint();
 	chasingDiagonal();
+	initPoint();
+	chasingStraightUp();	
 	//initPoint();
-	//chasingStraightUp();	
+	//chasingStraightDown();
 
 	return 0;
 
