@@ -72,7 +72,7 @@ char inPolarRegion(double x, double y) {
 	return 'i';
 }
 
-
+/*
 int main() {
 
 	int x0 = 1700;
@@ -82,3 +82,4 @@ int main() {
 
 	return 0;
 }
+*/
