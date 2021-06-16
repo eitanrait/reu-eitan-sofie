@@ -9,7 +9,7 @@
 #include "randomwalk.h"
 #include "classification.h"
 
-#define SIZE 100
+#define SIZE 5
 
 typedef struct {
   int i;
@@ -185,14 +185,12 @@ void findPathE(int x1, int y1, int x2, int y2) {
   E = 2 * deltY - deltX;
   A = 2 * deltY;
   B = 2 * deltY - 2 * deltX;
-
-  //int diag_inc = 2 * (A + B);                                                                                                                                                                     
-  //int right_inc = 2 * A;                                                                                                                                                                          
+                                                                                                                                                                        
 
   points[t].i = x;
   points[t].j = y;
 
-  for (int i=0;i<deltX;i++) {
+  for (int i=0;i<3;i++) {
     if ( E < 0 ) {
       if ( interchange == 1 ) {
         y = y + s2;
@@ -207,7 +205,7 @@ void findPathE(int x1, int y1, int x2, int y2) {
       x = x + s1;
       E = E + B;
     }
-    
+
     t++;
     points[t].i = x;
     points[t].j = y;
@@ -284,7 +282,7 @@ void chasingDiagonal() {
     	exit(1);
 	}
 
-	fprintf(fpt, "X.i, X.j, Y.i, Y.j\n");
+	fprintf(fpt, "X.i, X.j, Y.i, Y.j, slope\n");
 
 	printf("chase diagonal\n");
   	printf("Y      X\n");
@@ -301,7 +299,12 @@ void chasingDiagonal() {
 		//X.j += 1;
 
 		// get new line
-		//findPath(Y.i, Y.j, X.i, X.j);
+		// get new line every other time
+/*
+		if (t%2 == 1) {
+			findPathE(Y.i, Y.j, X.i, X.j);
+		}
+		*/
 		findPathE(Y.i, Y.j, X.i, X.j);
 
 		// could check if first invisible
@@ -314,11 +317,11 @@ void chasingDiagonal() {
 		Y.region = inRegion(Y.i, Y.j);
 		X.region = inRegion(X.i, X.j);
 		
-		printf("%d, %d   %d, %d\n", Y.i, Y.j, X.i, X.j);
+		printf("%d, %d   %d, %d  %d\n", Y.i, Y.j, X.i, X.j, t);
 		fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
 
 		// check for breaking 
-		if ((Y.i == X.i && Y.j == X.j)) {
+		if ((Y.i == X.i && Y.j == X.j) || t > 1000) {
 			break;
 		}
 
@@ -338,6 +341,7 @@ void chasingStraightUp() {
     	// get out code
     	exit(1);
 	}
+
 	fprintf(fpt, "X.i, X.j, Y.i, Y.j\n");
 
 	printf("chase straight up\n");
@@ -350,13 +354,19 @@ void chasingStraightUp() {
 		// get current location of X
 		updateX('u', t);
 
+		// not worrying about speed
+		//X.j += 1;
+
 		if ((Y.i+1 == X.i) && (Y.j + 1 == X.j)) {
 			printf("directly diagonal\n");
 			// should stop the program?
 		} 
 
-		// get new line
-		findPathE(Y.i, Y.j, X.i, X.j);
+		// get new line every other time
+		//if (t%2 == 1) {
+			findPathE(Y.i, Y.j, X.i, X.j);
+		//}
+		//findPathE(Y.i, Y.j, X.i, X.j);
 
 		// could check if first invisible
 		Y.i = points[1].i;
@@ -372,7 +382,7 @@ void chasingStraightUp() {
 		fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
 
 		// check for breaking 
-		if ((Y.i == X.i && Y.j == X.j)) {	// no cut off for time
+		if ((Y.i == X.i && Y.j == X.j) || t > 1500) {	// no cut off for time
 			break;
 		}
 
@@ -404,13 +414,20 @@ void chasingStraightDown() {
 		// get current location of X
 		updateX('v', t);
 
-		if ((Y.i+1 == X.i) && (Y.j + 1 == X.j)) {
+		// not worrying about speed
+		//X.j -= 1;
+
+		if (((Y.i+1 == X.i) && (Y.j + 1 == X.j)) || t > 1500) {
 			printf("directly diagonal\n");
 			// should stop the program?
 		} 
 
 		// get new line
-		findPathE(Y.i, Y.j, X.i, X.j);
+		// get new line every other time
+		//if (t%2 == 1) {
+			findPathE(Y.i, Y.j, X.i, X.j);
+		//}
+		//findPathE(Y.i, Y.j, X.i, X.j);
 
 		// could check if first invisible
 		Y.i = points[1].i;
@@ -422,11 +439,11 @@ void chasingStraightDown() {
 		Y.region = inRegion(Y.i, Y.j);
 		X.region = inRegion(X.i, X.j);
 		
-		printf("%d, %d   %d, %d\n", Y.i, Y.j, X.i, X.j);
+		printf("%d, %d   %d, %d  %d\n", Y.i, Y.j, X.i, X.j, t);
 		fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
 
 		// check for breaking 
-		if ((Y.i == X.i && Y.j == X.j)) {	// no cut off for time
+		if ((Y.i == X.i && Y.j == X.j) || t > 1500) {	// no cut off for time
 			break;
 		}
 
@@ -458,8 +475,8 @@ int main() {
 	chasingDiagonal();
 	initPoint();
 	chasingStraightUp();	
-	//initPoint();
-	//chasingStraightDown();
+	initPoint();
+	chasingStraightDown();
 
 	return 0;
 
