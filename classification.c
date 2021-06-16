@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
+#include <math.h>
+
+#define PI 3.14159265
 
 // input of i,j coordinate
 // determine in which region
@@ -28,4 +31,54 @@ char inRegion(int i, int j) {
 	}
 
 	return 'i';	// invisible
+}
+
+
+// input is (x,y) cartesian coordinate
+// using conversion between cartesion and polar, find the point in polar
+// then classfy using radius comparison  
+char inPolarRegion(double x, double y) {
+
+	// assume the center of the circle is (2047, 2047)
+	x -= 2047;
+	y -= 2047;
+
+	// convert between cartesian and polar
+	// r = sqrt (x^2 + y^2)
+	double x2 = x * x;
+	double y2 = y * y;
+	double r = sqrt(x2 + y2);
+
+	// tha angle is not in the correct direction
+	// when x is negative, theta should be negative of original
+	double val = 180.0 / PI;
+	double theta = atan(y / x) * val;	// to get theta in degreees
+	if (x < 0) {
+		theta = 180 + theta;
+	}
+
+	printf("radius: %f  theta: %f \n", r, theta);
+
+	if (r <= 256) {		// 512/2
+		return 'a';
+	} else if (r <= 512) {		// 1024/2
+		return 'b';
+	} else if (r <= 1536) {		// 3072/2
+		return 'c';
+	} else if (r <= 2048) {		// 4096/2
+		return 'd';
+	}
+
+	return 'i';
+}
+
+
+int main() {
+
+	int x0 = 1700;
+	int y0 = 2400;
+	char p = inPolarRegion(x0, y0);
+	printf("(%d, %d) %c\n", x0, y0, p);
+
+	return 0;
 }
