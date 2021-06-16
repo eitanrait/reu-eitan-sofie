@@ -39,6 +39,10 @@ char inRegion(int i, int j) {
 // then classfy using radius comparison  
 char inPolarRegion(double x, double y) {
 
+	// assume the center of the circle is (2047, 2047)
+	x -= 2047;
+	y -= 2047;
+
 	// convert between cartesian and polar
 	// r = sqrt (x^2 + y^2)
 	double x2 = x * x;
@@ -55,14 +59,24 @@ char inPolarRegion(double x, double y) {
 
 	printf("radius: %f  theta: %f \n", r, theta);
 
+	if (r <= 256) {		// 512/2
+		return 'a';
+	} else if (r <= 512) {		// 1024/2
+		return 'b';
+	} else if (r <= 1536) {		// 3072/2
+		return 'c';
+	} else if (r <= 2048) {		// 4096/2
+		return 'd';
+	}
+
 	return 'i';
 }
 
 
 int main() {
 
-	int x0 = 45;
-	int y0 = -30;
+	int x0 = 1700;
+	int y0 = 2400;
 	char p = inPolarRegion(x0, y0);
 	printf("(%d, %d) %c\n", x0, y0, p);
 
