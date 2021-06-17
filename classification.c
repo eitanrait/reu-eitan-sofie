@@ -37,23 +37,24 @@ char inRegion(int i, int j) {
 // input is (x,y) cartesian coordinate
 // using conversion between cartesion and polar, find the point in polar
 // then classfy using radius comparison  
-char inPolarRegion(double x, double y) {
+char inPolarRegion(double vx, double vy, int ux, int uy) {
 
-	// assume the center of the circle is (2047, 2047)
-	x -= 2047;
-	y -= 2047;
+	// assume the center of the circle is (ux, uy)
+	vx -= ux;
+	vy -= uy;
 
 	// convert between cartesian and polar
 	// r = sqrt (x^2 + y^2)
-	double x2 = x * x;
-	double y2 = y * y;
+	double x2 = vx * vx;
+	double y2 = vy * vy;
 	double r = sqrt(x2 + y2);
 
 	// tha angle is not in the correct direction
 	// when x is negative, theta should be negative of original
 	double val = 180.0 / PI;
-	double theta = atan(y / x) * val;	// to get theta in degreees
-	if (x < 0) {
+	double theta = atan(vy / vx) * val;	// to get theta in degreees
+
+	if (vx < 0) {
 		theta = 180 + theta;
 	}
 
@@ -72,14 +73,21 @@ char inPolarRegion(double x, double y) {
 	return 'i';
 }
 
-/*
+
 int main() {
+
+	int centerx = 2047;
+	int centery = 2047;
 
 	int x0 = 1700;
 	int y0 = 2400;
-	char p = inPolarRegion(x0, y0);
-	printf("(%d, %d) %c\n", x0, y0, p);
+	char p = inPolarRegion(x0, y0, centerx, centery);
+	printf("(%d, %d) (%d, %d) %c\n", centerx, centery, x0, y0, p);
 
+	centerx = 1000;
+	centery = 1000;
+	p = inPolarRegion(x0, y0, centerx, centery);
+
+	printf("(%d, %d) (%d, %d) %c\n", centerx, centery, x0, y0, p);
 	return 0;
 }
-*/
