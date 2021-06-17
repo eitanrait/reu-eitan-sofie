@@ -129,6 +129,48 @@ void findPath(int x1, int y1, int x2, int y2) {
   }
 }
 
+
+// use the Bresenham algorithm for drawing a line
+// to find the fastest pasth from pixel a to b 
+// assuming x0 < x1
+void findPathSofie(int x0, int y0, int x1, int y1) { 
+    int A, B, g, x, y, t;
+
+    t = 0;
+ 	B = x0 - x1;
+	A = y1 - y0;
+ 
+	x = x0;
+	y = y0;
+ 
+	g = 2 * A + B;	// initial biased error
+	int diag_inc = 2 * (A + B);
+	int right_inc = 2 * A; 
+ 
+	while (x <= x1 && t < SIZE) {
+		points[t].i = x;
+		points[t].j = y;
+
+		if(g >= 0) {
+
+			// go in y direction
+			y = y + 1;
+			g = g + diag_inc;
+
+		} else {	// if error is negative
+
+			// go in x direction
+			g = g + right_inc;
+
+		}
+		x = x + 1;	// increment in x direction
+		t = t + 1;	// increment array index
+
+	}
+
+
+}
+
 // finds perpendicular line to Boat X's trajectory
 // use to get line from Boat X position
 double findPerpendicularSlope(int x_orig, int y_orig, int x_next, int y_next) {
@@ -171,7 +213,7 @@ point_t* findPerpendicularPoint(double last_i, double last_j) {
 		B.i = X.i + 1;
 		B.j = perp_slope * (B.i - X.i) + X.j;
 
-	} else if ((last_j - curr_j == 0) && (last_i - curr_i != 0)) {
+	} else if ((last_j - curr_j == 0) && (last_i - curr_i == 0)) {
 		// no change in point
 
 		// what to do when X does not move? 
@@ -230,7 +272,7 @@ int directionOfPoint(point_t A, point_t B, point_t P)
     return ZERO;
 }
 
-int checkYBehind(double last_i, double last_j) {
+int YIsBehind(double last_i, double last_j) {
 
 	// A is new X position
 	// find another point (B) on the perpendicular
@@ -240,12 +282,23 @@ int checkYBehind(double last_i, double last_j) {
 	B.i = (*nextPoint).i;
 	B.j = (*nextPoint).j;
 
-	// compare with pos of Y for direction of Y in respect to the perp line
-	int direction;
-	direction = directionOfPoint(X, B, Y);
-	printf("X: (%d, %d)  B: (%d, %d)  direction: %d\n", X.i, X.j, B.i, B.j, direction);
+	point_t lastX;
+	lastX.i = last_i;
+	lastX.j = last_j;
 
-	return direction;
+	// compare with pos of Y for direction of Y in respect to the perp line
+	int directionY;
+	int directionLastX; 
+	directionY = directionOfPoint(X, B, Y);
+	directionLastX = directionOfPoint(X, B, lastX);
+
+	printf("X: (%d, %d)  B: (%d, %d)  directionY: %d  directionLastX: %d\n", X.i, X.j, B.i, B.j, directionY, directionLastX);
+
+	if (directionLastX == directionY) {
+		return 1;
+	}
+
+	return 0;
 
 }
 
@@ -262,7 +315,7 @@ void followRandomWalk() {
     	exit(1);
 	}
 
-	fprintf(fpt, "X.i, X.j, Y.i, Y.j, slope\n");
+	fprintf(fpt, "X.i, X.j, Y.i, Y.j\n");
 
   	printf("Y      X\n");
   	printf("%d, %d   %d, %d\n", Y.i, Y.j, X.i, X.j);	// initial point
@@ -285,18 +338,27 @@ void followRandomWalk() {
 		X.j = *(coordPtr + 1);
 
   		// check where Y is 
-  		behind = checkYBehind(last_i, last_j);
+  		behind = YIsBehind(last_i, last_j);
 
   		// store Y position
 
 
   		if (behind) {
   			// move Y towards X
+  			// get new line
+			findPath(Y.i, Y.j, X.i, X.j);
+
+			Y.i = points[1].i;
+			Y.j = points[1].j;
+
   		} else {
   			// stays in place
   		}
 
-  		if (t > 6) {
+  		printf("%d, %d  %d, %d  %d\n", Y.i, Y.j, X.i, X.j, t);
+		fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
+
+  		if (t > 100 || (Y.i == X.i && Y.j == X.j)) {
   			break;
   		}
 
@@ -317,7 +379,7 @@ void followDiagonal() {
     	exit(1);
 	}
 
-	fprintf(fpt, "X.i, X.j, Y.i, Y.j, slope\n");
+	fprintf(fpt, "X.i, X.j, Y.i, Y.j\n");
 
 	printf("follow diagonal\n");
   	printf("Y      X\n");
@@ -356,7 +418,7 @@ void followDiagonal() {
 		//Y.region = inPolarRegion(Y.i, Y.j);
 		//X.region = inPolarRegion(X.i, X.j);
 		
-		printf("%c: %d, %d   %c: %d, %d  %d\n", Y.region, Y.i, Y.j, X.region, X.i, X.j, t);
+		printf("%d, %d   %d, %d  %d\n", Y.i, Y.j, X.i, X.j, t);
 		fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
 
 		// check for breaking 
@@ -377,9 +439,9 @@ void followDiagonal() {
 // thus Y.i < X.i because we are using Brenenham's algorithm assumption
 void initPoint() {
 	Y.i = 0;
-	Y.j = 0;
-	X.i = 400;
-	X.j = 300;
+	Y.j = 50;
+	X.i = 10;
+	X.j = 35;
 }
 
 int main() {
