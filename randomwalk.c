@@ -5,7 +5,7 @@
 #include "classification.h"
 #include "chase_static_point.h"
 
-
+/*
 #define N .1
 #define NE .2
 #define E .3
@@ -16,12 +16,12 @@
 #define NW .8
 #define STAY .9
 #define GONE 1
-
+*/
 #define I 210
 #define J 720
 #define STEPS 200
 
-/*
+
 #define N .2
 #define NE .4
 #define E .6
@@ -32,7 +32,7 @@
 #define NW .9
 #define STAY .95
 #define GONE 1
-*/
+
 
 struct point{
   int i;
