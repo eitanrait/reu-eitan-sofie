@@ -139,4 +139,3 @@ int* randomPoint(int x, int y, float prob) {
   return point_ptr;
 
 }
-
