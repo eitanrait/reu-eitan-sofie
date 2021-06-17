@@ -171,30 +171,6 @@ void findPathSofie(int x0, int y0, int x1, int y1) {
 
 }
 
-// finds perpendicular line to Boat X's trajectory
-// use to get line from Boat X position
-double findPerpendicularSlope(int x_orig, int y_orig, int x_next, int y_next) {
-
-	printf("in findPerpendicularSlope\n");
-	double m, m_perp;
-
-	if ((x_next - x_orig) != 0 && (y_next - y_orig) != 0) {
-		m = (y_next - y_orig) / (x_next - x_orig);
-		m_perp = - (1 / m);
-	} else if ((x_next - x_orig) != 0 && (y_next - y_orig) == 0) {
-		// slope is horizontal since no change in y
-		// perendicular slope is vertical
-
-	} else {
-		// slope is vertical since no change in x
-		// so perpendicular slope is horizontal (0)
-		m_perp = 0;
-	}
-
-	return m_perp;
-}
-
-
 
 point_t* findPerpendicularPoint(double last_i, double last_j) {
 
@@ -219,6 +195,10 @@ point_t* findPerpendicularPoint(double last_i, double last_j) {
 		// what to do when X does not move? 
 		// let Y keep the same trajectory it did last
 		// need to remember the last move Y did
+		// or make Y stop moving
+
+		B.i = X.i;
+		B.j = X.j;
 	
 	} else if ((last_j - curr_j == 0)) {
 		// no change in y direction
@@ -248,8 +228,7 @@ const int RIGHT = 1, LEFT = -1, ZERO = 0;
 // A is new X position
 // B is another point on the perpendicular
 // P is position of boat Y 
-int directionOfPoint(point_t A, point_t B, point_t P)
-{
+int directionOfPoint(point_t A, point_t B, point_t P) {
     // subtracting co-ordinates of point A from
     // B and P, to make A as origin
     B.i -= A.i;
@@ -279,8 +258,8 @@ int YIsBehind(double last_i, double last_j) {
 	point_t* nextPoint = findPerpendicularPoint(last_i, last_j);
 
 	point_t B;
-	B.i = (*nextPoint).i;
-	B.j = (*nextPoint).j;
+	B.i = nextPoint->i;
+	B.j = nextPoint->j;
 
 	point_t lastX;
 	lastX.i = last_i;
@@ -288,7 +267,12 @@ int YIsBehind(double last_i, double last_j) {
 
 	// compare with pos of Y for direction of Y in respect to the perp line
 	int directionY;
-	int directionLastX; 
+	int directionLastX;
+
+	if (X.i == B.i && X.j == B.j) {
+		return 0;
+	}
+
 	directionY = directionOfPoint(X, B, Y);
 	directionLastX = directionOfPoint(X, B, lastX);
 
@@ -341,7 +325,10 @@ void followRandomWalk() {
   		behind = YIsBehind(last_i, last_j);
 
   		// store Y position
-
+  		// check which region boat Y is in
+  		// if boat Y in region A, chase 
+  		// if boat Y in regoin B, chase with stealth
+  		// else, disguised walk towards boat X/U
 
   		if (behind) {
   			// move Y towards X
@@ -358,7 +345,7 @@ void followRandomWalk() {
   		printf("%d, %d  %d, %d  %d\n", Y.i, Y.j, X.i, X.j, t);
 		fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
 
-  		if (t > 100 || (Y.i == X.i && Y.j == X.j)) {
+  		if (t > 6 || (Y.i == X.i && Y.j == X.j)) {
   			break;
   		}
 
@@ -440,8 +427,8 @@ void followDiagonal() {
 void initPoint() {
 	Y.i = 0;
 	Y.j = 50;
-	X.i = 10;
-	X.j = 35;
+	X.i = 150;
+	X.j = 150;
 }
 
 int main() {
