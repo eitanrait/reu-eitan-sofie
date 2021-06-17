@@ -73,7 +73,7 @@ char inPolarRegion(double vx, double vy, int ux, int uy) {
 	return 'i';
 }
 
-
+/*
 int main() {
 
 	int centerx = 2047;
@@ -84,10 +84,14 @@ int main() {
 	char p = inPolarRegion(x0, y0, centerx, centery);
 	printf("(%d, %d) (%d, %d) %c\n", centerx, centery, x0, y0, p);
 
-	centerx = 1000;
-	centery = 1000;
+	centerx = 1600;
+	centery = 2500;
 	p = inPolarRegion(x0, y0, centerx, centery);
 
 	printf("(%d, %d) (%d, %d) %c\n", centerx, centery, x0, y0, p);
 	return 0;
 }
+*/
+
+// to compile
+// gcc classification.c -lm -o classification
