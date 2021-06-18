@@ -58,7 +58,7 @@ char inPolarRegion(double vx, double vy, int ux, int uy) {
 		theta = 180 + theta;
 	}
 
-	printf("radius: %f  theta: %f \n", r, theta);
+	//printf("radius: %f  theta: %f \n", r, theta);
 
 	if (r <= 256) {		// 512/2
 		return 'a';

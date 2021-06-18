@@ -181,7 +181,7 @@ point_t* findPerpendicularPoint(double last_i, double last_j) {
 	double slope, perp_slope;
 
 	if ((last_i - curr_i != 0) && (last_j - curr_j != 0)) {
-		//printf("last: (%f, %f) curr: (%d, %d)\n", last_i, last_j, curr_i, curr_j);
+		printf("last: (%f, %f) curr: (%d, %d)\n", last_i, last_j, curr_i, curr_j);
 		slope = (curr_j - last_j) / (curr_i - last_i);
 		perp_slope = -(1 / slope);
 		//printf("slope: %f, perp_slope: %f\n", slope, perp_slope);
@@ -269,8 +269,9 @@ int YIsBehind(double last_i, double last_j) {
 	int directionY;
 	int directionLastX;
 
+	// if no change in X pos, return 2
 	if (X.i == B.i && X.j == B.j) {
-		return 0;
+		return 2;
 	}
 
 	directionY = directionOfPoint(X, B, Y);
@@ -336,7 +337,7 @@ void followRandomWalk() {
   		// update prob for Y movement
   		prob = (rand() % 100) *.01;
 
-  		if (behind && (Y.region == 'a')) {
+  		if (behind == 1 && (Y.region == 'a')) {
   			// move Y towards X
   			// get new line towards Boat X/U
 			findPath(Y.i, Y.j, X.i, X.j);
@@ -344,7 +345,7 @@ void followRandomWalk() {
 			Y.i = points[1].i;
 			Y.j = points[1].j;
 
-  		} else if (behind && (Y.region == 'b')) {
+  		} else if (behind == 1 && (Y.region == 'b')) {
   			// in region B
   			// every couple tics (will swtich more often to move towards) switch from random walk to move towards
   			if (t % 3 == 0) {
@@ -363,7 +364,7 @@ void followRandomWalk() {
 
   			}
 
-  		} else if (behind) {
+  		} else if (behind == 1) {
   			// behind and in regions C and D
   			// every couple tics switch from random walk to move towards
   			if (t % 3 == 0) {
@@ -382,8 +383,17 @@ void followRandomWalk() {
 
   			}
 
+  		} else if (behind == 2) {
+  			// no change in X
+  			// but Y should continue on its path from last time
+  			// which is saved in the points array 
+  			
+  			Y.i = points[1].i;
+			Y.j = points[1].j;
+
   		} else {
-  			// stay in place
+  			// stay in place when Y is on the wrong side of the perpendicular line 
+
   		}
 
   		printf("%d, %d  %d, %d  %d\n", Y.i, Y.j, X.i, X.j, t);
@@ -423,6 +433,7 @@ void followDiagonalPath() {
   	
   	int* coordPtr;
   	float prob = (rand() % 100) *.01;
+  	findPath(Y.i, Y.j, X.i, X.j);
 
   	while (1) {
 
@@ -430,9 +441,11 @@ void followDiagonalPath() {
   		last_i = X.i;
   		last_j = X.j;
 
-  		// update X position
-  		X.i += 1;
-		X.j += 1;
+  		// update X position every two steps 
+  		if (t % 2 == 0) {
+  			X.i += 1;
+			X.j += 1;
+  		}
 
   		// check where Y is 
   		behind = YIsBehind(last_i, last_j);
@@ -448,8 +461,9 @@ void followDiagonalPath() {
 
   		// update prob for Y movement
   		prob = (rand() % 100) *.01;
+  		printf("behind: %d, region: %c\n", behind, Y.region);
 
-  		if (behind && (Y.region == 'a')) {
+  		if (behind == 1 && (Y.region == 'a')) {
   			// move Y towards X
   			// get new line towards Boat X/U
 			findPath(Y.i, Y.j, X.i, X.j);
@@ -457,7 +471,7 @@ void followDiagonalPath() {
 			Y.i = points[1].i;
 			Y.j = points[1].j;
 
-  		} else if (behind && (Y.region == 'b')) {
+  		} else if (behind == 1 && (Y.region == 'b')) {
   			// in region B
   			// every couple tics (will swtich more often to move towards) switch from random walk to move towards
   			if (t % 3 == 0) {
@@ -476,11 +490,12 @@ void followDiagonalPath() {
 
   			}
 
-  		} else if (behind) {
+  		} else if (behind == 1) {
   			// behind and in regions C and D
   			// every couple tics switch from random walk to move towards
   			if (t % 3 == 0) {
   				// walk towards
+  				printf("finding path\n");
   				findPath(Y.i, Y.j, X.i, X.j);
 
 				Y.i = points[1].i;
@@ -489,11 +504,24 @@ void followDiagonalPath() {
   			} else {
   				// random walk
   				// random walks more often
+  				printf("random\n");
   				coordPtr = randomPoint(Y.i, Y.j, prob);
 				Y.i = *coordPtr;
 				Y.j = *(coordPtr + 1);
 
   			}
+
+  		} else if (behind == 2) {
+  			// no change in X
+  			// but Y should continue on its path from last time
+  			// which is saved in the points array 
+  			if (t == 1) {
+  				Y.i = points[1].i;
+				Y.j = points[1].j;
+  			} else {
+  				Y.i = points[2].i;
+				Y.j = points[2].j;
+			}	
 
   		} else {
   			// stay in place
@@ -512,7 +540,6 @@ void followDiagonalPath() {
 
 }
 
-
 void followVerticalPath() {
 
 	printf("follow vertical walk\n");
@@ -525,7 +552,7 @@ void followVerticalPath() {
     	exit(1);
 	}
 
-	fprintf(fpt, "X.i, X.j, Y.i, Y.j\n");
+	fprintf(fpt, "X.i, X.j, Y.i, Y.j, region, t\n");
 
   	printf("Y      X\n");
   	printf("%d, %d   %d, %d\n", Y.i, Y.j, X.i, X.j);	// initial point
@@ -535,6 +562,7 @@ void followVerticalPath() {
   	
   	int* coordPtr;
   	float prob = (rand() % 100) *.01;
+  	findPath(Y.i, Y.j, X.i, X.j);
 
   	while (1) {
 
@@ -542,8 +570,10 @@ void followVerticalPath() {
   		last_i = X.i;
   		last_j = X.j;
 
-  		// update X position
-  		X.j += 1;
+  		// update X position every two steps 
+  		if (t % 2 == 0) {
+			X.j += 1;
+  		}
 
   		// check where Y is 
   		behind = YIsBehind(last_i, last_j);
@@ -559,8 +589,9 @@ void followVerticalPath() {
 
   		// update prob for Y movement
   		prob = (rand() % 100) *.01;
+  		printf("behind: %d, region: %c\n", behind, Y.region);
 
-  		if (behind && (Y.region == 'a')) {
+  		if (behind == 1 && (Y.region == 'a')) {
   			// move Y towards X
   			// get new line towards Boat X/U
 			findPath(Y.i, Y.j, X.i, X.j);
@@ -568,7 +599,7 @@ void followVerticalPath() {
 			Y.i = points[1].i;
 			Y.j = points[1].j;
 
-  		} else if (behind && (Y.region == 'b')) {
+  		} else if (behind == 1 && (Y.region == 'b')) {
   			// in region B
   			// every couple tics (will swtich more often to move towards) switch from random walk to move towards
   			if (t % 3 == 0) {
@@ -587,11 +618,12 @@ void followVerticalPath() {
 
   			}
 
-  		} else if (behind) {
+  		} else if (behind == 1) {
   			// behind and in regions C and D
   			// every couple tics switch from random walk to move towards
   			if (t % 3 == 0) {
   				// walk towards
+  				printf("finding path\n");
   				findPath(Y.i, Y.j, X.i, X.j);
 
 				Y.i = points[1].i;
@@ -600,24 +632,36 @@ void followVerticalPath() {
   			} else {
   				// random walk
   				// random walks more often
+  				printf("random\n");
   				coordPtr = randomPoint(Y.i, Y.j, prob);
 				Y.i = *coordPtr;
 				Y.j = *(coordPtr + 1);
 
   			}
 
+  		} else if (behind == 2) {
+  			// no change in X
+  			// but Y should continue on its path from last time
+  			// which is saved in the points array 
+  			if (t == 1) {
+  				Y.i = points[1].i;
+				Y.j = points[1].j;
+  			} else {
+  				Y.i = points[2].i;
+				Y.j = points[2].j;
+			}	
+
   		} else {
   			// stay in place
   		}
 
   		printf("%d, %d  %d, %d  %d\n", Y.i, Y.j, X.i, X.j, t);
-		fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
+		fprintf(fpt, "%d, %d, %d, %d, %c, %d\n", X.i, X.j, Y.i, Y.j, Y.region, t);	// print to csv file
 
   		if (t > 6000 || (Y.i == X.i && Y.j == X.j)) {
   			break;
   		}
 
-  		prob = (rand() % 100) *.01;
   		t++;
 
   	}
@@ -641,8 +685,8 @@ int main() {
 
 	//initPoint();
 	//followRandomWalk();
-	//initPoint();
-	//followDiagonalPath();
+	initPoint();
+	followDiagonalPath();
 	initPoint();
 	followVerticalPath();
 
