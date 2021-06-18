@@ -13,7 +13,7 @@
 #include "randomwalk.h"
 #include "classification.h"
 
-#define SIZE 5
+#define SIZE 16
 
 typedef struct {
   int i;
@@ -434,6 +434,7 @@ void followDiagonalPath() {
   	int* coordPtr;
   	float prob = (rand() % 100) *.01;
   	findPath(Y.i, Y.j, X.i, X.j);
+  	int noMovement = 2;
 
   	while (1) {
 
@@ -466,6 +467,7 @@ void followDiagonalPath() {
   		if (behind == 1 && (Y.region == 'a')) {
   			// move Y towards X
   			// get new line towards Boat X/U
+  			noMovement = 2;
 			findPath(Y.i, Y.j, X.i, X.j);
 
 			Y.i = points[1].i;
@@ -474,6 +476,7 @@ void followDiagonalPath() {
   		} else if (behind == 1 && (Y.region == 'b')) {
   			// in region B
   			// every couple tics (will swtich more often to move towards) switch from random walk to move towards
+  			noMovement = 2;
   			if (t % 3 == 0) {
   				// random walk
   				coordPtr = randomPoint(Y.i, Y.j, prob);
@@ -493,7 +496,8 @@ void followDiagonalPath() {
   		} else if (behind == 1) {
   			// behind and in regions C and D
   			// every couple tics switch from random walk to move towards
-  			if (t % 3 == 0) {
+  			noMovement = 2;
+  			if (t % 6 == 0 || t % 6 == 1 || t % 6 == 2) {
   				// walk towards
   				printf("finding path\n");
   				findPath(Y.i, Y.j, X.i, X.j);
@@ -514,7 +518,7 @@ void followDiagonalPath() {
   		} else if (behind == 2) {
   			// no change in X
   			// but Y should continue on its path from last time
-  			// which is saved in the points array 
+  			// which is saved in the points array   			
   			if (t == 1) {
   				Y.i = points[1].i;
 				Y.j = points[1].j;
@@ -522,9 +526,11 @@ void followDiagonalPath() {
   				Y.i = points[2].i;
 				Y.j = points[2].j;
 			}	
+			noMovement++;
 
   		} else {
   			// stay in place
+  			noMovement = 2;
   		}
 
   		printf("%d, %d  %d, %d  %d\n", Y.i, Y.j, X.i, X.j, t);
@@ -563,6 +569,7 @@ void followVerticalPath() {
   	int* coordPtr;
   	float prob = (rand() % 100) *.01;
   	findPath(Y.i, Y.j, X.i, X.j);
+  	int noMovement = 2;
 
   	while (1) {
 
@@ -589,11 +596,12 @@ void followVerticalPath() {
 
   		// update prob for Y movement
   		prob = (rand() % 100) *.01;
-  		printf("behind: %d, region: %c\n", behind, Y.region);
+  		printf("behind: %d, noMovement: %d, region: %c\n", behind, noMovement, Y.region);
 
   		if (behind == 1 && (Y.region == 'a')) {
   			// move Y towards X
   			// get new line towards Boat X/U
+  			noMovement = 2;
 			findPath(Y.i, Y.j, X.i, X.j);
 
 			Y.i = points[1].i;
@@ -602,6 +610,7 @@ void followVerticalPath() {
   		} else if (behind == 1 && (Y.region == 'b')) {
   			// in region B
   			// every couple tics (will swtich more often to move towards) switch from random walk to move towards
+  			noMovement = 2;
   			if (t % 3 == 0) {
   				// random walk
   				coordPtr = randomPoint(Y.i, Y.j, prob);
@@ -621,6 +630,7 @@ void followVerticalPath() {
   		} else if (behind == 1) {
   			// behind and in regions C and D
   			// every couple tics switch from random walk to move towards
+  			noMovement = 2;
   			if (t % 3 == 0) {
   				// walk towards
   				printf("finding path\n");
@@ -647,12 +657,14 @@ void followVerticalPath() {
   				Y.i = points[1].i;
 				Y.j = points[1].j;
   			} else {
-  				Y.i = points[2].i;
-				Y.j = points[2].j;
-			}	
+  				Y.i = points[noMovement].i;
+				Y.j = points[noMovement].j;
+			}
+			noMovement++;	
 
   		} else {
   			// stay in place
+  			noMovement = 2;
   		}
 
   		printf("%d, %d  %d, %d  %d\n", Y.i, Y.j, X.i, X.j, t);
@@ -672,10 +684,10 @@ void followVerticalPath() {
 // note that Boat Y is following X 
 // thus Y.i < X.i because we are using Brenenham's algorithm assumption
 void initPoint() {
-	Y.i = 0;
-	Y.j = 700;
+	Y.i = 200;
+	Y.j = 0;
 	X.i = 600;
-	X.j = 500;
+	X.j = 50;
 }
 
 int main() {
@@ -687,8 +699,8 @@ int main() {
 	//followRandomWalk();
 	initPoint();
 	followDiagonalPath();
-	initPoint();
-	followVerticalPath();
+	//initPoint();
+	//followVerticalPath();
 
 	return 0;
 
