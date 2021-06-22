@@ -1,19 +1,22 @@
 // implementation of FIFO data structure 
 // holds past FIFO_SIZE of geo detections
-
+#include <stdio.h>
 #include <stdint.h>
+#include "Fifo.h"
 
 // Declare state variables for FiFo
 //        size, buffer, put and get indexes
-#define FIFO_SIZE 9
-static uint8_t PutIndex;
-static uint8_t GetIndex;
+#define FIFO_SIZE 17
+static int PutIndex;
+static int GetIndex;
 static char FIFO[FIFO_SIZE];
+
 // *********** FiFo_Init**********
 // Initializes a software FIFO of a
 // fixed size and sets up indexes for
 // put and get operations
 void Fifo_Init() {
+	printf("fifo init\n");
 	PutIndex = 0;
 	GetIndex = 0;
 }
@@ -23,7 +26,7 @@ void Fifo_Init() {
 // Input: Character to be inserted
 // Output: 1 for success and 0 for failure
 //         failure is when the buffer is full
-uint32_t Fifo_Put(char data) {
+int Fifo_Put(char data) {
   if ((PutIndex + 1) % FIFO_SIZE == GetIndex) {
 		return (0);
 	}
@@ -51,10 +54,11 @@ char Fifo_Get(void){char data;
 // Input: none
 // Output: number of entries in FIFO
 //         0 failure is when the FIFO is empty
-uint32_t Fifo_Status(void){
+int Fifo_Status(void)	{
 	if (GetIndex > PutIndex) {
 		return (FIFO_SIZE - GetIndex + PutIndex);
 	} else {
 		return (PutIndex - GetIndex);
 	}
 }
+

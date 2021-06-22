@@ -79,13 +79,23 @@ void findPath(int x1, int y1, int x2, int y2) {
 }
 
 int main() {
+
+        // csv file init
+        FILE *fpt;
+        fpt = fopen("csv_files/approaching.csv", "w+");
+        if(fpt == NULL) {
+            // get out code
+            exit(1);
+        }
+
         // call draw line with two points                                                                                                                                                           
         // find the path from p1 to p2 assuming p1.x < p2.x and slope is 0 < m <= 1                                                                                                                 
         // (10, 10) -> (25, 10)                                                                                                                                                                     
 
-        findPath(10, 10, -5, -100);
+        findPath(0, 0, 40, 30);
         for (int k = 0; k < SIZE; k++) {
                 printf("%d, %d\n", points[k].i, points[k].j);
+                fprintf(fpt, "40, 30, %d, %d\n", points[k].i, points[k].j); // print to csv file
         }
 
         return 0;

@@ -300,11 +300,6 @@ void chasingDiagonal() {
 
 		// get new line
 		// get new line every other time
-/*
-		if (t%2 == 1) {
-			findPathE(Y.i, Y.j, X.i, X.j);
-		}
-		*/
 		findPathE(Y.i, Y.j, X.i, X.j);
 
 		// could check if first invisible
@@ -362,11 +357,8 @@ void chasingStraightUp() {
 			// should stop the program?
 		} 
 
-		// get new line every other time
-		//if (t%2 == 1) {
-			findPathE(Y.i, Y.j, X.i, X.j);
-		//}
-		//findPathE(Y.i, Y.j, X.i, X.j);
+		// get new line 
+		findPathE(Y.i, Y.j, X.i, X.j);
 
 		// could check if first invisible
 		Y.i = points[1].i;
@@ -423,11 +415,7 @@ void chasingStraightDown() {
 		} 
 
 		// get new line
-		// get new line every other time
-		//if (t%2 == 1) {
-			findPathE(Y.i, Y.j, X.i, X.j);
-		//}
-		//findPathE(Y.i, Y.j, X.i, X.j);
+		findPathE(Y.i, Y.j, X.i, X.j);
 
 		// could check if first invisible
 		Y.i = points[1].i;
