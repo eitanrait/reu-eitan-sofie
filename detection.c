@@ -27,8 +27,11 @@ point_t points[SIZE];	// points is an array of type point_t
 point_t U;
 point_t V;
 
-int head, tail, elemt;
-int queue[SIZE];
+int headYN, tailYN, elemtYN;
+int queueYN[SIZE];
+
+int headRank, tailRank, elemtRank;
+int queueRank[SIZE];
 
 // returns the sign of a - b
 int Sign(int a, int b) {
@@ -111,7 +114,7 @@ int detectChasing(char * filename) {
 
 	// boat U moving in a ___ trajectory
 	// taking points from csv_files/chasing_diagonal.csv
-	FILE * f;
+	FILE *f;
 	char line[1024];
 	point_t nextBestV;
 	int count = 0;
@@ -121,10 +124,10 @@ int detectChasing(char * filename) {
 		return 1;
 	}
 	printf("opened file\n");
-	while (getc(f) != EOF) {
+	while (fgets(line, 1024, f) != NULL) {
 
 		// find current U and V positions
-		fgets(line, 1024, f);
+		printf("%s\n", line);
 		U.i = atoi(strtok(line, ","));
 		U.j = atoi(strtok(NULL, ","));
 		V.i = atoi(strtok(NULL, ","));
@@ -132,35 +135,36 @@ int detectChasing(char * filename) {
 
 		printf("U: (%d, %d) V: (%d, %d)\n", U.i, U.j, V.i, V.j);
 
-		// store position of V in position queue
-
-		// find next best point using Bresenham
-		findPath(V.i, V.j, U.i, U.j);
-
-		nextBestV.i = points[1].i;
-		nextBestV.j = points[1].j;
-		printf("nextBestV: (%d, %d)\n", nextBestV.i, nextBestV.j);
-
 		// compare with next actual point of V
 		// check if first move
 		// if not first move, compare
 		if (count != 0) {
 			if (nextBestV.i == V.i && nextBestV.j == V.j) {
 				printf("equal\n");
-				enqueue(queue, &tail, 1);
+				enqueue(queueYN, &tailYN, 1);
 			} else {
-				enqueue(queue, &tail, 0);
+				enqueue(queueYN, &tailYN, 0);
 			}
 		}
 
-		if (count > 7) {
+		// store position of V in position queue
+
+		// find next best point using Bresenham
+		// from V (chasing) to U (chasee)
+		findPath(V.i, V.j, U.i, U.j);
+
+		nextBestV.i = points[1].i;
+		nextBestV.j = points[1].j;
+		printf("nextBestV: (%d, %d)\n", nextBestV.i, nextBestV.j);
+
+		if (count > SIZE) {
 			break;
 		}
 		count++;
 
 	}
 
-	display(queue, head, tail); 
+	display(queueYN, headYN, tailYN); 
 
 	// find next best point
 	// compare with next actual point of V
@@ -172,7 +176,8 @@ int detectChasing(char * filename) {
 
 int main() {
 
-	init(&head, &tail);
+	init(&headYN, &tailYN);
+	init(&headRank, &tailRank);
 
 	detectChasing("csv_files/approaching.csv");	// approaching.csv  chasing_diagonal.csv
 	return 1;

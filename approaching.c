@@ -91,11 +91,12 @@ int main() {
         // call draw line with two points                                                                                                                                                           
         // find the path from p1 to p2 assuming p1.x < p2.x and slope is 0 < m <= 1                                                                                                                 
         // (10, 10) -> (25, 10)                                                                                                                                                                     
-
-        findPath(0, 0, 40, 30);
+        int xi = 40;
+        int xj = 30;
+        findPath(0, 0, xi, xj);
         for (int k = 0; k < SIZE; k++) {
-                printf("%d, %d\n", points[k].i, points[k].j);
-                fprintf(fpt, "40, 30, %d, %d\n", points[k].i, points[k].j); // print to csv file
+                printf("%d, %d, %d, %d\n", xi, xj, points[k].i, points[k].j);
+                fprintf(fpt, "%d, %d, %d, %d\n", xi, xj, points[k].i, points[k].j); // print to csv file
         }
 
         return 0;
