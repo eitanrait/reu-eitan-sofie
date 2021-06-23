@@ -109,6 +109,8 @@ void findPath(int x1, int y1, int x2, int y2) {
 
 // two queues, one storing locations and one storing yes or nos 
 // might be limited if just storing hits and misses
+#define YES 1
+#define NO 0
 
 int detectChasing(char * filename) {
 
@@ -127,23 +129,32 @@ int detectChasing(char * filename) {
 	while (fgets(line, 1024, f) != NULL) {
 
 		// find current U and V positions
-		printf("%s\n", line);
 		U.i = atoi(strtok(line, ","));
 		U.j = atoi(strtok(NULL, ","));
 		V.i = atoi(strtok(NULL, ","));
 		V.j = atoi(strtok(NULL, " "));
 
-		printf("U: (%d, %d) V: (%d, %d)\n", U.i, U.j, V.i, V.j);
+		//printf("U: (%d, %d) V: (%d, %d)\n", U.i, U.j, V.i, V.j);
 
 		// compare with next actual point of V
 		// check if first move
 		// if not first move, compare
 		if (count != 0) {
+
+			// check if full
+			if (full(headYN, tailYN, SIZE)) {
+					dequeue(queueYN, &headYN);
+			}
+			
+			// compare
 			if (nextBestV.i == V.i && nextBestV.j == V.j) {
-				printf("equal\n");
-				enqueue(queueYN, &tailYN, 1);
+				// next best point is equal to point actually chosen 
+				enqueue(queueYN, &tailYN, YES);
 			} else {
-				enqueue(queueYN, &tailYN, 0);
+				enqueue(queueYN, &tailYN, NO);
+
+				// add ranking to however far the actual is from ideal
+
 			}
 		}
 
@@ -155,20 +166,20 @@ int detectChasing(char * filename) {
 
 		nextBestV.i = points[1].i;
 		nextBestV.j = points[1].j;
-		printf("nextBestV: (%d, %d)\n", nextBestV.i, nextBestV.j);
+		//printf("nextBestV: (%d, %d)\n", nextBestV.i, nextBestV.j);
 
-		if (count > SIZE) {
+		// print contents of queue
+		display(queueYN, headYN, tailYN);
+
+		if (count > SIZE*5) {
 			break;
 		}
 		count++;
 
-	}
-
-	display(queueYN, headYN, tailYN); 
+	} 
 
 	// find next best point
 	// compare with next actual point of V
-	// 
 	return 0;
 
 }

@@ -1,7 +1,7 @@
 /*
 * File   : queue.c
 * Author : zentut.com
-* Purpose: stack header file
+* Purpose: stack implement file
 */
 /*
     initialize queue pointers
@@ -35,9 +35,13 @@ int dequeue(int *q,int *head)
 /*
     return 1 if queue is full, otherwise return 0
 */
-int full(int tail,const int size)
+int full(int head, int tail, const int size)
 {
-    return tail == size;
+
+    if (tail - head == size) {
+      return 1;
+    }
+    return 0;
 }
  
 /*
@@ -56,8 +60,11 @@ void display(int *q,int head,int tail)
     int i = tail - 1;
 
     while(i >= head) {
-        printf("%d ",q[i--]);//q[i--]
+        printf("%d ",q[i--]);
     }
 
     printf("\n");
 }
+
+// to compile
+// gcc -Wall Queue.c -o q
