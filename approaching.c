@@ -78,6 +78,45 @@ void findPath(int x1, int y1, int x2, int y2) {
   }
 }
 
+// use the Bresenham algorithm for drawing a line
+// to find the fastest pasth from pixel a to b 
+void findPathBres(int x0, int y0, int x1, int y1) { 
+    int A, B, g, x, y, t;
+
+    t = 0;
+  B = x0 - x1;
+  A = y1 - y0;
+ 
+  x = x0;
+  y = y0;
+ 
+  g = 2 * A + B;  // initial biased error
+  int diag_inc = 2 * (A + B);
+  int right_inc = 2 * A; 
+ 
+  while (x <= x1 && t < SIZE) {
+    points[t].i = x;
+    points[t].j = y;
+
+    if(g >= 0) {
+
+      // go in y direction
+      y = y + 1;
+      g = g + diag_inc;
+
+    } else {  // if error is negative
+
+      // go in x direction
+      g = g + right_inc;
+
+    }
+    x = x + 1;  // increment in x direction
+    t = t + 1;  // increment array index
+
+  }
+
+}
+
 int main() {
 
         // csv file init
@@ -93,7 +132,7 @@ int main() {
         // (10, 10) -> (25, 10)                                                                                                                                                                     
         int xi = 40;
         int xj = 30;
-        findPath(0, 0, xi, xj);
+        findPathBres(0, 0, xi, xj);
         for (int k = 0; k < SIZE; k++) {
                 printf("%d, %d, %d, %d\n", xi, xj, points[k].i, points[k].j);
                 fprintf(fpt, "%d, %d, %d, %d\n", xi, xj, points[k].i, points[k].j); // print to csv file

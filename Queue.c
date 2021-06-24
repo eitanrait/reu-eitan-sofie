@@ -38,7 +38,7 @@ int dequeue(int *q,int *head)
 int full(int head, int tail, const int size)
 {
 
-    if (tail - head == size) {
+    if (tail - head == size-1) {
       return 1;
     }
     return 0;

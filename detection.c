@@ -14,7 +14,7 @@
 #include "classification.h"
 
 #define K 10
-#define SIZE 16
+#define SIZE 17
 
 typedef struct {
   int i;
@@ -28,7 +28,7 @@ point_t U;
 point_t V;
 
 int headYN, tailYN, elemtYN;
-int queueYN[SIZE];
+int queueYN[SIZE-1];
 
 int headRank, tailRank, elemtRank;
 int queueRank[SIZE];
@@ -97,6 +97,45 @@ void findPath(int x1, int y1, int x2, int y2) {
   }
 }
 
+// use the Bresenham algorithm for drawing a line
+// to find the fastest pasth from pixel a to b 
+void findPathBres(int x0, int y0, int x1, int y1) { 
+    int A, B, g, x, y, t;
+
+    t = 0;
+  B = x0 - x1;
+  A = y1 - y0;
+ 
+  x = x0;
+  y = y0;
+ 
+  g = 2 * A + B;  // initial biased error
+  int diag_inc = 2 * (A + B);
+  int right_inc = 2 * A; 
+ 
+  while (x <= x1 && t < SIZE) {
+    points[t].i = x;
+    points[t].j = y;
+
+    if(g >= 0) {
+
+      // go in y direction
+      y = y + 1;
+      g = g + diag_inc;
+
+    } else {  // if error is negative
+
+      // go in x direction
+      g = g + right_inc;
+
+    }
+    x = x + 1;  // increment in x direction
+    t = t + 1;  // increment array index
+
+  }
+
+}
+
 
 // classify which region V is in
 // if in B,
@@ -117,6 +156,7 @@ int detectChasing(char * filename) {
 	// boat U moving in a ___ trajectory
 	// taking points from csv_files/chasing_diagonal.csv
 	FILE *f;
+	point_t * U_ptr = &U;
 	char line[1024];
 	point_t nextBestV;
 	int count = 0;
@@ -128,11 +168,13 @@ int detectChasing(char * filename) {
 	printf("opened file\n");
 	while (fgets(line, 1024, f) != NULL) {
 
+		printf("\ncount %d\n", count);
 		// find current U and V positions
 		U.i = atoi(strtok(line, ","));
 		U.j = atoi(strtok(NULL, ","));
 		V.i = atoi(strtok(NULL, ","));
 		V.j = atoi(strtok(NULL, " "));
+		printf("U(1): (%d, %d)\n", U.i, U.j);
 
 		//printf("U: (%d, %d) V: (%d, %d)\n", U.i, U.j, V.i, V.j);
 
@@ -143,35 +185,47 @@ int detectChasing(char * filename) {
 
 			// check if full
 			if (full(headYN, tailYN, SIZE)) {
-					dequeue(queueYN, &headYN);
+				dequeue(queueYN, &headYN);
 			}
-			
+			printf("before enqueue\n");
+			printf("U(2): (%d, %d)\n", U.i, U.j);
+			//printf("queueYN: %p\n", queueYN);
+			//printf("&tailYN: %p\n", &tailYN);
 			// compare
 			if (nextBestV.i == V.i && nextBestV.j == V.j) {
-				// next best point is equal to point actually chosen 
+				// next best point is equal to point actually chosen
 				enqueue(queueYN, &tailYN, YES);
 			} else {
+				printf("V: (%d, %d) next best: (%d, %d)\n", V.i, V.j, nextBestV.i, nextBestV.j);
 				enqueue(queueYN, &tailYN, NO);
-
 				// add ranking to however far the actual is from ideal
+				// when ideal is to NE: 
+				// when ideal is to E: 
 
 			}
+			printf("after enqueue\n");
+			printf("U(3): (%d, %d)\n", U.i, U.j);
+			//printf("U: %p\n", U_ptr);
 		}
 
 		// store position of V in position queue
 
 		// find next best point using Bresenham
 		// from V (chasing) to U (chasee)
-		findPath(V.i, V.j, U.i, U.j);
-
+		printf("find best path between V: (%d, %d) U: (%d, %d)\n", V.i, V.j, U.i, U.j);
+		findPathBres(V.i, V.j, U.i, U.j);
+		printf("U(4): (%d, %d)\n", U.i, U.j);
 		nextBestV.i = points[1].i;
 		nextBestV.j = points[1].j;
+		printf("next best point: (%d, %d)\n", nextBestV.i, nextBestV.j);
+		printf("U(5): (%d, %d)\n", U.i, U.j);
 		//printf("nextBestV: (%d, %d)\n", nextBestV.i, nextBestV.j);
 
 		// print contents of queue
+		printf("%d - %d = %d: ", tailYN, headYN, tailYN - headYN);
 		display(queueYN, headYN, tailYN);
 
-		if (count > SIZE*5) {
+		if (count > SIZE*2) {
 			break;
 		}
 		count++;
@@ -190,7 +244,7 @@ int main() {
 	init(&headYN, &tailYN);
 	init(&headRank, &tailRank);
 
-	detectChasing("csv_files/approaching.csv");	// approaching.csv  chasing_diagonal.csv
+	detectChasing("csv_files/chasing_diagonal.csv");	// approaching.csv  chasing_diagonal.csv
 	return 1;
 }
 

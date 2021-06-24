@@ -244,7 +244,6 @@ void chasingRandom() {
 		// get new line
 		findPathE(Y.i, Y.j, X.i, X.j);
 
-		// could check if first invisible
 		Y.i = points[1].i;
 		Y.j = points[1].j;
 
@@ -282,11 +281,10 @@ void chasingDiagonal() {
     	exit(1);
 	}
 
-	fprintf(fpt, "X.i, X.j, Y.i, Y.j, slope\n");
-
 	printf("chase diagonal\n");
   	printf("Y      X\n");
   	printf("%d, %d   %d, %d\n", Y.i, Y.j, X.i, X.j);	// initial point
+  	fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
   	int t = 0;
 
 	while (1) {
@@ -449,7 +447,7 @@ void initPoint() {
 	Y.i = 0;
 	Y.j = 0;
 	X.i = 400;
-	X.j = 300;
+	X.j = 500;
 }
 
 int main() {
@@ -461,12 +459,14 @@ int main() {
 	//chasingRandom();
 	initPoint();
 	chasingDiagonal();
-	initPoint();
-	chasingStraightUp();	
-	initPoint();
-	chasingStraightDown();
+	//initPoint();
+	//chasingStraightUp();	
+	//initPoint();
+	//chasingStraightDown();
 
 	return 0;
 
 }
 
+// to compile
+// gcc -Wall chasing.c randomwalk.c classification.c -lm -o chase
