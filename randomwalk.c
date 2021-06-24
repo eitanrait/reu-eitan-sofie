@@ -2,8 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include "classification.h"
-#include "chase_static_point.h"
+#include "driver.h"
 
 
 #define N .1

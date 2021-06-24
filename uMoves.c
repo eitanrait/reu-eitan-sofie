@@ -1,8 +1,8 @@
-#include<string.h>
-#include<stdlib.h>
-#include<stdio.h>
-#include<unistd.h>
-
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include "driver.h"
 void updateU(struct Point * u, char * s, int t) {
 	
 	if(strcmp(params->u_activity, "randomwalk") == 0) {

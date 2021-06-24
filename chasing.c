@@ -6,8 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
-#include "randomwalk.h"
-#include "classification.h"
+#include "driver.h"
 
 point_t points[DEFAULT_SIZE];
 

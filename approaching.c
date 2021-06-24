@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
+#include "driver.h"
 #define SIZE 150
 
 Point points[SIZE];
