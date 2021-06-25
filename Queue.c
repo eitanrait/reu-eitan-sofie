@@ -66,5 +66,17 @@ void display(int *q,int head,int tail)
     printf("\n");
 }
 
+int findSum()
+{
+  int i = tail - 1;
+  int sum = 0;
+  
+  while (i >= head) {
+    sum += q[i--];
+  }
+  return sum;
+}
+
+
 // to compile
-// gcc -Wall Queue.c -o q
+// gcc -Wall Queue.c -o qB
