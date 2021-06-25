@@ -308,7 +308,44 @@ int detectChasing(char * filename) {
 
 }
 
-int findDecision() {
+// returns an integer corresponding with the decision that took the boat
+// from last to current point
+int findDecision(point_t lastPoint, point_t currPoint) {
+
+	/*
+	#define N .1
+#define NE .2
+#define E .3
+#define SE .4
+#define S .5
+#define SW .6
+#define W .7 
+#define NW .8
+#define STAY .9
+#define GONE 0
+*/
+
+	if (currPoint.i == lastPoint.i && currPoint.j == lastPoint.j + 1) {	// N
+		return 1;
+	} else if (currPoint.i == lastPoint.i + 1 && currPoint.j == lastPoint.j + 1) {	// NE
+		return 2;
+	} else if (currPoint.i == lastPoint.i + 1 && currPoint.j == lastPoint.j) { 	// E
+		return 3;
+	} else if (currPoint.i == lastPoint.i + 1 && currPoint.j == lastPoint.j - 1) { 	// SE
+		return 4;
+	} else if (currPoint.i == lastPoint.i && currPoint.j == lastPoint.j - 1) {	// S
+		return 5;
+	} else if (currPoint.i == lastPoint.i - 1 && currPoint.j == lastPoint.j - 1) {	// SW
+		return 6;
+	} else if (currPoint.i == lastPoint.i - 1 && currPoint.j == lastPoint.j) {	// W
+		return 7;
+	} else if (currPoint.i == lastPoint.i - 1 && currPoint.j == lastPoint.j + 1) {	// NW
+		return 8;
+	} else if (currPoint.i == lastPoint.i && currPoint.j == lastPoint.j) {	// STAY
+		return 9;
+	} else if (currPoint.i == 0 && currPoint.j == 0) {	// INVISIBLE
+		return 0;
+	}
 
 	return 0;
 }
@@ -318,7 +355,6 @@ int detectRandomWalk(char * filename) {
 	// taking points from csv_files/watch_random_walk_static.csv
 	FILE *f;
 	char line[1024];
-	point_t idealV;
 	point_t lastV;
 	int count = 0;
 	int dec;
@@ -340,7 +376,7 @@ int detectRandomWalk(char * filename) {
 		V.j = atoi(strtok(NULL, " "));
 		printf("U(1): (%d, %d)\n", U.i, U.j);
 
-		//printf("U: (%d, %d) V: (%d, %d)\n", U.i, U.j, V.i, V.j);
+		printf("U: (%d, %d) V: (%d, %d)\n", U.i, U.j, V.i, V.j);
 
 		// compare with next actual point of V
 		// check if first move
@@ -348,41 +384,23 @@ int detectRandomWalk(char * filename) {
 		if (count != 0) {
 
 			// check if full
-			if (full(headYN, tailYN, SIZE)) {
-				dequeue(queueYN, &headYN);
+			if (full(headDecision, tailDecision, SIZE)) {
+				dequeue(queueDecision, &headDecision);
 			}
 			printf("before enqueue\n");
 			printf("U(2): (%d, %d)\n", U.i, U.j);
 			
 			// store decision taken into queueDecision
 			// find decision using last V and current V
-			dec = findDecision();
-
-
+			dec = findDecision(lastV, V);
+			enqueue(queueDecision, &tailDecision, dec);
+			printf("U(3): (%d, %d)\n", U.i, U.j);
 
 		}
 
-		// store position of V in position queue
-
-		// find next best point using Bresenham
-		// from V (chasing) to U (chasee)
-		printf("find best path between V: (%d, %d) U: (%d, %d)\n", V.i, V.j, U.i, U.j);
-		findPathBres(V.i, V.j, U.i, U.j);
-		printf("U(4): (%d, %d)\n", U.i, U.j);
-		idealV.i = points[1].i;
-		idealV.j = points[1].j;
-
-		printf("ideal move: (%d, %d)\n", idealV.i, idealV.j);
-		printf("U(5): (%d, %d)\n", U.i, U.j);
-		//printf("nextBestV: (%d, %d)\n", nextBestV.i, nextBestV.j);
-
-		// classify ranking queue
-		// find running sum of a queue :/
-
 		// print contents of queue
-		printf("%d - %d = %d: ", tailYN, headYN, tailYN - headYN);
-		display(queueYN, headYN, tailYN);
-		display(queueRank, headRank, tailRank);
+		printf("%d - %d = %d: ", tailDecision, headDecision, tailDecision - headDecision);
+		display(queueDecision, headDecision, tailDecision);
 
 		if (count > SIZE*2) {
 			break;
@@ -402,7 +420,7 @@ int main() {
 	init(&headRank, &tailRank);
 	init(&headDecision, &tailDecision);
 
-	detectChasing("csv_files/approaching.csv");	// approaching.csv  chasing_diagonal.csv
+	//detectChasing("csv_files/approaching.csv");	// approaching.csv  chasing_diagonal.csv
 	detectRandomWalk("csv_files/watch_random_walk_static.csv");
 	return 1;
 }
