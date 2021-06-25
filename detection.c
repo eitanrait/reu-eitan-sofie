@@ -31,10 +31,10 @@ int headYN, tailYN, elemtYN;
 int queueYN[SIZE-1];
 
 int headRank, tailRank, elemtRank;
-int queueRank[SIZE];
+int queueRank[SIZE-1];
 
 int headDecision, tailDecision, elemtDecision;
-int queueDecision[SIZE];
+int queueDecision[SIZE-1];
 
 // returns the sign of a - b
 int Sign(int a, int b) {
@@ -250,7 +250,15 @@ int detectChasing(char * filename) {
 			// check if full
 			if (full(headYN, tailYN, SIZE)) {
 				dequeue(queueYN, &headYN);
+
 			}
+
+			if (full(headRank, tailRank, SIZE)) {
+				printf("rank queue is full!!\n");
+				dequeue(queueRank, &headRank);
+				
+			}
+
 			printf("before enqueue\n");
 			printf("U(2): (%d, %d)\n", U.i, U.j);
 			//printf("queueYN: %p\n", queueYN);
@@ -268,6 +276,9 @@ int detectChasing(char * filename) {
 				enqueue(queueRank, &tailRank, rank);
 
 			}
+
+			//rankingSum = findSum(queueRank, headRank, tailRank);
+			//printf("sum: %d\n", rankingSum);
 			printf("after enqueue\n");
 			printf("U(3): (%d, %d)\n", U.i, U.j);
 			//printf("U: %p\n", U_ptr);
@@ -293,6 +304,7 @@ int detectChasing(char * filename) {
 		// print contents of queue
 		printf("%d - %d = %d: ", tailYN, headYN, tailYN - headYN);
 		display(queueYN, headYN, tailYN);
+		printf("%d - %d = %d: ", tailRank, headRank, tailRank - headRank);
 		display(queueRank, headRank, tailRank);
 
 		if (count > SIZE*2) {
@@ -357,6 +369,8 @@ int detectRandomWalk(char * filename) {
 	char line[1024];
 	point_t lastV;
 	int count = 0;
+	int runningSum;
+	int entropy;
 	int dec;
 
 	if (!(f = fopen(filename, "r"))) {
@@ -374,7 +388,6 @@ int detectRandomWalk(char * filename) {
 		U.j = atoi(strtok(NULL, ","));
 		V.i = atoi(strtok(NULL, ","));
 		V.j = atoi(strtok(NULL, " "));
-		printf("U(1): (%d, %d)\n", U.i, U.j);
 
 		printf("U: (%d, %d) V: (%d, %d)\n", U.i, U.j, V.i, V.j);
 
@@ -388,13 +401,15 @@ int detectRandomWalk(char * filename) {
 				dequeue(queueDecision, &headDecision);
 			}
 			printf("before enqueue\n");
-			printf("U(2): (%d, %d)\n", U.i, U.j);
 			
 			// store decision taken into queueDecision
 			// find decision using last V and current V
 			dec = findDecision(lastV, V);
 			enqueue(queueDecision, &tailDecision, dec);
-			printf("U(3): (%d, %d)\n", U.i, U.j);
+
+			// 
+			runningSum = findSum(queueDecision, headDecision, tailDecision);
+			printf("sum: %d\n", runningSum);
 
 		}
 
@@ -420,8 +435,8 @@ int main() {
 	init(&headRank, &tailRank);
 	init(&headDecision, &tailDecision);
 
-	//detectChasing("csv_files/approaching.csv");	// approaching.csv  chasing_diagonal.csv
-	detectRandomWalk("csv_files/watch_random_walk_static.csv");
+	detectChasing("csv_files/approaching.csv");	// approaching.csv  chasing_diagonal.csv
+	//detectRandomWalk("csv_files/watch_random_walk_static.csv");
 	return 1;
 }
 

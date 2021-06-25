@@ -66,7 +66,7 @@ void display(int *q,int head,int tail)
     printf("\n");
 }
 
-int findSum()
+int findSum(int *q,int head,int tail)
 {
   int i = tail - 1;
   int sum = 0;
