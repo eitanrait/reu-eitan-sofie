@@ -18,18 +18,30 @@ void init(int *head, int *tail)
    enqueue an element
    precondition: the queue is not full
 */
-void enqueue(int *q,int *tail, int element)
+void enqueue(int *q,int *tail, int element, int size)
 {
-    q[(*tail)++] = element;
+
+    (*tail)++;
+    *tail %= size;
+    q[*tail] = element;
+
+    // PutIndex = (PutIndex + 1) % FIFO_SIZE;
+    //*tail = (*tail + 1) % size;
 }
  
 /*
     dequeue an element
     precondition: queue is not empty
 */
-int dequeue(int *q,int *head)
+int dequeue(int *q,int *head, int size)
 {
-    return q[(*head)++];
+
+    (*head)++;
+    *head %= size;
+    printf("*head: %d\n", *head);
+    return q[*head];
+
+    //return q[(*head)++];
 }
  
 /*
@@ -37,11 +49,14 @@ int dequeue(int *q,int *head)
 */
 int full(int head, int tail, const int size)
 {
-
-    if (tail - head == size-1) {
+/*
+    if (tail - head == size) {
       return 1;
     }
-    return 0;
+    return 0;*/
+    return tail == size-1;
+
+    // (PutIndex + 1) % FIFO_SIZE == GetIndex
 }
  
 /*
@@ -57,7 +72,9 @@ int empty(int head, int tail)
 */
 void display(int *q,int head,int tail)
 {
+    // how to alter i
     int i = tail - 1;
+    printf("i: %d  head: %d\n", i, head);
 
     while(i >= head) {
         printf("%d ",q[i--]);
@@ -77,6 +94,24 @@ int findSum(int *q,int head,int tail)
   return sum;
 }
 
+// used for detecting randomness of the sequence in the set
+double findEntropy(int *q,int head,int tail) {
+
+  double entropy;
+
+  // create array of size 10
+  int occurances[10];
+
+  int i = tail - 1;
+
+    while(i >= head) {
+
+        printf("%d ",q[i--]);
+    }
+
+  return entropy;
+
+}
 
 // to compile
 // gcc -Wall Queue.c -o qB

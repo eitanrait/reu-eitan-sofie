@@ -14,7 +14,7 @@
 #include "classification.h"
 
 #define K 10
-#define SIZE 17
+#define SIZE 16
 
 typedef struct {
   int i;
@@ -28,13 +28,13 @@ point_t U;
 point_t V;
 
 int headYN, tailYN, elemtYN;
-int queueYN[SIZE-1];
+int queueYN[SIZE];
 
 int headRank, tailRank, elemtRank;
-int queueRank[SIZE-1];
+int queueRank[SIZE];
 
 int headDecision, tailDecision, elemtDecision;
-int queueDecision[SIZE-1];
+int queueDecision[SIZE];
 
 // returns the sign of a - b
 int Sign(int a, int b) {
@@ -215,13 +215,17 @@ int detectChasing(char * filename) {
 	// taking points from csv_files/chasing_diagonal.csv
 	// or csv_files/approaching.csv
 	FILE *f;
-	point_t * U_ptr = &U;
+	point_t placehold;
 	char line[1024];
 	point_t idealV;
 	point_t lastV;
 	int count = 0;
 	int rankingSum = 0;
 	int rank;
+	int y = 1;
+	int* y_ptr = &y;
+	int n = 0;
+	int* n_ptr = &n;
 
 	if (!(f = fopen(filename, "r"))) {
 		printf("no file: %s\n", filename);
@@ -238,7 +242,9 @@ int detectChasing(char * filename) {
 		U.j = atoi(strtok(NULL, ","));
 		V.i = atoi(strtok(NULL, ","));
 		V.j = atoi(strtok(NULL, " "));
-		printf("U(1): (%d, %d)\n", U.i, U.j);
+		placehold.i = U.i;
+		placehold.j = U.j;
+		//printf("U(1): (%d, %d)\n", U.i, U.j);
 
 		//printf("U: (%d, %d) V: (%d, %d)\n", U.i, U.j, V.i, V.j);
 
@@ -249,13 +255,14 @@ int detectChasing(char * filename) {
 
 			// check if full
 			if (full(headYN, tailYN, SIZE)) {
-				dequeue(queueYN, &headYN);
+				printf("y/n queue is full\n");
+				dequeue(queueYN, &headYN, SIZE);
 
 			}
 
 			if (full(headRank, tailRank, SIZE)) {
 				printf("rank queue is full!!\n");
-				dequeue(queueRank, &headRank);
+				dequeue(queueRank, &headRank, SIZE);
 				
 			}
 
@@ -266,21 +273,31 @@ int detectChasing(char * filename) {
 			// compare
 			if (idealV.i == V.i && idealV.j == V.j) {
 				// next best point is equal to point actually chosen
-				enqueue(queueYN, &tailYN, YES);
-				enqueue(queueRank, &tailRank, 0);
+				//U.i = placehold.i;
+				//U.j = placehold.j;
+				enqueue(queueYN, &tailYN, YES, SIZE);
+				enqueue(queueRank, &tailRank, NO, SIZE);
+
+				//enqueue(queueYN, &tailYN, y_ptr);
+				//enqueue(queueRank, &tailRank, n_ptr);
 			} else {
-				printf("V: (%d, %d) next best: (%d, %d)\n", V.i, V.j, idealV.i, idealV.j);
-				enqueue(queueYN, &tailYN, NO);
+				//printf("V: (%d, %d) next best: (%d, %d)\n", V.i, V.j, idealV.i, idealV.j);
+				//enqueue(queueYN, &tailYN, n_ptr);
+				//U.i = placehold.i;
+				//U.j = placehold.j;
+				enqueue(queueYN, &tailYN, NO, SIZE);
 				// add ranking to however far the actual is from ideal
 				rank = findRank(lastV, idealV);
-				enqueue(queueRank, &tailRank, rank);
+				enqueue(queueRank, &tailRank, rank, SIZE);
 
 			}
 
-			//rankingSum = findSum(queueRank, headRank, tailRank);
-			//printf("sum: %d\n", rankingSum);
+			printf("tail: %d\n", tailYN);
+
+			rankingSum = findSum(queueRank, headRank, tailRank);
+			printf("sum: %d\n", rankingSum);
 			printf("after enqueue\n");
-			printf("U(3): (%d, %d)\n", U.i, U.j);
+			//printf("U(3): (%d, %d)\n", U.i, U.j);
 			//printf("U: %p\n", U_ptr);
 		}
 
@@ -288,23 +305,25 @@ int detectChasing(char * filename) {
 
 		// find next best point using Bresenham
 		// from V (chasing) to U (chasee)
+		//printf("rewrite point U\n");
+		//U.i = placehold.i;
+		//U.j = placehold.j;
 		printf("find best path between V: (%d, %d) U: (%d, %d)\n", V.i, V.j, U.i, U.j);
 		findPathBres(V.i, V.j, U.i, U.j);
-		printf("U(4): (%d, %d)\n", U.i, U.j);
+		//printf("U(4): (%d, %d)\n", U.i, U.j);
 		idealV.i = points[1].i;
 		idealV.j = points[1].j;
 
-		printf("ideal move: (%d, %d)\n", idealV.i, idealV.j);
-		printf("U(5): (%d, %d)\n", U.i, U.j);
+		//printf("U(5): (%d, %d)\n", U.i, U.j);
 		//printf("nextBestV: (%d, %d)\n", nextBestV.i, nextBestV.j);
 
 		// classify ranking queue
 		// find running sum of a queue :/
 
 		// print contents of queue
-		printf("%d - %d = %d: ", tailYN, headYN, tailYN - headYN);
+		printf("y/n:   %d - %d = %d: ", tailYN, headYN, tailYN - headYN);
 		display(queueYN, headYN, tailYN);
-		printf("%d - %d = %d: ", tailRank, headRank, tailRank - headRank);
+		printf("ranks: %d - %d = %d: ", tailRank, headRank, tailRank - headRank);
 		display(queueRank, headRank, tailRank);
 
 		if (count > SIZE*2) {
@@ -398,14 +417,14 @@ int detectRandomWalk(char * filename) {
 
 			// check if full
 			if (full(headDecision, tailDecision, SIZE)) {
-				dequeue(queueDecision, &headDecision);
+				dequeue(queueDecision, &headDecision, SIZE);
 			}
 			printf("before enqueue\n");
 			
 			// store decision taken into queueDecision
 			// find decision using last V and current V
 			dec = findDecision(lastV, V);
-			enqueue(queueDecision, &tailDecision, dec);
+			enqueue(queueDecision, &tailDecision, dec, SIZE);
 
 			// 
 			runningSum = findSum(queueDecision, headDecision, tailDecision);
@@ -432,7 +451,7 @@ int detectRandomWalk(char * filename) {
 int main() {
 
 	init(&headYN, &tailYN);
-	init(&headRank, &tailRank);
+	//init(&headRank, &tailRank);
 	init(&headDecision, &tailDecision);
 
 	detectChasing("csv_files/approaching.csv");	// approaching.csv  chasing_diagonal.csv

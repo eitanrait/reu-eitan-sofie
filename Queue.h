@@ -7,8 +7,8 @@
 #define QUEUE_H_INCLUDED
  
 void init(int *head, int *tail);
-void enqueue(int *q,int *tail, int element);
-int dequeue(int *q,int *head);
+void enqueue(int *q,int *tail, int element, int size);
+int dequeue(int *q,int *head, int size);
 int empty(int head,int tail);
 int full(int head,int tail,const int size);
 void display(int *q,int head,int tail);
