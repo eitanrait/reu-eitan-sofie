@@ -433,7 +433,7 @@ void followDiagonalPath() {
   	
   	int* coordPtr;
   	float prob = (rand() % 100) *.01;
-  	findPath(Y.i, Y.j, X.i, X.j);
+  	findPathSofie(Y.i, Y.j, X.i, X.j);
   	int noMovement = 2;
 
   	while (1) {
@@ -442,7 +442,7 @@ void followDiagonalPath() {
   		last_i = X.i;
   		last_j = X.j;
 
-  		// update X position every two steps 
+  		// update X position every two steps (U)
   		if (t % 2 == 0) {
   			X.i += 1;
 			X.j += 1;
@@ -468,7 +468,7 @@ void followDiagonalPath() {
   			// move Y towards X
   			// get new line towards Boat X/U
   			noMovement = 2;
-			findPath(Y.i, Y.j, X.i, X.j);
+			findPathSofie(Y.i, Y.j, X.i, X.j);
 
 			Y.i = points[1].i;
 			Y.j = points[1].j;
@@ -486,7 +486,7 @@ void followDiagonalPath() {
   			} else {
   				// walk towards
   				// walks towards X more often
-  				findPath(Y.i, Y.j, X.i, X.j);
+  				findPathSofie(Y.i, Y.j, X.i, X.j);
 
 				Y.i = points[1].i;
 				Y.j = points[1].j;
@@ -500,7 +500,7 @@ void followDiagonalPath() {
   			if (t % 6 == 0 || t % 6 == 1 || t % 6 == 2) {
   				// walk towards
   				printf("finding path\n");
-  				findPath(Y.i, Y.j, X.i, X.j);
+  				findPathSofie(Y.i, Y.j, X.i, X.j);
 
 				Y.i = points[1].i;
 				Y.j = points[1].j;
@@ -519,12 +519,12 @@ void followDiagonalPath() {
   			// no change in X
   			// but Y should continue on its path from last time
   			// which is saved in the points array   			
-  			if (t == 1) {
+  			if (t == 0) {
   				Y.i = points[1].i;
 				Y.j = points[1].j;
   			} else {
-  				Y.i = points[2].i;
-				Y.j = points[2].j;
+  				Y.i = points[noMovement].i;
+				Y.j = points[noMovement].j;
 			}	
 			noMovement++;
 
@@ -537,6 +537,7 @@ void followDiagonalPath() {
 		fprintf(fpt, "%d, %d, %d, %d, %c, %d\n", X.i, X.j, Y.i, Y.j, Y.region, t);	// print to csv file
 
   		if (t > 6000 || (Y.i == X.i && Y.j == X.j)) {
+  			printf("break\n");
   			break;
   		}
 
@@ -684,10 +685,10 @@ void followVerticalPath() {
 // note that Boat Y is following X 
 // thus Y.i < X.i because we are using Brenenham's algorithm assumption
 void initPoint() {
-	Y.i = 200;
+	Y.i = 0;
 	Y.j = 0;
-	X.i = 600;
-	X.j = 50;
+	X.i = 1000;
+	X.j = 100;
 }
 
 int main() {

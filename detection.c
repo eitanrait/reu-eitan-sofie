@@ -33,6 +33,9 @@ int queueYN[SIZE-1];
 int headRank, tailRank, elemtRank;
 int queueRank[SIZE];
 
+int headDecision, tailDecision, elemtDecision;
+int queueDecision[SIZE];
+
 // returns the sign of a - b
 int Sign(int a, int b) {
   int c;
@@ -136,6 +139,62 @@ void findPathBres(int x0, int y0, int x1, int y1) {
 
 }
 
+// returns a number that represents how far the actual move of V was from the ideal move
+// maybe need to change to probabilities (val/100 where val is the return value)
+int findRank(point_t lastV, point_t idealV) {
+	if (lastV.i + 1 == idealV.i && lastV.j + 1 == idealV.j) {
+
+		if ((V.i == lastV.i + 1 && V.j == lastV.j) || (V.i == lastV.i && V.j == lastV.j + 1)) {
+		
+			// actual position of V is to N or E
+			return 1;
+
+		} else if ((V.i == lastV.i - 1 && V.j == lastV.j + 1) || (V.i == lastV.i + 1 && V.j == lastV.j - 1)) {
+		
+			// actual position of V is to SE or NW
+			return 2;
+
+		} else if ((V.i == lastV.i - 1 && V.j == lastV.j) || (V.i == lastV.i && V.j == lastV.j - 1)) {
+		
+			// actual position of V is to W or S
+			return 3;
+
+		} else if (V.i == lastV.i - 1 && V.j == lastV.j - 1) {
+		
+			// actual position of V is to SW
+			return 4;
+
+		}
+	}
+
+	// when ideal is directly E:
+	if (lastV.i + 1 == idealV.i && lastV.j == idealV.j) {
+
+		if ((V.i == lastV.i + 1 && V.j == lastV.j + 1) || (V.i == lastV.i + 1 && V.j == lastV.j - 1)) {
+		
+			// actual position of V is to NE or SE
+			return 1;
+
+		} else if ((V.i == lastV.i && V.j == lastV.j + 1) || (V.i == lastV.i && V.j == lastV.j - 1)) {
+		
+			// actual position of V is to N or S
+			return 2;
+
+		} else if ((V.i == lastV.i - 1 && V.j == lastV.j + 1) || (V.i == lastV.i - 1 && V.j == lastV.j - 1)) {
+		
+			// actual position of V is to NW or SW
+			return 3; 
+
+		} else if (V.i == lastV.i - 1 && V.j == lastV.j) {
+		
+			// actual position of V is to W
+			return 4;
+
+		}
+	} 
+
+	return 0;
+}
 
 // classify which region V is in
 // if in B,
@@ -153,13 +212,16 @@ void findPathBres(int x0, int y0, int x1, int y1) {
 
 int detectChasing(char * filename) {
 
-	// boat U moving in a ___ trajectory
 	// taking points from csv_files/chasing_diagonal.csv
+	// or csv_files/approaching.csv
 	FILE *f;
 	point_t * U_ptr = &U;
 	char line[1024];
-	point_t nextBestV;
+	point_t idealV;
+	point_t lastV;
 	int count = 0;
+	int rankingSum = 0;
+	int rank;
 
 	if (!(f = fopen(filename, "r"))) {
 		printf("no file: %s\n", filename);
@@ -170,6 +232,8 @@ int detectChasing(char * filename) {
 
 		printf("\ncount %d\n", count);
 		// find current U and V positions
+		lastV.i = V.i;
+		lastV.j = V.j;
 		U.i = atoi(strtok(line, ","));
 		U.j = atoi(strtok(NULL, ","));
 		V.i = atoi(strtok(NULL, ","));
@@ -192,15 +256,16 @@ int detectChasing(char * filename) {
 			//printf("queueYN: %p\n", queueYN);
 			//printf("&tailYN: %p\n", &tailYN);
 			// compare
-			if (nextBestV.i == V.i && nextBestV.j == V.j) {
+			if (idealV.i == V.i && idealV.j == V.j) {
 				// next best point is equal to point actually chosen
 				enqueue(queueYN, &tailYN, YES);
+				enqueue(queueRank, &tailRank, 0);
 			} else {
-				printf("V: (%d, %d) next best: (%d, %d)\n", V.i, V.j, nextBestV.i, nextBestV.j);
+				printf("V: (%d, %d) next best: (%d, %d)\n", V.i, V.j, idealV.i, idealV.j);
 				enqueue(queueYN, &tailYN, NO);
 				// add ranking to however far the actual is from ideal
-				// when ideal is to NE: 
-				// when ideal is to E: 
+				rank = findRank(lastV, idealV);
+				enqueue(queueRank, &tailRank, rank);
 
 			}
 			printf("after enqueue\n");
@@ -215,15 +280,20 @@ int detectChasing(char * filename) {
 		printf("find best path between V: (%d, %d) U: (%d, %d)\n", V.i, V.j, U.i, U.j);
 		findPathBres(V.i, V.j, U.i, U.j);
 		printf("U(4): (%d, %d)\n", U.i, U.j);
-		nextBestV.i = points[1].i;
-		nextBestV.j = points[1].j;
-		printf("next best point: (%d, %d)\n", nextBestV.i, nextBestV.j);
+		idealV.i = points[1].i;
+		idealV.j = points[1].j;
+
+		printf("ideal move: (%d, %d)\n", idealV.i, idealV.j);
 		printf("U(5): (%d, %d)\n", U.i, U.j);
 		//printf("nextBestV: (%d, %d)\n", nextBestV.i, nextBestV.j);
+
+		// classify ranking queue
+		// find running sum of a queue :/
 
 		// print contents of queue
 		printf("%d - %d = %d: ", tailYN, headYN, tailYN - headYN);
 		display(queueYN, headYN, tailYN);
+		display(queueRank, headRank, tailRank);
 
 		if (count > SIZE*2) {
 			break;
@@ -238,13 +308,110 @@ int detectChasing(char * filename) {
 
 }
 
+int detectRandomWalk(char * filename) {
+
+	// taking points from csv_files/chasing_diagonal.csv
+	// or csv_files/approaching.csv
+	FILE *f;
+	point_t * U_ptr = &U;
+	char line[1024];
+	point_t idealV;
+	point_t lastV;
+	int count = 0;
+	int rankingSum = 0;
+	int rank;
+
+	if (!(f = fopen(filename, "r"))) {
+		printf("no file: %s\n", filename);
+		return 1;
+	}
+	printf("opened file\n");
+	while (fgets(line, 1024, f) != NULL) {
+
+		printf("\ncount %d\n", count);
+		// find current U and V positions
+		lastV.i = V.i;
+		lastV.j = V.j;
+		U.i = atoi(strtok(line, ","));
+		U.j = atoi(strtok(NULL, ","));
+		V.i = atoi(strtok(NULL, ","));
+		V.j = atoi(strtok(NULL, " "));
+		printf("U(1): (%d, %d)\n", U.i, U.j);
+
+		//printf("U: (%d, %d) V: (%d, %d)\n", U.i, U.j, V.i, V.j);
+
+		// compare with next actual point of V
+		// check if first move
+		// if not first move, compare
+		if (count != 0) {
+
+			// check if full
+			if (full(headYN, tailYN, SIZE)) {
+				dequeue(queueYN, &headYN);
+			}
+			printf("before enqueue\n");
+			printf("U(2): (%d, %d)\n", U.i, U.j);
+			//printf("queueYN: %p\n", queueYN);
+			//printf("&tailYN: %p\n", &tailYN);
+			// compare
+			if (idealV.i == V.i && idealV.j == V.j) {
+				// next best point is equal to point actually chosen
+				enqueue(queueYN, &tailYN, YES);
+				enqueue(queueRank, &tailRank, 0);
+			} else {
+				printf("V: (%d, %d) next best: (%d, %d)\n", V.i, V.j, idealV.i, idealV.j);
+				enqueue(queueYN, &tailYN, NO);
+				// add ranking to however far the actual is from ideal
+				rank = findRank(lastV, idealV);
+				enqueue(queueRank, &tailRank, rank);
+
+			}
+			printf("after enqueue\n");
+			printf("U(3): (%d, %d)\n", U.i, U.j);
+			//printf("U: %p\n", U_ptr);
+		}
+
+		// store position of V in position queue
+
+		// find next best point using Bresenham
+		// from V (chasing) to U (chasee)
+		printf("find best path between V: (%d, %d) U: (%d, %d)\n", V.i, V.j, U.i, U.j);
+		findPathBres(V.i, V.j, U.i, U.j);
+		printf("U(4): (%d, %d)\n", U.i, U.j);
+		idealV.i = points[1].i;
+		idealV.j = points[1].j;
+
+		printf("ideal move: (%d, %d)\n", idealV.i, idealV.j);
+		printf("U(5): (%d, %d)\n", U.i, U.j);
+		//printf("nextBestV: (%d, %d)\n", nextBestV.i, nextBestV.j);
+
+		// classify ranking queue
+		// find running sum of a queue :/
+
+		// print contents of queue
+		printf("%d - %d = %d: ", tailYN, headYN, tailYN - headYN);
+		display(queueYN, headYN, tailYN);
+		display(queueRank, headRank, tailRank);
+
+		if (count > SIZE*2) {
+			break;
+		}
+		count++;
+
+	} 
+
+	return 0;
+
+}
+
 
 int main() {
 
 	init(&headYN, &tailYN);
 	init(&headRank, &tailRank);
+	init(&headDecision, &tailDecision);
 
-	detectChasing("csv_files/chasing_diagonal.csv");	// approaching.csv  chasing_diagonal.csv
+	detectChasing("csv_files/approaching.csv");	// approaching.csv  chasing_diagonal.csv
 	return 1;
 }
 
