@@ -308,18 +308,20 @@ int detectChasing(char * filename) {
 
 }
 
+int findDecision() {
+
+	return 0;
+}
+
 int detectRandomWalk(char * filename) {
 
-	// taking points from csv_files/chasing_diagonal.csv
-	// or csv_files/approaching.csv
+	// taking points from csv_files/watch_random_walk_static.csv
 	FILE *f;
-	point_t * U_ptr = &U;
 	char line[1024];
 	point_t idealV;
 	point_t lastV;
 	int count = 0;
-	int rankingSum = 0;
-	int rank;
+	int dec;
 
 	if (!(f = fopen(filename, "r"))) {
 		printf("no file: %s\n", filename);
@@ -351,24 +353,13 @@ int detectRandomWalk(char * filename) {
 			}
 			printf("before enqueue\n");
 			printf("U(2): (%d, %d)\n", U.i, U.j);
-			//printf("queueYN: %p\n", queueYN);
-			//printf("&tailYN: %p\n", &tailYN);
-			// compare
-			if (idealV.i == V.i && idealV.j == V.j) {
-				// next best point is equal to point actually chosen
-				enqueue(queueYN, &tailYN, YES);
-				enqueue(queueRank, &tailRank, 0);
-			} else {
-				printf("V: (%d, %d) next best: (%d, %d)\n", V.i, V.j, idealV.i, idealV.j);
-				enqueue(queueYN, &tailYN, NO);
-				// add ranking to however far the actual is from ideal
-				rank = findRank(lastV, idealV);
-				enqueue(queueRank, &tailRank, rank);
+			
+			// store decision taken into queueDecision
+			// find decision using last V and current V
+			dec = findDecision();
 
-			}
-			printf("after enqueue\n");
-			printf("U(3): (%d, %d)\n", U.i, U.j);
-			//printf("U: %p\n", U_ptr);
+
+
 		}
 
 		// store position of V in position queue
@@ -412,6 +403,7 @@ int main() {
 	init(&headDecision, &tailDecision);
 
 	detectChasing("csv_files/approaching.csv");	// approaching.csv  chasing_diagonal.csv
+	detectRandomWalk("csv_files/watch_random_walk_static.csv");
 	return 1;
 }
 
