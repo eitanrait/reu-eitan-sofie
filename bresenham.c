@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "driver.h"
-
+#define SIZE 150
 // returns the sign of a - b
 int Sign(int a, int b) {
 	int c;
@@ -17,7 +18,7 @@ int Sign(int a, int b) {
 
 // use the Bresenham algorithm for drawing a line                                                                                                                                                  
 // to find the fastest path from pixel a to b                                                                                                                                                     
-void findPath(struct Point * points[], int x1, int y1, int x2, int y2) {
+void findPath(struct Point * points, int x1, int y1, int x2, int y2) {
 	int A, B, E, x, y, t, deltX, deltY, s1, s2, temp, interchange;
 	t = 0;
 	x = x1;
@@ -44,7 +45,7 @@ void findPath(struct Point * points[], int x1, int y1, int x2, int y2) {
 	points[t].i = x;
 	points[t].j = y;
 
-	for (int i=0;i<4;i++) {
+	for (int i=0;i<SIZE;i++) {
 		
 		if ( E < 0 ) {
     		if ( interchange == 1 ) {
@@ -74,7 +75,7 @@ void findPath(struct Point * points[], int x1, int y1, int x2, int y2) {
 // use the Bresenham algorithm for drawing a line
 // to find the fastest pasth from pixel a to b 
 // assuming x0 < x1
-void findPathSofie(int x0, int y0, int x1, int y1) { 
+void findPathSofie(struct Point * points, int x0, int y0, int x1, int y1) { 
     int A, B, g, x, y, t;
 
     t = 0;
@@ -108,14 +109,15 @@ void findPathSofie(int x0, int y0, int x1, int y1) {
 		t = t + 1;	// increment array index
 
 	}
-
-
+	if(is_verbose)
+		printf("points[0]:%d,%d points[1]:%d,%d points[2]:%d,%d points[3]:%d,%d\n", points[0].i, points[0].j, points[1].i, points[1].j, points[2].i, points[2].j,points[3].i, points[3].j);
+ 
 }
 
 // got from 
 // https://www.programmersought.com/article/58075286669/
 // to check if any difference when we take into account the magintude slopes
-void MyLine(int xs, int ys, int xe, int ye)
+void MyLine(struct Point * points, int xs, int ys, int xe, int ye)
 {
 
     int x = xs;

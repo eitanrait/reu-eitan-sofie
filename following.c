@@ -11,20 +11,21 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include "driver.h"
+#define SIZE 150
 
-Point points[DEFAULT_SIZE];
+struct Point points[SIZE];
 
-int isVBehind(double last_i, double last_j) {
+int isVBehind(struct Point * u, struct Point * v, double last_i, double last_j) {
 
     // A is new U position
     // find another point (B) on the perpendicular
     struct Point * nextPoint = findPerpendicularPoint(u ,v ,last_i, last_j);
   
-    Point B;
+    struct Point B;
     B.i = nextPoint->i;
     B.j = nextPoint->j;
   
-  	Point lastU;
+  	struct Point lastU;
   	lastU.i = last_i;
   	lastU.j = last_j;
   
@@ -37,8 +38,8 @@ int isVBehind(double last_i, double last_j) {
     return 2;
   }
   
-  directionV = directionOfPoint(u, B, v);
-  directionLastU = directionOfPoint(u, B, lastU);
+  directionV = directionOfPoint(*u, B, *v);
+  directionLastU = directionOfPoint(*u, B, lastU);
   
   //printf("X: (%d, %d)  B: (%d, %d)  directionY: %d  directionLastX: %d\n", X.i, X.j, B.i, B.j, directionY, directionLastX);
   
@@ -60,7 +61,7 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
   	srand(params->randomseed);
 	
 	float prob = (rand() % 100) *.01;
-	findPath(&points, v->i, v->j, u->i, u->j);
+	findPathSofie(points, v->i, v->j, u->i, u->j);
   	int noMovement = 2;
   
   	while (1) {    
@@ -69,14 +70,15 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
 		last_i = u->i;
 		last_j = u->j;
 		
-  		updateU(u, params->u_activity, t);
+  		updateU(u, params->u_activity, t, prob);
     
     	// check where Y is 
-    	behind = isVBehind(last_i, last_j);
+    	behind = isVBehind(u, v, last_i, last_j);
     	// store Y position
     
     	// check which region boat Y is in
     	v->region = inPolarRegion(v->i, v->j, u->i, u->j);
+		printf("behind: %d,  region: %c\n",behind,v->region);
     
     	// if boat V in region A, chase 
     	// if boat V in region B, chase with stealth
@@ -87,13 +89,15 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
     	prob = (rand() % 100) *.01;
     
 	    if (behind == 1 && (v->region == 'a')) {
+	    	noMovement = 2;
     	 	// move Y towards X
      		// get new line towards Boat X/U
-			findPath(v->i, v->j, u->i, u->j);
+			findPathSofie(points, v->i, v->j, u->i, u->j);
      	 	v->i = points[1].i;
      	 	v->j = points[1].j;
       
     	} else if (behind == 1 && (v->region == 'b')) {
+    		noMovement = 2;
      	 	// in region B
       		// every couple tics (will swtich more often to move towards) switch from random walk to move towards
       		if (t % 3 == 0) {
@@ -101,41 +105,39 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
 				coordPtr = randomPoint(v->i, v->j, prob);
 				v->i = *coordPtr;
 				v->j = *(coordPtr + 1);
-				
-      		} else {
+	  		} else {
 				// walk towards
   				// walks towards X more often
-				findPath(v->i, v->j, u->i, u->j);
+				findPathSofie(points, v->i, v->j, u->i, u->j);
+				v->i = points[1].i;
+				v->j = points[1].j;
+			}
+      
+   		} else if (behind == 1) {
+      	// behind and in regions C and D
+      	// every couple tics switch from random walk to move towards
+      		noMovement = 2;
+      		if (t % 6 == 0 || t % 6 == 1 || t % 6 == 2) {
+				// walk towards
+				findPathSofie(points, v->i, v->j, u->i, u->j);
+	
 				v->i = points[1].i;
 				v->j = points[1].j;
 				
-      		}
-      
-    } else if (behind == 1) {
-      	// behind and in regions C and D
-      	// every couple tics switch from random walk to move towards
-      	noMovement = 2;
-      	if (t % 3 == 0) {
-			// walk towards
-			findPath(v->i, v->j, u->i, u->j);
-	
-			v->i = points[1].i;
-			v->j = points[1].j;
+      		} else {
+				// random walk
+				// random walks more often
+				coordPtr = randomPoint(v->i, v->j, prob);
+				v->i = *coordPtr;
+				v->j = *(coordPtr + 1);
 				
-      	} else {
-			// random walk
-			// random walks more often
-			coordPtr = randomPoint(v->i, v->j, prob);
-			v->i = *coordPtr;
-			v->j = *(coordPtr + 1);
-				
-    	}
-      
+    		}
+    		
     } else if (behind == 2) {
       // no change in X
       // but Y should continue on its path from last time
       // which is saved in the points array 
-  		if (t == 1) {
+  		if (t == 0) {
   			
       		v->i = points[1].i;
       		v->j = points[1].j;
@@ -154,6 +156,7 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
 	fprintf(params->fpt, "%d, %d, %d, %d, %c, %d\n", v->i, v->j, u->i, u->j, v->region, t);	// print to csv file
     
     if (t > params->maxsteps || (v->i == u->i && v->j == u->j)) {
+      printf("break\n");
       break;
     }
     
@@ -166,14 +169,14 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
 
 struct Point * findPerpendicularPoint(struct Point * u, struct Point * v,double last_i, double last_j) {
 
-	Point B;
-	Point * B_ptr = &B;
+	struct Point B;
+	struct Point * B_ptr = &B;
 	int curr_i = u->i;
 	int curr_j = u->j;
 	double slope, perp_slope;
 
 	if ((last_i - curr_i != 0) && (last_j - curr_j != 0)) {
-		printf("last: (%f, %f) curr: (%d, %d)\n", last_i, last_j, curr_i, curr_j);
+		//printf("last: (%f, %f) curr: (%d, %d)\n", last_i, last_j, curr_i, curr_j);
 		slope = (curr_j - last_j) / (curr_i - last_i);
 		perp_slope = -(1 / slope);
 		//printf("slope: %f, perp_slope: %f\n", slope, perp_slope);
@@ -217,7 +220,7 @@ struct Point * findPerpendicularPoint(struct Point * u, struct Point * v,double 
 // A is new X position
 // B is another point on the perpendicular
 // P is position of boat Y 
-int directionOfPoint(Point A, Point B, Point P) {
+int directionOfPoint(struct Point A, struct Point B, struct Point P) {
     // subtracting co-ordinates of point A from
     // B and P, to make A as origin
     B.i -= A.i;
