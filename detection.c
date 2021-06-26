@@ -24,7 +24,7 @@ typedef struct {
 } point_t;
 
 
-point_t points[SIZE];	// points is an array of type point_t
+point_t points[SIZE*4];	// points is an array of type point_t
 point_t U;
 point_t V;
 
@@ -216,7 +216,6 @@ int detectChasing(char * filename) {
 	// taking points from csv_files/chasing_diagonal.csv
 	// or csv_files/approaching.csv
 	FILE *f;
-	point_t placehold;
 	char line[1024];
 	point_t idealV;
 	point_t lastV;
@@ -240,10 +239,7 @@ int detectChasing(char * filename) {
 		U.j = atoi(strtok(NULL, ","));
 		V.i = atoi(strtok(NULL, ","));
 		V.j = atoi(strtok(NULL, " "));
-		placehold.i = U.i;
-		placehold.j = U.j;
-		//printf("U(1): (%d, %d)\n", U.i, U.j);
-
+		
 		//printf("U: (%d, %d) V: (%d, %d)\n", U.i, U.j, V.i, V.j);
 
 		// compare with next actual point of V
@@ -266,6 +262,7 @@ int detectChasing(char * filename) {
 			//printf("queueYN: %p\n", queueYN);
 			//printf("&tailYN: %p\n", &tailYN);
 			// compare
+			printf("\n\n idealV.i: %d, idealV.j: %d\n\n V.i: %d, V.j: %d\n\n",idealV.i,idealV.j,V.i,V.j);
 			if (idealV.i == V.i && idealV.j == V.j) {
 				// next best point is equal to point actually chosen
 				//U.i = placehold.i;
@@ -300,9 +297,6 @@ int detectChasing(char * filename) {
 
 		// find next best point using Bresenham
 		// from V (chasing) to U (chasee)
-		//printf("rewrite point U\n");
-		//U.i = placehold.i;
-		//U.j = placehold.j;
 		
 		printf("\nfind best path between V: (%d, %d) U: (%d, %d)\n", V.i, V.j, U.i, U.j);
 		
@@ -324,8 +318,8 @@ int detectChasing(char * filename) {
 		display(headYN, tailYN, queueYN);
 		//printf("ranks: %d - %d = %d: ", tailRank, headRank, tailRank - headRank);
 		display(headRank, tailRank, queueRank);
-
-		if (count > SIZE*2) {
+		printf("\n\n V.i:    %d\n V.j:    %d\n\n\n",V.i,V.j);
+		if (count > SIZE) {
 			break;
 		}
 		count++;
@@ -453,7 +447,7 @@ int main() {
 	init(&headRank, &tailRank);
 	//init(&headDecision, &tailDecision);
 
-	detectChasing("csv_files/approaching.csv");	// approaching.csv  chasing_diagonal.csv
+	detectChasing("csv_files/chasing_diagonal_static.csv");	// approaching.csv  chasing_diagonal.csv
 	//detectRandomWalk("csv_files/watch_random_walk_static.csv");
 	return 1;
 }
