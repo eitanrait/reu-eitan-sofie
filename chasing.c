@@ -24,7 +24,7 @@ point_t Y;
 // use the Bresenham algorithm for drawing a line
 // to find the fastest pasth from pixel a to b 
 // assuming x0 < x1
-void findPath(int x0, int y0, int x1, int y1) { 
+void findPathBres(int x0, int y0, int x1, int y1) { 
     int A, B, g, x, y, t;
 
     t = 0;
@@ -98,7 +98,11 @@ void updateX(char s, int t) {
 			X.j = X.j - 1;
 		}
 
-	}
+	} else if (s == 's') {	// static U
+
+		// does not move 
+
+	} 
 
 }
 
@@ -275,13 +279,13 @@ void chasingDiagonal() {
 	
 	// csv file init
 	FILE *fpt;
-	fpt = fopen("csv_files/chasing_diagonal.csv", "w+");
+	fpt = fopen("csv_files/chasing_diagonal_static.csv", "w+");
 	if(fpt == NULL) {
     	// get out code
     	exit(1);
 	}
 
-	printf("chase diagonal\n");
+	printf("chase diagonal static\n");
   	printf("Y      X\n");
   	printf("%d, %d   %d, %d\n", Y.i, Y.j, X.i, X.j);	// initial point
   	fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
@@ -290,7 +294,9 @@ void chasingDiagonal() {
 	while (1) {
 
 		// get current location of X
-		updateX('d', t);
+		// s means U is static so it is technically approaching
+		// change to d for diagonal
+		updateX('s', t);
 		
 		// not worrying about speed
 		//X.i += 1;
@@ -298,7 +304,7 @@ void chasingDiagonal() {
 
 		// get new line
 		// get new line every other time
-		findPathE(Y.i, Y.j, X.i, X.j);
+		findPathBres(Y.i, Y.j, X.i, X.j);
 
 		// could check if first invisible
 		Y.i = points[1].i;
