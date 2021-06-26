@@ -10,7 +10,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include "Queue.h"
+//#include "Queue.c"
+#include "queue2.h"
 #include "classification.h"
 
 #define K 10
@@ -28,10 +29,10 @@ point_t U;
 point_t V;
 
 int headYN, tailYN, elemtYN;
-int queueYN[SIZE];
+int queueYN[SIZE-1];
 
 int headRank, tailRank, elemtRank;
-int queueRank[SIZE];
+int queueRank[SIZE-1];
 
 int headDecision, tailDecision, elemtDecision;
 int queueDecision[SIZE];
@@ -222,10 +223,7 @@ int detectChasing(char * filename) {
 	int count = 0;
 	int rankingSum = 0;
 	int rank;
-	int y = 1;
-	int* y_ptr = &y;
-	int n = 0;
-	int* n_ptr = &n;
+	
 
 	if (!(f = fopen(filename, "r"))) {
 		printf("no file: %s\n", filename);
@@ -234,7 +232,7 @@ int detectChasing(char * filename) {
 	printf("opened file\n");
 	while (fgets(line, 1024, f) != NULL) {
 
-		printf("\ncount %d\n", count);
+		printf("\n\ncount %d\n", count);
 		// find current U and V positions
 		lastV.i = V.i;
 		lastV.j = V.j;
@@ -254,20 +252,17 @@ int detectChasing(char * filename) {
 		if (count != 0) {
 
 			// check if full
-			if (full(headYN, tailYN, SIZE)) {
-				printf("y/n queue is full\n");
-				dequeue(queueYN, &headYN, SIZE);
-
+			if (isFull(headYN, tailYN)) {
+				deQueue(&headYN,&tailYN,queueYN);
 			}
 
-			if (full(headRank, tailRank, SIZE)) {
-				printf("rank queue is full!!\n");
-				dequeue(queueRank, &headRank, SIZE);
+			if (isFull(headRank, tailRank)) {
+				deQueue(&headRank, &tailRank, queueRank);
 				
 			}
 
-			printf("before enqueue\n");
-			printf("U(2): (%d, %d)\n", U.i, U.j);
+			//printf("before enQueue\n");
+			//printf("U(2): (%d, %d)\n", U.i, U.j);
 			//printf("queueYN: %p\n", queueYN);
 			//printf("&tailYN: %p\n", &tailYN);
 			// compare
@@ -275,28 +270,28 @@ int detectChasing(char * filename) {
 				// next best point is equal to point actually chosen
 				//U.i = placehold.i;
 				//U.j = placehold.j;
-				enqueue(queueYN, &tailYN, YES, SIZE);
-				enqueue(queueRank, &tailRank, NO, SIZE);
+				enQueue(&headYN, &tailYN, YES, queueYN);
+				enQueue(&headRank, &tailRank, NO, queueRank);
 
-				//enqueue(queueYN, &tailYN, y_ptr);
-				//enqueue(queueRank, &tailRank, n_ptr);
+				//enQueue(queueYN, &tailYN, y_ptr);
+				//enQueue(queueRank, &tailRank, n_ptr);
 			} else {
 				//printf("V: (%d, %d) next best: (%d, %d)\n", V.i, V.j, idealV.i, idealV.j);
-				//enqueue(queueYN, &tailYN, n_ptr);
+				//enQueue(queueYN, &tailYN, n_ptr);
 				//U.i = placehold.i;
 				//U.j = placehold.j;
-				enqueue(queueYN, &tailYN, NO, SIZE);
+				enQueue(&headYN, &tailYN, NO, queueYN);
 				// add ranking to however far the actual is from ideal
 				rank = findRank(lastV, idealV);
-				enqueue(queueRank, &tailRank, rank, SIZE);
+				enQueue(&headRank, &tailRank, rank, queueRank);
 
 			}
 
-			printf("tail: %d\n", tailYN);
+			//printf("\ntail: %d\n", tailYN);
 
-			rankingSum = findSum(queueRank, headRank, tailRank);
-			printf("sum: %d\n", rankingSum);
-			printf("after enqueue\n");
+			//rankingSum = findSum(queueRank, headRank, tailRank);
+			//printf("sum: %d\n", rankingSum);
+			//printf("after enQueue\n");
 			//printf("U(3): (%d, %d)\n", U.i, U.j);
 			//printf("U: %p\n", U_ptr);
 		}
@@ -308,9 +303,13 @@ int detectChasing(char * filename) {
 		//printf("rewrite point U\n");
 		//U.i = placehold.i;
 		//U.j = placehold.j;
-		printf("find best path between V: (%d, %d) U: (%d, %d)\n", V.i, V.j, U.i, U.j);
+		
+		printf("\nfind best path between V: (%d, %d) U: (%d, %d)\n", V.i, V.j, U.i, U.j);
+		
 		findPathBres(V.i, V.j, U.i, U.j);
+		
 		//printf("U(4): (%d, %d)\n", U.i, U.j);
+		
 		idealV.i = points[1].i;
 		idealV.j = points[1].j;
 
@@ -321,10 +320,10 @@ int detectChasing(char * filename) {
 		// find running sum of a queue :/
 
 		// print contents of queue
-		printf("y/n:   %d - %d = %d: ", tailYN, headYN, tailYN - headYN);
-		display(queueYN, headYN, tailYN);
-		printf("ranks: %d - %d = %d: ", tailRank, headRank, tailRank - headRank);
-		display(queueRank, headRank, tailRank);
+		//printf("y/n:   %d - %d = %d: ", tailYN, headYN, tailYN - headYN);
+		display(headYN, tailYN, queueYN);
+		//printf("ranks: %d - %d = %d: ", tailRank, headRank, tailRank - headRank);
+		display(headRank, tailRank, queueRank);
 
 		if (count > SIZE*2) {
 			break;
@@ -416,25 +415,25 @@ int detectRandomWalk(char * filename) {
 		if (count != 0) {
 
 			// check if full
-			if (full(headDecision, tailDecision, SIZE)) {
-				dequeue(queueDecision, &headDecision, SIZE);
+			if (isFull(headDecision, tailDecision)) {
+				deQueue(&headDecision,&tailDecision, queueDecision);
 			}
-			printf("before enqueue\n");
+			printf("before enQueue\n");
 			
 			// store decision taken into queueDecision
 			// find decision using last V and current V
 			dec = findDecision(lastV, V);
-			enqueue(queueDecision, &tailDecision, dec, SIZE);
+			enQueue(&headDecision, &tailDecision, dec, queueDecision);
 
 			// 
-			runningSum = findSum(queueDecision, headDecision, tailDecision);
-			printf("sum: %d\n", runningSum);
+			//runningSum = findSum(queueDecision, headDecision, tailDecision);
+			//printf("sum: %d\n", runningSum);
 
 		}
 
 		// print contents of queue
 		printf("%d - %d = %d: ", tailDecision, headDecision, tailDecision - headDecision);
-		display(queueDecision, headDecision, tailDecision);
+		display(headDecision, tailDecision, queueDecision);
 
 		if (count > SIZE*2) {
 			break;
@@ -451,8 +450,8 @@ int detectRandomWalk(char * filename) {
 int main() {
 
 	init(&headYN, &tailYN);
-	//init(&headRank, &tailRank);
-	init(&headDecision, &tailDecision);
+	init(&headRank, &tailRank);
+	//init(&headDecision, &tailDecision);
 
 	detectChasing("csv_files/approaching.csv");	// approaching.csv  chasing_diagonal.csv
 	//detectRandomWalk("csv_files/watch_random_walk_static.csv");
@@ -460,4 +459,4 @@ int main() {
 }
 
 // to compile
-// gcc -Wall detection.c Queue.c classification.c -lm -o detect
+// gcc -Wall detection.c queue2.c classification.c -lm -o detect
