@@ -98,6 +98,12 @@ void updateX(char s, int t) {
 			X.j = X.j - 1;
 		}
 
+	}  else if (s == 'f') {	// boat U does fishing movement
+
+		if (t%2 == 1) {
+			X.j = X.j - 1;
+		}
+
 	}
 
 }
@@ -216,6 +222,62 @@ void findPathE(int x1, int y1, int x2, int y2) {
 // using global variables point_t X and Y for inputs atm 
 // X does random walk
 void chasingRandom() {
+	
+	// csv file init
+	FILE *fpt;
+	fpt = fopen("csv_files/chasing_random_walk.csv", "w+");
+	if(fpt == NULL) {
+    	// get out code
+    	exit(1);
+	}
+	fprintf(fpt, "X.i, X.j, Y.i, Y.j\n");
+
+	// calls findPath() which modifies points to get a new line 
+	// X can move with a random walk
+  	float prob = (rand() % 100) *.01;
+
+  	int* coordPtr;
+  	int t = 0;	// for testing
+  	printf("chasing 'skewed' random\n");
+  	printf("Y              X\n");
+	while (1) {
+
+		// get current location of X
+		coordPtr = randomPoint(X.i, X.j, prob);
+		X.i = *coordPtr;
+		X.j = *(coordPtr + 1);
+
+		// get new line
+		findPathE(Y.i, Y.j, X.i, X.j);
+
+		// could check if first invisible
+		Y.i = points[1].i;
+		Y.j = points[1].j;
+
+		// check the zones 
+		// maybe need to change this concept
+		// A is pretty much just X since Y is trying to get to X
+		Y.region = inRegion(Y.i, Y.j);
+		X.region = inRegion(X.i, X.j);
+		
+		printf("%c: %d, %d  %c: %d, %d\n", Y.region, Y.i, Y.j, X.region, X.i, X.j);
+		fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
+		prob = (rand() % 100) *.01;
+		t++;
+
+		// check for breaking 
+		if (Y.i == X.i && Y.j == X.j) {
+			break;
+		}
+
+		//sleep(1); 	// sleep for 1 second "time driven simulation"
+
+	}
+
+}
+
+// boat U does fishing, boat V chases 
+void chasingFishing() {
 	
 	// csv file init
 	FILE *fpt;

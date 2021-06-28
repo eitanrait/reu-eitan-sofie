@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include "randomwalk.h"
 #include "classification.h"
+#include "fishing.h"
 
 #define SIZE 16
 
@@ -56,6 +57,12 @@ void updateX(char s, int t) {
 		*/
 
 	} else if (s == 'v') {	// straight down
+
+		if (t%2 == 1) {
+			X.j = X.j - 1;
+		}
+
+	} else if (s == 'f') {	// fishing
 
 		if (t%2 == 1) {
 			X.j = X.j - 1;
@@ -319,6 +326,131 @@ void followRandomWalk() {
 
   		// update X position
   		coordPtr = randomPoint(X.i, X.j, prob);
+		X.i = *coordPtr;
+		X.j = *(coordPtr + 1);
+
+  		// check where Y is 
+  		behind = YIsBehind(last_i, last_j);
+
+  		// store Y position
+  		// check which region boat Y is in
+  		Y.region = inPolarRegion(Y.i, Y.j, X.i, X.j);
+
+  		// if boat Y in region A, chase 
+  		// if boat Y in region B, chase with stealth
+  		// if boat Y in outer regions and behind, disguised walk towards boat X/U
+  		// else, stay in place
+
+  		// update prob for Y movement
+  		prob = (rand() % 100) *.01;
+
+  		if (behind == 1 && (Y.region == 'a')) {
+  			// move Y towards X
+  			// get new line towards Boat X/U
+			findPath(Y.i, Y.j, X.i, X.j);
+
+			Y.i = points[1].i;
+			Y.j = points[1].j;
+
+  		} else if (behind == 1 && (Y.region == 'b')) {
+  			// in region B
+  			// every couple tics (will swtich more often to move towards) switch from random walk to move towards
+  			if (t % 3 == 0) {
+  				// random walk
+  				coordPtr = randomPoint(Y.i, Y.j, prob);
+				Y.i = *coordPtr;
+				Y.j = *(coordPtr + 1);
+
+  			} else {
+  				// walk towards
+  				// walks towards X more often
+  				findPath(Y.i, Y.j, X.i, X.j);
+
+				Y.i = points[1].i;
+				Y.j = points[1].j;
+
+  			}
+
+  		} else if (behind == 1) {
+  			// behind and in regions C and D
+  			// every couple tics switch from random walk to move towards
+  			if (t % 3 == 0) {
+  				// walk towards
+  				findPath(Y.i, Y.j, X.i, X.j);
+
+				Y.i = points[1].i;
+				Y.j = points[1].j;
+
+  			} else {
+  				// random walk
+  				// random walks more often
+  				coordPtr = randomPoint(Y.i, Y.j, prob);
+				Y.i = *coordPtr;
+				Y.j = *(coordPtr + 1);
+
+  			}
+
+  		} else if (behind == 2) {
+  			// no change in X
+  			// but Y should continue on its path from last time
+  			// which is saved in the points array 
+  			
+  			Y.i = points[1].i;
+			Y.j = points[1].j;
+
+  		} else {
+  			// stay in place when Y is on the wrong side of the perpendicular line 
+
+  		}
+
+  		printf("%d, %d  %d, %d  %d\n", Y.i, Y.j, X.i, X.j, t);
+		fprintf(fpt, "%d, %d, %d, %d\n", X.i, X.j, Y.i, Y.j);	// print to csv file
+
+  		if (t > 6000 || (Y.i == X.i && Y.j == X.j)) {
+  			break;
+  		}
+
+  		prob = (rand() % 100) *.01;
+  		t++;
+
+  	}
+
+}
+
+// boat U (X) does fishing movement 
+// boat V (Y) is following
+// for following, work on getting V behind U instead of waiting
+void followFishing() {
+
+	printf("follow fishing\n");
+
+	// csv file init
+	FILE *fpt;
+	fpt = fopen("csv_files/follow_fishing.csv", "w+");
+	if(fpt == NULL) {
+    	// get out code
+    	exit(1);
+	}
+
+	fprintf(fpt, "X.i, X.j, Y.i, Y.j\n");
+
+  	printf("X      Y\n");
+  	printf("%d, %d   %d, %d\n", X.i, X.j, Y.i, Y.j);	// initial point
+  	int t = 0;
+  	int behind = 0;	// 0 - not behind, 1 - behind
+  	double last_i, last_j;
+  	
+  	int* coordPtr;
+  	float prob = (rand() % 100) *.01;
+
+  	while (1) {
+
+  		// remember last X position
+  		last_i = X.i;
+  		last_j = X.j;
+
+  		// update X position for fishing
+  		coordPtr = fishingPoint(X.i, X.j, prob, t);
 		X.i = *coordPtr;
 		X.j = *(coordPtr + 1);
 
