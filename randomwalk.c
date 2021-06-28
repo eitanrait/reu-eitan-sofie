@@ -33,14 +33,8 @@
 #define GONE 1
 */
 
-struct point{
-  int i;
-  int j;
-  char visible[11];
-};
-
-struct point path[STEPS];
-
+struct Point path[STEPS];
+/*
 int randomwalk() {
   float prob;
   int t;
@@ -102,7 +96,7 @@ int randomwalk() {
   printf("\n");
 
   return 0;
-}
+} */
 
 // use to get a random point based on previous point and probability
 int* randomPoint(int x, int y, float prob) {

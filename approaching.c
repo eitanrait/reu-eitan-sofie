@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "driver.h"
-#define SIZE 150
 
 struct Point points[SIZE];
 

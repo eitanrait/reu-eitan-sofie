@@ -2,16 +2,12 @@
 
 // what does it mean to be behind X?
 // Boat V is behind U when V is behind U for a certain amount of time
-// V could just be driving by U for a bit (that is not following)
-// need to check for the amount of time
-
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
 #include "driver.h"
-#define SIZE 150
 
 struct Point points[SIZE];
 
