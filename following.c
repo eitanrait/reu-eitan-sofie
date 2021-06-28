@@ -423,7 +423,7 @@ void followDiagonalPath() {
     	exit(1);
 	}
 
-	fprintf(fpt, "X.i, X.j, Y.i, Y.j, region, t\n");
+	//fprintf(fpt, "X.i, X.j, Y.i, Y.j, region, t\n");
 
   	printf("Y      X\n");
   	printf("%d, %d   %d, %d\n", Y.i, Y.j, X.i, X.j);	// initial point
