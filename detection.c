@@ -134,7 +134,7 @@ int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
 			//printf("queueYN: %p\n", queueYN);
 			//printf("&tailYN: %p\n", &tailYN);
 			
-			printf("\n\n idealV.i: %d, idealV.j: %d\n\n v->i: %d, v->j: %d\n\n",idealV.i,idealV.j,v->i,v->j); // compare
+			printf("\nidealV.i: %d idealV.j: %d\n\n    v->i: %d     v->j: %d\n\n",idealV.i,idealV.j,v->i,v->j); // compare
 			
 			if (idealV.i == v->i && idealV.j == v->j) {
 				// next best point is equal to point actually chosen
@@ -155,7 +155,7 @@ int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
 		// store position of V in position queue
 		// find next best point using Bresenham
 		// from V (chasing) to U (chasee)
-		printf("\nfind best path between V: (%d, %d) U: (%d, %d)\n", v->i, v->j, u->i, u->j);	
+		printf("find best path between V: (%d, %d) U: (%d, %d)\n", v->i, v->j, u->i, u->j);	
 		findPathSofie(points, v->i, v->j, u->i, u->j);
 		//printf("U: (%d, %d)\n", U.i, U.j);
 		idealV.i = points[1].i;
@@ -165,10 +165,10 @@ int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
 		// find running sum of a queue :/
 
 		// print contents of queue
-		display(headYN, tailYN, queueYN);
-		display(headRank, tailRank, queueRank);
-		
-		printf("\n\n v->i:    %d\n v->j:    %d\n\n\n",v->i,v->j);
+		if(is_verbose) {
+			display(headYN, tailYN, queueYN);
+			display(headRank, tailRank, queueRank);
+		}
 		
 		if (t > params->maxsteps) {
 			printf("break\n");

@@ -52,43 +52,49 @@ int main(int argc, char * argv[]) {
   	}
   	argc -= optind;
   	argv += optind;
-	
-	if(v.i == u.i && v.j == u.j) {
+
+	if(params.u_activity && params.v_activity && v.i == u.i && v.j == u.j) {
 		printf("\nERROR: -u - v coordinates cannot be the same\n\n");	
 		exit(1);
 	}
+
 	if(params.maxsteps < 1) {
 		printf("\nERROR: -t time steps must be a number greater than 1\n");
 		exit(1);
 	}
 		
-	if(strcmp(params.v_activity,"approaching") == 0 || strcmp(params.v_activity,"chasing") == 0 || strcmp(params.v_activity,"following") == 0) {
+	printf("\nsegfault here?\n");
+	
 		
-  		if(!(f = fopen(params.output_file, "w+"))) {		
+	if(params.v_activity) {
+		if(strcmp(params.v_activity,"randomwalk") == 0 || strcmp(params.v_activity,"approaching") == 0 || strcmp(params.v_activity,"chasing") == 0 || strcmp(params.v_activity,"following") == 0) {
+  			
+  			if(!(f = fopen(params.output_file, "w+"))) {		
+  				exit(1);
+  			}
+			params.fpt = f;
+		
+			//fprintf(params.fpt, "U:i, U:j, V:i, V:j\n");
+			printf("V      U\n");
+			printf("%d, %d   %d, %d\n", v.i, v.j, u.i, u.j);        // initial point  
+	
+			if(strcmp(params.v_activity,"approaching") == 0) {
+  				printf("entering approaching\n");
+  				approach(&u, &v);
+			} else if(strcmp(params.v_activity,"following") == 0) {
+  				follow(&params, &u, &v);
+  			} else if(strcmp(params.v_activity,"chasing") == 0) {
+    			chase(&params, &u, &v);
+  			} 
+  			else if(strcmp(params.v_activity,"randomwalk") == 0) {
+    			randomwalk(&params, &u, &v);
+  			}
+  		} else {
+			printf("\nERROR: -v unrecognized activity\n\n");
   			exit(1);
-  		}
-		params.fpt = f;
-		
-		//fprintf(params.fpt, "U:i, U:j, V:i, V:j\n");
-		printf("V      U\n");
-		printf("%d, %d   %d, %d\n", v.i, v.j, u.i, u.j);        // initial point  
-	
-		if(strcmp(params.v_activity,"approaching") == 0) {
-  			printf("entering approaching\n");
-  			approach(&u, &v);
-		} else if(strcmp(params.v_activity,"following") == 0) {
-  			follow(&params, &u, &v);
-  		} else if(strcmp(params.v_activity,"chasing") == 0) {
-    		chase(&params, &u, &v);
-  		} 
-  		else if(strcmp(params.v_activity,"randomwalk") == 0) {
-    		randomwalk(&params, &u, &v);
-  		}
-  	} else {
-		printf("\nERROR: -v unrecognized activity\n\n");
-  		exit(1);
+		}
 	}
-	
+
 	if(params.detection) {
 		if((strcmp(params.detection,"chasing") == 0) || (strcmp(params.detection,"randomwalk") == 0)){
 			if (!(f = fopen(params.output_file, "r"))) {

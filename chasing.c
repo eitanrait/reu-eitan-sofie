@@ -14,14 +14,15 @@ void chase(struct Params * params, struct Point * u, struct Point * v) {
   	float prob = (rand() % 100) *.01;
 	
 	while (1) {
-		updateU(u, params->u_activity, t, prob);
 
 		// get new line
-		findPath(points, v->i, v->j, u->i, u->j);
+		findPathSofie(points, v->i, v->j, u->i, u->j);
 
 		v->i = points[1].i;
 		v->j = points[1].j;
-
+		
+		updateU(u, params->u_activity, t, prob);
+		
 		// check the zones 
 		v->region = inPolarRegion(v->i, v->j, u->i, u->j);
 		

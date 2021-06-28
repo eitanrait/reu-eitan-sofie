@@ -31,14 +31,14 @@ int isEmpty(int head) {
 // Will increase value of tail, limited to the [QUEUE_SIZE - 1] position, and then reset back to 0 using modulo the max QUEUE_SIZE
 // Then set the value of the queue at the tail index equal to the element to be inserted
 void enQueue(int * head, int * tail, int element, int * queue) {
-	if(isFull(*head, *tail))
+	if(isFull(*head, *tail) && is_verbose)
 		printf("\n Queue is full! \n");
 	else {
 		if(*head == -1)
 			*head = 0;
 		*tail = (*tail + 1) % QUEUE_SIZE;
 		queue[*tail] = element;
-		printf("\n Inserted -> %d\n", element);
+		if(is_verbose) printf(" Inserted -> %d\n\n", element);
 	}
 }
 // &int, &int, &int[0] 
@@ -50,7 +50,7 @@ void enQueue(int * head, int * tail, int element, int * queue) {
 int deQueue(int * head, int * tail, int * queue) {
 	int element;
 	if(isEmpty(*head)) {
-		printf("\n Queue is empty !! \n");
+		if(is_verbose) printf("\n Queue is empty !! \n");
 		return(-1);
 	} else {
 		element = queue[*head];
@@ -61,7 +61,7 @@ int deQueue(int * head, int * tail, int * queue) {
 		else {
 			*head = (*head + 1) % QUEUE_SIZE;
 		}
-		printf("\n Deleted element -> %d \n", element);
+		if(is_verbose) printf("\n Deleted element -> %d \n", element);
 		return(element);
 	}
 }
@@ -89,12 +89,13 @@ float getEntropy(int head, int tail, int * queue) {
 	for (i = head; i != tail; i = (i+1) % QUEUE_SIZE) {
 		occurences[queue[i]]++;
 	}
+	//printf("\n 0: %d\n 1: %d\n 2: %d\n 3: %d\n 4: %d\n 5: %d\n 6: %d\n 7: %d\n 8: %d\n 9: %d\n\n",occurences[0],occurences[1],occurences[2],occurences[3],occurences[4],occurences[5],occurences[6],occurences[7],occurences[8],occurences[9]);
 	for(i = 0; i < 10; i++) {
 		if(occurences[i] != 0) {
-			sum += i/10 * log2f(i/10);
+		//	printf("\n%f\n",(float)i/10);
+			sum += (float)i/10 * log2f((float)i/10);
 		}
 	}
-
+//	printf("%f",sum);
 	return -sum;	
 }
-
