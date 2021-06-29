@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
-#include "driver.h"
+#include "diver.h"
 
 #define STEPS 200
 

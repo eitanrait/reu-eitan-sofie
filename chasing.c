@@ -4,7 +4,7 @@
 #include <string.h>
 #include <time.h>
 #include <stdbool.h>
-#include "driver.h"
+#include "diver.h"
 
 struct Point points[SIZE];
 

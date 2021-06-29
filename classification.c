@@ -3,7 +3,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <math.h>
-#include "driver.h"
+#include "diver.h"
 #define PI 3.14159265
 
 // input of i,j coordinate

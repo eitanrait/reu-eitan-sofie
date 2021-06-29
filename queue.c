@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "driver.h"
+#include "diver.h"
 
 //Initializes values of head and tail to -1, meaning the queue is empty
 void init (int *head, int*tail) {

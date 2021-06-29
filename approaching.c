@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "driver.h"
+#include "diver.h"
 
 struct Point points[SIZE];
 

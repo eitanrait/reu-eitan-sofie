@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "driver.h"
-#define SIZE 150
+#include "diver.h"
 // returns the sign of a - b
 int Sign(int a, int b) {
 	int c;
@@ -110,7 +109,7 @@ void findPathSofie(struct Point * points, int x0, int y0, int x1, int y1) {
 
 	}
 	if(is_verbose)
-		printf("points[0]:%d,%d points[1]:%d,%d points[2]:%d,%d points[3]:%d,%d\n", points[0].i, points[0].j, points[1].i, points[1].j, points[2].i, points[2].j,points[3].i, points[3].j);
+		printf("\npoints[0]:%d,%d points[1]:%d,%d points[2]:%d,%d points[3]:%d,%d\n", points[0].i, points[0].j, points[1].i, points[1].j, points[2].i, points[2].j,points[3].i, points[3].j);
  
 }
 

@@ -1,5 +1,5 @@
 /*
-** name: driver.h
+** name: diver.h
 **
 ** author: eitan raitses + sofie kardonik
 ** created: 21 jun 2021
@@ -14,7 +14,7 @@
 #define DEFAULT_SIZE 100
 #define DEFAULT_MAX_STEPS 600
 #define DEFAULT_COORD 0 
-#define SIZE 150
+#define SIZE 1000
 
 extern int is_verbose;
 

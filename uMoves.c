@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include "driver.h"
+#include "diver.h"
 void updateU(struct Point * u, char * s, int t, int prob) {
 	int * coordPtr;
 	printf("\n%s %d\n",s,t);

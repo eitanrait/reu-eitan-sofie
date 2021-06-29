@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include "driver.h"
+#include "diver.h"
 
 
 #define N .1
