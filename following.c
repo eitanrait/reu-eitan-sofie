@@ -25,46 +25,6 @@ point_t points[SIZE];
 point_t X;
 point_t Y;
 
-void updateX(char s, int t) {
-
-	if (s == 'u') {		// straight up
-
-		// slow down the movement of X by changing pos every other time unit 
-		if (t%2 == 1) {		// every other step
-			X.j = X.j + 1;	// move up
-		}
-
-		/*
-		if (X.i == X.j) {	// if the current point is on the diagonal
-			// start moving diagonally to side
-			X.i++;
-		}
-		*/
-
-	} else if (s == 'd') {	// diagonally initially
-
-		if (t%2 == 1) {
-			X.i = X.i + 1;
-			X.j = X.j + 1;
-		}
-
-		/*
-		if (X.i == X.j) {	// if the current point is on the diagonal
-			// start moving diagonally up
-			X.i++;
-		}
-		*/
-
-	} else if (s == 'v') {	// straight down
-
-		if (t%2 == 1) {
-			X.j = X.j - 1;
-		}
-
-	}
-
-}
-
 // returns the sign of a - b
 int Sign(int a, int b) {
   int c;
@@ -181,7 +141,7 @@ point_t* findPerpendicularPoint(double last_i, double last_j) {
 	double slope, perp_slope;
 
 	if ((last_i - curr_i != 0) && (last_j - curr_j != 0)) {
-		printf("last: (%f, %f) curr: (%d, %d)\n", last_i, last_j, curr_i, curr_j);
+		//printf("last: (%f, %f) curr: (%d, %d)\n", last_i, last_j, curr_i, curr_j);
 		slope = (curr_j - last_j) / (curr_i - last_i);
 		perp_slope = -(1 / slope);
 		//printf("slope: %f, perp_slope: %f\n", slope, perp_slope);
@@ -285,6 +245,26 @@ int YIsBehind(double last_i, double last_j) {
 
 	return 0;
 
+}
+
+void updateX(char s, int t, int prob) {
+  int * coordPtr;
+  printf("\n%c %d\n",s,t);
+  if(t%2 == 0) {
+    if(s == 'r') {	// random walk
+      coordPtr = randomPoint(X.i, X.j, prob);
+      X.i = *coordPtr;
+      X.j = *(coordPtr + 1);
+    } else if (s == 's') {    // straight up
+      X.j += 1;  // move up
+    } else if (s == 'd') { // diagonally initially
+      X.i += 1;
+      X.j += 1;
+    } else if (s == 'v') {  // straight down
+      X.j -= 1;
+    }
+  } 
+  //... (can add different movement patterns)
 }
 
 
@@ -411,7 +391,7 @@ void followRandomWalk() {
 }
 
 
-void followDiagonalPath() {
+void followDiagonalPath(char x_activity) {
 
 	printf("follow diagonal walk\n");
 
@@ -443,10 +423,13 @@ void followDiagonalPath() {
   		last_j = X.j;
 
   		// update X position every two steps (U)
-  		if (t % 2 == 0) {
+  		/*
+     	if (t % 2 == 0) {
   			X.i += 1;
 			X.j += 1;
   		}
+      	*/
+        updateX(x_activity, t, prob);
 
   		// check where Y is 
   		behind = YIsBehind(last_i, last_j);
@@ -467,11 +450,11 @@ void followDiagonalPath() {
   		if (behind == 1 && (Y.region == 'a')) {
   			// move Y towards X
   			// get new line towards Boat X/U
-  			noMovement = 2;
-			findPathSofie(Y.i, Y.j, X.i, X.j);
+  			 noMovement = 2;
+			   findPathSofie(Y.i, Y.j, X.i, X.j);
 
-			Y.i = points[1].i;
-			Y.j = points[1].j;
+			   Y.i = points[1].i;
+			   Y.j = points[1].j;
 
   		} else if (behind == 1 && (Y.region == 'b')) {
   			// in region B
@@ -480,16 +463,16 @@ void followDiagonalPath() {
   			if (t % 3 == 0) {
   				// random walk
   				coordPtr = randomPoint(Y.i, Y.j, prob);
-				Y.i = *coordPtr;
-				Y.j = *(coordPtr + 1);
+				  Y.i = *coordPtr;
+				  Y.j = *(coordPtr + 1);
 
   			} else {
   				// walk towards
   				// walks towards X more often
   				findPathSofie(Y.i, Y.j, X.i, X.j);
 
-				Y.i = points[1].i;
-				Y.j = points[1].j;
+				  Y.i = points[1].i;
+				  Y.j = points[1].j;
 
   			}
 
@@ -502,16 +485,16 @@ void followDiagonalPath() {
   				printf("finding path\n");
   				findPathSofie(Y.i, Y.j, X.i, X.j);
 
-				Y.i = points[1].i;
-				Y.j = points[1].j;
+				  Y.i = points[1].i;
+				  Y.j = points[1].j;
 
   			} else {
   				// random walk
   				// random walks more often
   				printf("random\n");
   				coordPtr = randomPoint(Y.i, Y.j, prob);
-				Y.i = *coordPtr;
-				Y.j = *(coordPtr + 1);
+				  Y.i = *coordPtr;
+				  Y.j = *(coordPtr + 1);
 
   			}
 
@@ -521,10 +504,10 @@ void followDiagonalPath() {
   			// which is saved in the points array   			
   			if (t == 0) {
   				Y.i = points[1].i;
-				Y.j = points[1].j;
+				  Y.j = points[1].j;
   			} else {
   				Y.i = points[noMovement].i;
-				Y.j = points[noMovement].j;
+				  Y.j = points[noMovement].j;
 			}	
 			noMovement++;
 
@@ -534,7 +517,7 @@ void followDiagonalPath() {
   		}
 
   		printf("%d, %d  %d, %d  %d\n", Y.i, Y.j, X.i, X.j, t);
-		fprintf(fpt, "%d, %d, %d, %d, %c, %d\n", X.i, X.j, Y.i, Y.j, Y.region, t);	// print to csv file
+		  fprintf(fpt, "%d, %d, %d, %d, %c, %d\n", X.i, X.j, Y.i, Y.j, Y.region, t);	// print to csv file
 
   		if (t > 6000 || (Y.i == X.i && Y.j == X.j)) {
   			printf("break\n");
@@ -699,7 +682,7 @@ int main() {
 	//initPoint();
 	//followRandomWalk();
 	initPoint();
-	followDiagonalPath();
+	followDiagonalPath('d');	// d means boat U/X will go diagonally 
 	//initPoint();
 	//followVerticalPath();
 
