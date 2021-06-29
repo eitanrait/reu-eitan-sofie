@@ -129,23 +129,21 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
 				
     		}
     		
-    } else if (behind == 2) {
-      // no change in X
-      // but Y should continue on its path from last time
-      // which is saved in the points array 
+    } else if (behind == 2) { // enter this condition if no movement of boat U is detected
+      						  // boat V should continue moving along the path determined from 
+      						  // the last time findPath() updated the contents of the points array
   		if (t == 0) {
-  			
+  							  // if U does not move at 1st tic, update v position to the next coordinate on the line 
       		v->i = points[1].i;
       		v->j = points[1].j;
-      	} else {
-      		v->i = points[noMovement].i;
+      	} else { 			  // u does not move, keep updating v position to the following coordinate on the line
+      		v->i = points[noMovement].i; 
       		v->j = points[noMovement].j;
       	}
       	noMovement++;
       	
-    } else {
-      // stay in place when Y is on the wrong side of the perpendicular line 
-      noMovement = 2;
+    } else { 		  // stay in place when Y is on the wrong side of the perpendicular line 
+      noMovement = 2; // starting index of boat V's position when boat U does not move that tic
     }
     
     printf("%d, %d  %d, %d  %d\n", v->i, v->j, u->i, u->j, t);

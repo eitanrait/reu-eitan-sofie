@@ -31,12 +31,12 @@ int main(int argc, char * argv[]) {
     		case 'u':
     			u.i = atoi(strtok(optarg, " "));
  				u.j = atoi(strtok(NULL, " "));
-				params.u_activity = strtok(NULL, " ");
+				params.u_activity = strtok(NULL, "\"");
       			break;
    		 	case 'v':
       			v.i = atoi(strtok(optarg," "));
       			v.j = atoi(strtok(NULL," "));
-				params.v_activity = strtok(NULL, " ");
+				params.v_activity = strtok(NULL, "\"");
 				break;
 			case 't':
 				params.maxsteps = atoi(optarg);
