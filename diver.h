@@ -39,6 +39,7 @@ char inPolarRegion(double x, double y, int u_x, int u_y);
 
 //randomwalk methods
 int* randomPoint(int x, int y, float prob);
+void randomwalk(struct Params * params, struct Point * u, struct Point * v);
 
 //approaching methods
 void approach(struct Point * u, struct Point * v);
@@ -74,9 +75,6 @@ int findRank(struct Point v, struct Point lastV, struct Point idealV);
 int detectChasing(struct Params * params, struct Point * u, struct Point * v);
 int findDecision(struct Point lastPoint, struct Point currPoint);
 int detectRandomWalk(struct Params * params, struct Point * u, struct Point * v);
-
-//watchRandomWalk
-void randomwalk(struct Params * params, struct Point * u, struct Point * v);
 
 //queue
 void init(int * head, int * tail);

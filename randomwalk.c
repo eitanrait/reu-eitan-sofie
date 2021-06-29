@@ -16,11 +16,11 @@
 #define STAY .9
 #define GONE 1
 
+/*
 #define I 210
 #define J 720
-#define STEPS 200
 
-/*
+
 #define N .2
 #define NE .4
 #define E .6
@@ -31,10 +31,10 @@
 #define NW .9
 #define STAY .95
 #define GONE 1
-*/
+
 
 struct Point path[STEPS];
-/*
+
 int randomwalk() {
   float prob;
   int t;
@@ -98,6 +98,29 @@ int randomwalk() {
   return 0;
 } */
 
+void randomwalk(struct Params * params, struct Point * u, struct Point * v) {
+
+	float prob = (rand() % 100) *.01;
+
+  	int* coordPtr;
+  	int t = 0;
+
+  	while (t < params->maxsteps) {
+
+  		// get new current location of V
+		coordPtr = randomPoint(v->i, v->j, prob);
+		v->i = *coordPtr;
+		v->j = *(coordPtr + 1);
+
+		updateU(u, params->u_activity, t, prob);
+
+		fprintf(params->fpt, "%d, %d, %d, %d\n", u->i, u->j, v->i, v->j);	// print to csv file
+
+		prob = (rand() % 100) *.01;
+		t++;
+  }
+}
+  	
 // use to get a random point based on previous point and probability
 int* randomPoint(int x, int y, float prob) {
 
