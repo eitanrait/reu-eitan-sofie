@@ -53,6 +53,7 @@ struct Point * findPerpendicularPoint(struct Point * u, struct Point * v, double
 int directionOfPoint(struct Point A, struct Point B, struct Point P);
 int isVBehind(struct Point * u, struct Point * v, double last_i, double last_j);
 void follow(struct Params * params, struct Point * u, struct Point * v);
+void Fifo_Init();
 
 //bresenham methods
 int Sign(int a, int b);
