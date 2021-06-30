@@ -1,13 +1,15 @@
 For driver.c:
 to compile
-gcc -Wall approaching.c bresenham.c chasing.c classification.c detection.c driver.c following.c queue.c randomwalk.c uMoves.c watchRandomWalk.c -lm -o maritime
+gcc -Wall approaching.c bresenham.c chasing.c classification.c detection.c diver.c following.c queue.c randomwalk.c uMoves.c -lm -o diver
 
 to run
 following a diagonal path
-./maritime -V -R 0 -o following.csv -u "1000 100 diagonal" -v "0 0 following" -t 6000
+./diver -V -o following.csv -u "1000 100 diagonal" -v "0 0 following" -t 6000
 
  chasing a vertical path
-./maritime -V -R 0 -o chasing_vertical.csv -u "1000 100 vertical" -v "200 0 chasing" -t 6000
+./diver -V -o chasing_vertical.csv -u "1000 100 vertical" -v "200 0 chasing" -t 6000
 
 use -d <activity> for detection
+with chasing_vertical.csv as an existing file
+./diver -V -o chasing_vertical.csv -d chasing
  
