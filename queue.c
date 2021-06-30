@@ -59,7 +59,9 @@ int deQueue(int * head, int * tail, int * queue) {
 			*tail = -1;
 		}
 		else {
+			printf("\n*head>> %d\n",*head);
 			*head = (*head + 1) % QUEUE_SIZE;
+			printf("\n*head>> %d\n",*head);
 		}
 		if(is_verbose) printf("\n Deleted element -> %d \n", element);
 		return(element);
@@ -84,21 +86,19 @@ void display(int head, int tail, int * queue) {
 
 float getEntropy(int head, int tail, int * queue) {
 	int i;
-	float temp;
 	float sum = 0;
-	int occurences[10] = {0};
+	float occurences[10] = {0};
 	for (i = head; i != tail; i = (i+1) % QUEUE_SIZE) {
 		occurences[queue[i]]++;
 	}
 	//printf("\n 0: %d\n 1: %d\n 2: %d\n 3: %d\n 4: %d\n 5: %d\n 6: %d\n 7: %d\n 8: %d\n 9: %d\n\n",occurences[0],occurences[1],occurences[2],occurences[3],occurences[4],occurences[5],occurences[6],occurences[7],occurences[8],occurences[9]);
 	for(i = 0; i < 10; i++) {
 		if(occurences[i] != 0) {
-			temp = i;
-			printf("\nprint i:%d%d/10: %f\n",i,occurences[i],(temp/QUEUE_SIZE) *log2f(temp/QUEUE_SIZE));
-			sum += (temp/QUEUE_SIZE) * log2f(temp/QUEUE_SIZE);
-			printf("\nprint running sum: %f\n",sum);
+			//printf("\nprint i:%d %d/%d: %f\n",i,occurences[i],(temp/QUEUE_SIZE) *log2f(temp/QUEUE_SIZE));
+			sum += (occurences[i]/QUEUE_SIZE) * log2f(occurences[i]/QUEUE_SIZE);
+			//printf("\nprint running sum: %f\n",sum);
 		}
 	}
-	printf("\nprint total sum: %f\n",sum);
+	//printf("\nprint total sum: %f\n",sum);
 	return -sum;	
 }
