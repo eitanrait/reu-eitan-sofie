@@ -90,6 +90,7 @@ int main(int argc, char * argv[]) {
 
 	if(params.detection) {
 		if((strcmp(params.detection,"chasing") == 0) || (strcmp(params.detection,"randomwalk") == 0)){
+			Fifo_Init();
 			if (!(params.fpt = fopen(params.output_file, "r"))) {
 				printf("\nERROR: no file %s\n", params.output_file);
 				return 1;

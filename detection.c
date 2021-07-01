@@ -101,9 +101,6 @@ int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
 	struct Point lastV;
 	int t = 0;
 	//int rankingSum = 0;
-
-	init(&headYN,&tailYN);
-	init(&headRank,&tailRank);
 	
 	while (fgets(line, 1024, params->fpt) != NULL) {
 
@@ -124,29 +121,38 @@ int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
 		if (t != 0) {
 
 			// check if full
+			/*
 			if (isFull(headYN, tailYN))
 				deQueue(&headYN,&tailYN,queueYN);
 
 			if (isFull(headRank, tailRank))
 				deQueue(&headRank, &tailRank, queueRank);
+			*/
+
+			// check if full
+			if (Fifo_StatusYN() == FIFO_SIZE - 1) {
+				Fifo_GetYN();
+				Fifo_GetRank();
+			}
 
 			//printf("before enQueue\n");
 			//printf("queueYN: %p\n", queueYN);
 			//printf("&tailYN: %p\n", &tailYN);
 			
-			printf("\nidealV.i: %d idealV.j: %d\n\n    v->i: %d     v->j: %d\n\n",idealV.i,idealV.j,v->i,v->j); // compare
+			//printf("\nidealV.i: %d idealV.j: %d\n\n    v->i: %d     v->j: %d\n\n",idealV.i,idealV.j,v->i,v->j); // compare
 			
 			if (idealV.i == v->i && idealV.j == v->j) {
 				// next best point is equal to point actually chosen
-				enQueue(&headYN, &tailYN, YES, queueYN);
-				enQueue(&headRank, &tailRank, NO, queueRank);
+				Fifo_PutYN(YES);
+				Fifo_PutRank(NO);
 				//enQueue(queueYN, &tailYN, y_ptr);
 				//enQueue(queueRank, &tailRank, n_ptr);
 			} else {
-				//printf("V: (%d, %d) next best: (%d, %d)\n", v->i, v.j, idealV.i, idealV.j);
+				printf("V: (%d, %d) next best: (%d, %d)\n", v->i, v->j, idealV.i, idealV.j);
 				//enQueue(queueYN, &tailYN, n_ptr);
-				enQueue(&headYN, &tailYN, NO, queueYN);
-				enQueue(&headRank, &tailRank, findRank(*v, lastV, idealV), queueRank); // add ranking to however far the actual is from ideal
+				Fifo_PutYN(NO);
+				Fifo_PutRank(findRank(*v, lastV, idealV));
+				
 			}
 			//rankingSum = findSum(queueRank, headRank, tailRank);
 			//printf("sum: %d\n", rankingSum);
@@ -166,8 +172,12 @@ int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
 
 		// print contents of queue
 		if(is_verbose) {
+			displayYN();
+			displayRank();
+			/*
 			display(headYN, tailYN, queueYN);
 			display(headRank, tailRank, queueRank);
+			*/
 		}
 		
 		if (t > params->maxsteps) {
@@ -253,25 +263,27 @@ int detectRandomWalk(struct Params * params, struct Point * u, struct Point * v)
 		if (t != 0) {
 
 			// check if full
-			if (isFull(headDecision, tailDecision)) {
-				deQueue(&headDecision,&tailDecision, queueDecision);
+			if (Fifo_StatusDec() == FIFO_SIZE - 1) {
+				Fifo_GetDec();
 			}
 			printf("before enQueue\n");
 			
 			// store decision taken into queueDecision
 			// find decision using last V and current V
 			dec = findDecision(lastV, *v);
-			enQueue(&headDecision, &tailDecision, dec, queueDecision);
+			Fifo_PutDec(dec);
 
 			// 
 			//runningSum = findSum(queueDecision, headDecision, tailDecision);
 			//printf("sum: %d\n", runningSum);
 
 		}
-		entropy = getEntropy(headDecision, tailDecision, queueDecision);
+		entropy = getEntropy();
 		// print contents of queue
 		//printf("%d - %d = %d: ", tailDecision, headDecision, tailDecision - headDecision);
-		display(headDecision, tailDecision, queueDecision);
+		
+		displayDec();
+		//display(headDecision, tailDecision, queueDecision);
 		printf("\nEntropy: %f\n\n", entropy);
 
 		if (t > params->maxsteps) {

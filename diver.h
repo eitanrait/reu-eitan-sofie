@@ -53,7 +53,6 @@ struct Point * findPerpendicularPoint(struct Point * u, struct Point * v, double
 int directionOfPoint(struct Point A, struct Point B, struct Point P);
 int isVBehind(struct Point * u, struct Point * v, double last_i, double last_j);
 void follow(struct Params * params, struct Point * u, struct Point * v);
-void Fifo_Init();
 
 //bresenham methods
 int Sign(int a, int b);
@@ -84,4 +83,21 @@ int isEmpty(int head);
 void enQueue(int * head, int * tail, int element, int * queue);
 int deQueue(int * head, int * tail, int * queue);
 void display(int head, int tail, int * queue);
-float getEntropy(int head, int tail, int * queue);
+//float getEntropy(int head, int tail, int * queue);
+
+#define FIFO_SIZE 17
+
+//fifo
+void Fifo_Init();
+int Fifo_PutYN(char data);
+int Fifo_PutRank(char data);
+int Fifo_PutDec(char data);
+char Fifo_GetYN();
+char Fifo_GetRank();
+char Fifo_GetDec();
+int Fifo_StatusYN();
+int Fifo_StatusDec();
+void displayYN();
+void displayRank();
+void displayDec();
+float getEntropy();

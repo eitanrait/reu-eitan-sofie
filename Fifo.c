@@ -1,0 +1,193 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include "diver.h"
+
+/*
+
+Queue implementation
+no pointers
+
+*/
+
+static int PutIndexYN;
+static int GetIndexYN;
+static int ynQueue[FIFO_SIZE];
+
+static int PutIndexRank;
+static int GetIndexRank;
+static int rankQueue[FIFO_SIZE];
+
+static int PutIndexDec;
+static int GetIndexDec;
+static int decisionQueue[FIFO_SIZE];
+
+// *********** FiFo_Init**********
+// Initializes a software FIFO of a
+// fixed size and sets up indexes for
+// put and get operations
+void Fifo_Init() {
+	printf("fifo init\n");
+	PutIndexYN = 0;
+	GetIndexYN = 0;
+	PutIndexRank = 0;
+	GetIndexRank = 0;
+	PutIndexDec = 0;
+	GetIndexDec = 0;
+}
+
+// *********** FiFo_Put**********
+// Adds an element to the FIFO
+// Input: Character to be inserted
+// Output: 1 for success and 0 for failure
+//         failure is when the buffer is full
+int Fifo_PutYN(char data) {
+  if ((PutIndexYN + 1) % FIFO_SIZE == GetIndexYN) {
+		return (0);
+	}
+	ynQueue[PutIndexYN] = data;
+	PutIndexYN = (PutIndexYN + 1) % FIFO_SIZE;
+	return (1);
+}
+
+// *********** Fifo_Get**********
+// Gets an element from the FIFO
+// Input: none
+// Output: removed character from FIFO
+//         0 failure is when the buffer is empty
+char Fifo_GetYN(void){char data;
+  if (GetIndexYN == PutIndexYN) {
+		return (0);
+	}
+	data = ynQueue[GetIndexYN];
+	GetIndexYN = (GetIndexYN + 1) % FIFO_SIZE;
+	return (data);
+}
+
+// *********** FiFo_Put**********
+// Adds an element to the FIFO
+// Input: Character to be inserted
+// Output: 1 for success and 0 for failure
+//         failure is when the buffer is full
+int Fifo_PutRank(char data) {
+  if ((PutIndexRank + 1) % FIFO_SIZE == GetIndexRank) {
+		return (0);
+	}
+	rankQueue[PutIndexRank] = data;
+	PutIndexRank = (PutIndexRank + 1) % FIFO_SIZE;
+	return (1);
+}
+
+// *********** Fifo_Get**********
+// Gets an element from the FIFO
+// Input: none
+// Output: removed character from FIFO
+//         0 failure is when the buffer is empty
+char Fifo_GetRank(void){char data;
+  if (GetIndexRank == PutIndexRank) {
+		return (0);
+	}
+	data = rankQueue[GetIndexRank];
+	GetIndexRank = (GetIndexRank + 1) % FIFO_SIZE;
+	return (data);
+}
+
+// *********** FiFo_Put**********
+// Adds an element to the FIFO
+// Input: Character to be inserted
+// Output: 1 for success and 0 for failure
+//         failure is when the buffer is full
+int Fifo_PutDec(char data) {
+  if ((PutIndexDec + 1) % FIFO_SIZE == GetIndexDec) {
+		return (0);
+	}
+	decisionQueue[PutIndexDec] = data;
+	PutIndexDec = (PutIndexDec + 1) % FIFO_SIZE;
+	return (1);
+}
+
+// *********** Fifo_Get**********
+// Gets an element from the FIFO
+// Input: none
+// Output: removed character from FIFO
+//         0 failure is when the buffer is empty
+char Fifo_GetDec(void){char data;
+  if (GetIndexDec == PutIndexDec) {
+		return (0);
+	}
+	printf("--GET--\n");
+	data = decisionQueue[GetIndexDec];
+	GetIndexDec = (GetIndexDec + 1) % FIFO_SIZE;
+	return (data);
+}
+
+// *********** Fifo_Status**********
+// returns number of elements in the FIFO
+// Input: none
+// Output: number of entries in FIFO
+//         0 failure is when the FIFO is empty
+int Fifo_StatusYN(void)	{
+	if (GetIndexYN > PutIndexYN) {
+		return (FIFO_SIZE - GetIndexYN + PutIndexYN);
+	} else {
+		return (PutIndexYN - GetIndexYN);
+	}
+}
+
+int Fifo_StatusDec(void)	{
+	if (GetIndexDec > PutIndexDec) {
+		return (FIFO_SIZE - GetIndexDec + PutIndexDec);
+	} else {
+		return (PutIndexDec - GetIndexDec);
+	}
+}
+
+void displayYN() {
+
+	printf("PutIndexYN: %d  GetIndexYN: %d\n", PutIndexYN, GetIndexYN);
+	printf("ynQueue -> \t");
+	for (int i = GetIndexYN; i != PutIndexYN; i = (i+1) % FIFO_SIZE) {
+		printf("%d ", ynQueue[i]);
+	}
+	printf("\n");
+
+}
+
+void displayRank() {
+
+	printf("rankQueue -> \t");
+	for (int i = GetIndexRank; i != PutIndexRank; i = (i+1) % FIFO_SIZE) {
+		printf("%d ", rankQueue[i]);
+	}
+	printf("\n");
+
+}
+
+void displayDec() {
+
+	printf("decisionQueue -> \t");
+	for (int i = GetIndexDec; i != PutIndexDec; i = (i+1) % FIFO_SIZE) {
+		printf("%d ", decisionQueue[i]);
+	}
+	printf("\n");
+
+}
+
+float getEntropy() {
+	int i;
+	float sum = 0;
+	float occurences[10] = {0};
+	for (i = GetIndexDec; i != PutIndexDec; i = (i+1) % FIFO_SIZE) {
+		occurences[decisionQueue[i]]++;
+	}
+	//printf("\n 0: %d\n 1: %d\n 2: %d\n 3: %d\n 4: %d\n 5: %d\n 6: %d\n 7: %d\n 8: %d\n 9: %d\n\n",occurences[0],occurences[1],occurences[2],occurences[3],occurences[4],occurences[5],occurences[6],occurences[7],occurences[8],occurences[9]);
+	for(i = 0; i < 10; i++) {
+		if(occurences[i] != 0) {
+			//printf("\nprint i:%d %d/%d: %f\n",i,occurences[i],(temp/QUEUE_SIZE) *log2f(temp/QUEUE_SIZE));
+			sum += (occurences[i]/FIFO_SIZE) * log2f(occurences[i]/FIFO_SIZE);
+			//printf("\nprint running sum: %f\n",sum);
+		}
+	}
+	//printf("\nprint total sum: %f\n",sum);
+	return -sum;
+}
