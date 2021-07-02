@@ -89,15 +89,16 @@ void display(int head, int tail, int * queue);
 
 //fifo
 void Fifo_Init();
-int Fifo_PutYN(char data);
-int Fifo_PutRank(char data);
-int Fifo_PutDec(char data);
-char Fifo_GetYN();
-char Fifo_GetRank();
-char Fifo_GetDec();
+int Fifo_PutYN(int data);
+int Fifo_PutRank(float data);
+int Fifo_PutDec(int data);
+int Fifo_GetYN();
+float Fifo_GetRank();
+int Fifo_GetDec();
 int Fifo_StatusYN();
 int Fifo_StatusDec();
 void displayYN();
 void displayRank();
 void displayDec();
 float getEntropy();
+float probabilityScore();

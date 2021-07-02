@@ -16,15 +16,6 @@
 
 struct Point points[SIZE];
 
-int headYN, tailYN, elemtYN;
-int queueYN[QUEUE_SIZE-1];
-
-int headRank, tailRank, elemtRank;
-int queueRank[QUEUE_SIZE-1];
-
-int headDecision, tailDecision, elemtDecision;
-int queueDecision[QUEUE_SIZE -1];
-
 // returns a number that represents how far the actual move of V was from the ideal move
 // maybe need to change to probabilities (val/100 where val is the return value)
 int findRank(struct Point v, struct Point lastV, struct Point idealV) {
@@ -82,6 +73,95 @@ int findRank(struct Point v, struct Point lastV, struct Point idealV) {
 	return 0;
 }
 
+float findProb(struct Point v, struct Point lastV, struct Point idealV) {
+
+	printf("v: (%d, %d) lastV: (%d, %d)\n", v.i, v.j, lastV.i, lastV.j);
+	
+	// if stayed in place
+	if (lastV.i == v.i && lastV.j == v.j) {
+		return 0;
+	}
+
+	// when ideal is to NE
+	if (lastV.i + 1 == idealV.i && lastV.j + 1 == idealV.j) {	
+
+		printf("ideal is NE\n");
+
+		if (v.i == lastV.i + 1 && v.j == lastV.j) {
+		
+			// actual position of V is to E
+			return 20.0/100;
+
+		} else if (v.i == lastV.i && v.j == lastV.j + 1) {
+
+			// actual pos of V is to N
+			return 12.0/100;
+
+		} else if ((v.i == lastV.i - 1 && v.j == lastV.j + 1) || (v.i == lastV.i + 1 && v.j == lastV.j - 1)) {
+		
+			// actual position of V is to NW or SE
+			return 8.0/100;
+
+		} else if ((v.i == lastV.i - 1 && v.j == lastV.j) || (v.i == lastV.i && v.j == lastV.j - 1)) {
+		
+			// actual position of V is to W or S
+			return 4.0/100;
+
+		} else if (v.i == lastV.i - 1 && v.j == lastV.j - 1) {
+		
+			// actual position of V is to SW
+			return 2.0/100;
+
+		} else {
+
+			// V is ideal
+			return 40.0/100;
+
+		}
+	}
+
+	// when ideal is directly E:
+	if (lastV.i + 1 == idealV.i && lastV.j == idealV.j) {
+
+		printf("ideal is E\n");
+
+		if (v.i == lastV.i + 1 && v.j == lastV.j + 1) {
+		
+			// actual position of V is to NE
+			return 20.0/100;
+
+		} else if (v.i == lastV.i + 1 && v.j == lastV.j - 1) {
+
+			// actual position is to SE
+			return 12.0/100;
+
+		} else if ((v.i == lastV.i && v.j == lastV.j + 1) || (v.i == lastV.i && v.j == lastV.j - 1)) {
+		
+			// actual position of V is to N or S
+			return 8.0/100;
+
+		} else if ((v.i == lastV.i - 1 && v.j == lastV.j + 1) || (v.i == lastV.i - 1 && v.j == lastV.j - 1)) {
+		
+			// actual position of V is to NW or SW
+			return 4.0/100; 
+
+		} else if (v.i == lastV.i - 1 && v.j == lastV.j) {
+		
+			// actual position of V is to W
+			return 2.0/100;
+
+		} else {
+
+			// ideal
+			return 40.0/100;
+
+		}
+	} 
+
+	// invisible
+	return 2.0/100;
+}
+
 // classify which region V is in
 // if in B,
 // needs to know current location of V, draw bresenham using current locations, compare with actual next movement of V
@@ -100,6 +180,7 @@ int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
 	struct Point idealV;
 	struct Point lastV;
 	int t = 0;
+	float probability;
 	//int rankingSum = 0;
 	
 	while (fgets(line, 1024, params->fpt) != NULL) {
@@ -121,43 +202,38 @@ int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
 		if (t != 0) {
 
 			// check if full
-			/*
-			if (isFull(headYN, tailYN))
-				deQueue(&headYN,&tailYN,queueYN);
-
-			if (isFull(headRank, tailRank))
-				deQueue(&headRank, &tailRank, queueRank);
-			*/
-
-			// check if full
 			if (Fifo_StatusYN() == FIFO_SIZE - 1) {
 				Fifo_GetYN();
 				Fifo_GetRank();
 			}
 
 			//printf("before enQueue\n");
-			//printf("queueYN: %p\n", queueYN);
-			//printf("&tailYN: %p\n", &tailYN);
 			
 			//printf("\nidealV.i: %d idealV.j: %d\n\n    v->i: %d     v->j: %d\n\n",idealV.i,idealV.j,v->i,v->j); // compare
 			
 			if (idealV.i == v->i && idealV.j == v->j) {
 				// next best point is equal to point actually chosen
+				printf("V: (%d, %d) next best: (%d, %d)\n", v->i, v->j, idealV.i, idealV.j);
+				printf("--YES--\n");
 				Fifo_PutYN(YES);
-				Fifo_PutRank(NO);
-				//enQueue(queueYN, &tailYN, y_ptr);
-				//enQueue(queueRank, &tailRank, n_ptr);
+				Fifo_PutRank(findProb(*v, lastV, idealV));
+
 			} else {
 				printf("V: (%d, %d) next best: (%d, %d)\n", v->i, v->j, idealV.i, idealV.j);
-				//enQueue(queueYN, &tailYN, n_ptr);
+
 				Fifo_PutYN(NO);
-				Fifo_PutRank(findRank(*v, lastV, idealV));
+				Fifo_PutRank(findProb(*v, lastV, idealV));
 				
 			}
 			//rankingSum = findSum(queueRank, headRank, tailRank);
 			//printf("sum: %d\n", rankingSum);
 			//printf("after enQueue\n");
 		}
+
+		// multiply all probabilities
+		probability = probabilityScore();
+		printf("running probability: %f\n", probability);
+
 		// store position of V in position queue
 		// find next best point using Bresenham
 		// from V (chasing) to U (chasee)
@@ -174,10 +250,7 @@ int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
 		if(is_verbose) {
 			displayYN();
 			displayRank();
-			/*
-			display(headYN, tailYN, queueYN);
-			display(headRank, tailRank, queueRank);
-			*/
+
 		}
 		
 		if (t > params->maxsteps) {

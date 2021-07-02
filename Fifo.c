@@ -16,7 +16,7 @@ static int ynQueue[FIFO_SIZE];
 
 static int PutIndexRank;
 static int GetIndexRank;
-static int rankQueue[FIFO_SIZE];
+static float rankQueue[FIFO_SIZE];
 
 static int PutIndexDec;
 static int GetIndexDec;
@@ -41,7 +41,7 @@ void Fifo_Init() {
 // Input: Character to be inserted
 // Output: 1 for success and 0 for failure
 //         failure is when the buffer is full
-int Fifo_PutYN(char data) {
+int Fifo_PutYN(int data) {
   if ((PutIndexYN + 1) % FIFO_SIZE == GetIndexYN) {
 		return (0);
 	}
@@ -55,7 +55,7 @@ int Fifo_PutYN(char data) {
 // Input: none
 // Output: removed character from FIFO
 //         0 failure is when the buffer is empty
-char Fifo_GetYN(void){char data;
+int Fifo_GetYN(void){int data;
   if (GetIndexYN == PutIndexYN) {
 		return (0);
 	}
@@ -69,7 +69,7 @@ char Fifo_GetYN(void){char data;
 // Input: Character to be inserted
 // Output: 1 for success and 0 for failure
 //         failure is when the buffer is full
-int Fifo_PutRank(char data) {
+int Fifo_PutRank(float data) {
   if ((PutIndexRank + 1) % FIFO_SIZE == GetIndexRank) {
 		return (0);
 	}
@@ -83,7 +83,7 @@ int Fifo_PutRank(char data) {
 // Input: none
 // Output: removed character from FIFO
 //         0 failure is when the buffer is empty
-char Fifo_GetRank(void){char data;
+float Fifo_GetRank(void){float data;
   if (GetIndexRank == PutIndexRank) {
 		return (0);
 	}
@@ -97,7 +97,7 @@ char Fifo_GetRank(void){char data;
 // Input: Character to be inserted
 // Output: 1 for success and 0 for failure
 //         failure is when the buffer is full
-int Fifo_PutDec(char data) {
+int Fifo_PutDec(int data) {
   if ((PutIndexDec + 1) % FIFO_SIZE == GetIndexDec) {
 		return (0);
 	}
@@ -111,7 +111,7 @@ int Fifo_PutDec(char data) {
 // Input: none
 // Output: removed character from FIFO
 //         0 failure is when the buffer is empty
-char Fifo_GetDec(void){char data;
+int Fifo_GetDec(void){int data;
   if (GetIndexDec == PutIndexDec) {
 		return (0);
 	}
@@ -157,9 +157,20 @@ void displayRank() {
 
 	printf("rankQueue -> \t");
 	for (int i = GetIndexRank; i != PutIndexRank; i = (i+1) % FIFO_SIZE) {
-		printf("%d ", rankQueue[i]);
+		printf("%.2f ", rankQueue[i]);
 	}
 	printf("\n");
+
+}
+
+float probabilityScore() {
+
+	float p = 1;
+	for (int i = GetIndexRank; i != PutIndexRank; i = (i+1) % FIFO_SIZE) {
+		printf("p = %f   rankQueue[i] = %f\n", p, rankQueue[i]);
+		p *= rankQueue[i];
+	}
+	return p;
 
 }
 
