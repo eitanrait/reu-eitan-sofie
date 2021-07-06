@@ -101,29 +101,33 @@ int randomwalk() {
 
 void randomwalk(struct Params * params, struct Point * u, struct Point * v) {
 
+  // ask if noise should be added to probabilities only initially or keep changing each time
   if (add_noise) {
     printf("offset: %f\n", params->noise_offset);
     addNoise(params->noise_offset);
   }
-	   float prob = (rand() % 100) *.01;
+	
+  float prob = (rand() % 100) *.001;
 
-  	int* coordPtr;
-  	int t = 0;
+  int* coordPtr;
+  int t = 0;
 
-  	while (t < params->maxsteps) {
+  fprintf(params->fpt, "%d, %d, %d, %d\n", u->i, u->j, v->i, v->j); // print initial to csv file
 
-  		// get new current location of V
-		  coordPtr = randomPoint(v->i, v->j, prob);
-		  v->i = *coordPtr;
-		  v->j = *(coordPtr + 1);
+  while (t < params->maxsteps) {
 
-		  updateU(u, params->u_activity, t, prob);
+  	// get new current location of V
+		coordPtr = randomPoint(v->i, v->j, prob);
+		v->i = *coordPtr;
+		v->j = *(coordPtr + 1);
 
-      printf("%d, %d, %d, %d\n", u->i, u->j, v->i, v->j);
-		  fprintf(params->fpt, "%d, %d, %d, %d\n", u->i, u->j, v->i, v->j);	// print to csv file
+		updateU(u, params->u_activity, t, prob);
 
-		  prob = (rand() % 100) *.01;
-		  t++;
+    printf("%d, %d, %d, %d\n", u->i, u->j, v->i, v->j);
+		fprintf(params->fpt, "%d, %d, %d, %d\n", u->i, u->j, v->i, v->j);	// print to csv file
+
+		prob = (rand() % 100) *.01;
+		t++;
   }
 
 }
@@ -134,24 +138,24 @@ int* randomPoint(int x, int y, float prob) {
   int p[2];
   int* point_ptr = p;
 
-  if (prob >= 0 && prob < N) {
+  if (prob >= 0 && prob < movements[0]) {   // N
     y++;
-  } else if (prob < NE) {
+  } else if (prob < movements[1]) {         // NE
     x++;
     y++;
-  } else if (prob < E) {
+  } else if (prob < movements[2]) {         // E
     x++;
-  } else if ( prob < SE) {
+  } else if ( prob < movements[3]) {        // SE
     x++;
     y--;
-  } else if (prob < S) {
+  } else if (prob < movements[4]) {         // S
     y--;  
-  } else if (prob < SW) {
+  } else if (prob < movements[5]) {         // SW
     x--;
     y--;
-  } else if(prob < W) {
+  } else if(prob < movements[6]) {          // W
     x--;
-  } else if (prob < NW) {
+  } else if (prob < movements[7]) {         // NW
     x--;
     y++;
   }
@@ -164,15 +168,20 @@ int* randomPoint(int x, int y, float prob) {
 }
 
 void addNoise(float offset) {
+  
   offset *= .01;
 
-  //  store all movement probs in movements array
-  //  movements[0] = N
-  //  movements[1] = NE
-  //  in a random offset array, get 10 samples from [-offset, offset]
+  // random is added to each index of movements array
   float random;
-  for (int i = 0; i < 10; i++) {
-    random = (rand() % 100) * offset; //
+  int sign;
+  for (int i = 0; i < 9; i++) {
+    random = (rand() % 100) * offset; // offset controlled by command line 
+    sign = (rand() % 100);
+    
+    if (sign < 50) {
+      random *= -1;
+    }
+
     printf("random: %f\n", random); 
     movements[i] += random;
   }
