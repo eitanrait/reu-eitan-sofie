@@ -5,6 +5,7 @@
 #include "diver.h"
 
 int is_verbose = 0;
+int add_noise = 0;
 
 int main(int argc, char * argv[]) {
  	int ch;
@@ -25,10 +26,14 @@ int main(int argc, char * argv[]) {
 
 	params.maxsteps = DEFAULT_MAX_STEPS;
 	
-  	while ((ch = getopt(argc, argv, "VR:o:u:v:t:d:")) != -1) {
+  	while ((ch = getopt(argc, argv, "VR:o:u:v:t:d:n:")) != -1) {
     	switch(ch) {
     		case 'V':
 				is_verbose++;
+				break;
+			case 'n':
+				add_noise++;
+				params.noise_offset = atof(optarg);
 				break;
     		case 'R':
       			params.randomseed = atoi(optarg);

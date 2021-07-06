@@ -12,6 +12,9 @@ following a diagonal path
  chasing a vertical path
 ./diver -V -o chasing_vertical.csv -u "1000 100 vertical" -v "200 0 chasing" -t 6000
 
+random 
+./diver -V -n 0.01 -o random_w_noise.csv -u "1000 100 diagonal" -v "500 50 randomwalk" -t 100
+
 use -d <activity> for detection
 with chasing_vertical.csv as an existing file
 ./diver -V -o chasing_vertical.csv -d chasing

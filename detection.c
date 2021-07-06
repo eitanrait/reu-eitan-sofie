@@ -79,7 +79,7 @@ float findProb(struct Point v, struct Point lastV, struct Point idealV) {
 	
 	// if stayed in place
 	if (lastV.i == v.i && lastV.j == v.j) {
-		return 0;
+		return 1.0/100;	// change this from 0
 	}
 
 	// when ideal is to NE
@@ -159,7 +159,7 @@ float findProb(struct Point v, struct Point lastV, struct Point idealV) {
 	} 
 
 	// invisible
-	return 2.0/100;
+	return 1.0/100;
 }
 
 // classify which region V is in
@@ -339,7 +339,7 @@ int detectRandomWalk(struct Params * params, struct Point * u, struct Point * v)
 			if (Fifo_StatusDec() == FIFO_SIZE - 1) {
 				Fifo_GetDec();
 			}
-			printf("before enQueue\n");
+			//printf("before enQueue\n");
 			
 			// store decision taken into queueDecision
 			// find decision using last V and current V
