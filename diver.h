@@ -8,7 +8,7 @@
 */
 
 #define USAGE_MESSAGE "usage: maritime [-V -R randomseed -O output_file] (-v \"vX vY v_activity\" -u \"uX uY u_activity\")"
-
+#define DEFAULT_DIRECTORY "./csv_files/"
 #define DEFAULT_RAND_SEED 0
 #define DEFAULT_OUTPUT_FILE "output.csv"
 #define DEFAULT_SIZE 100
@@ -24,7 +24,9 @@ struct Params {
   FILE * fpt;
   char * v_activity;
   char * u_activity;
+  char * dir;
   char * output_file;
+  char * path;
   char * detection;
 };
 struct Point {
