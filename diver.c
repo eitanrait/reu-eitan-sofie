@@ -6,6 +6,7 @@
 
 int is_verbose = 0;
 int add_noise = 0;
+int use_chasing_prob = 0;
 
 int main(int argc, char * argv[]) {
  	int ch;
@@ -18,7 +19,7 @@ int main(int argc, char * argv[]) {
 	params.output_file = DEFAULT_OUTPUT_FILE;
 	params.maxsteps = DEFAULT_MAX_STEPS;
 	
-  	while ((ch = getopt(argc, argv, "VR:o:u:v:t:d:n:")) != -1) {
+  	while ((ch = getopt(argc, argv, "VR:o:u:v:t:d:n:c:")) != -1) {
     	switch(ch) {
     		case 'V':
 				is_verbose++;
@@ -48,6 +49,10 @@ int main(int argc, char * argv[]) {
 				break;
 			case 'd':
 				params.detection = strdup(optarg);
+				break;
+			case 'c':
+				use_chasing_prob++;
+				params.chasing_prob = atof(optarg);
 				break;
     		default:
       			printf("%s\n", USAGE_MESSAGE);

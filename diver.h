@@ -18,6 +18,7 @@
 
 extern int is_verbose;
 extern int add_noise;
+extern int use_chasing_prob;
 
 struct Params {
   int maxsteps;
@@ -28,6 +29,7 @@ struct Params {
   char * output_file;
   char * detection;
   float noise_offset;
+  float chasing_prob;
 };
 struct Point {
   int i;
