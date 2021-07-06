@@ -3,7 +3,7 @@
 **
 ** author: eitan raitses + sofie kardonik
 ** created: 21 jun 2021
-** last modified: 21 jun 2021
+** last modified: 6 july 2021
 **
 */
 
@@ -17,6 +17,7 @@
 #define SIZE 1000
 
 extern int is_verbose;
+extern int add_noise;
 
 struct Params {
   int maxsteps;
@@ -26,6 +27,7 @@ struct Params {
   char * u_activity;
   char * output_file;
   char * detection;
+  float noise_offset;
 };
 struct Point {
   int i;
@@ -40,6 +42,7 @@ char inPolarRegion(double x, double y, int u_x, int u_y);
 //randomwalk methods
 int* randomPoint(int x, int y, float prob);
 void randomwalk(struct Params * params, struct Point * u, struct Point * v);
+void addNoise(float offset);
 
 //approaching methods
 void approach(struct Point * u, struct Point * v);

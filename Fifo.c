@@ -36,13 +36,16 @@ void Fifo_Init() {
 	GetIndexDec = 0;
 }
 
+// head - putIndex (also the 'rear')
+// tail - getIndex (the 'front')
 // *********** FiFo_Put**********
 // Adds an element to the FIFO
 // Input: Character to be inserted
 // Output: 1 for success and 0 for failure
 //         failure is when the buffer is full
 int Fifo_PutYN(int data) {
-  if ((PutIndexYN + 1) % FIFO_SIZE == GetIndexYN) {
+	// checks if FIFO is full
+  	if ((PutIndexYN + 1) % FIFO_SIZE == GetIndexYN) {
 		return (0);
 	}
 	ynQueue[PutIndexYN] = data;
@@ -56,6 +59,7 @@ int Fifo_PutYN(int data) {
 // Output: removed character from FIFO
 //         0 failure is when the buffer is empty
 int Fifo_GetYN(void){int data;
+	// checks if FIFO is empty
   if (GetIndexYN == PutIndexYN) {
 		return (0);
 	}
@@ -115,7 +119,6 @@ int Fifo_GetDec(void){int data;
   if (GetIndexDec == PutIndexDec) {
 		return (0);
 	}
-	printf("--GET--\n");
 	data = decisionQueue[GetIndexDec];
 	GetIndexDec = (GetIndexDec + 1) % FIFO_SIZE;
 	return (data);
@@ -167,9 +170,10 @@ float probabilityScore() {
 
 	float p = 1;
 	for (int i = GetIndexRank; i != PutIndexRank; i = (i+1) % FIFO_SIZE) {
-		printf("p = %f   rankQueue[i] = %f\n", p, rankQueue[i]);
+		printf("p = %.10f   rankQueue[i] = %f\n", p, rankQueue[i]);
 		p *= rankQueue[i];
 	}
+	p = -log10f(p);
 	return p;
 
 }
