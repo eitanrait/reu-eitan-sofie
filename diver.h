@@ -18,6 +18,7 @@
 
 extern int is_verbose;
 extern int add_noise;
+extern int use_chasing_prob;
 
 struct Params {
   int maxsteps;
@@ -30,6 +31,7 @@ struct Params {
   char * path;
   char * detection;
   float noise_offset;
+  float chasing_prob;
 };
 struct Point {
   int i;
@@ -80,6 +82,8 @@ int findRank(struct Point v, struct Point lastV, struct Point idealV);
 int detectChasing(struct Params * params, struct Point * u, struct Point * v);
 int findDecision(struct Point lastPoint, struct Point currPoint);
 int detectRandomWalk(struct Params * params, struct Point * u, struct Point * v);
+int detectFollow(struct Params * params, struct Point * u, struct Point * v);
+float getDistance(struct Point * u, struct Point * v);
 
 //queue
 void init(int * head, int * tail);
@@ -97,13 +101,21 @@ void Fifo_Init();
 int Fifo_PutYN(int data);
 int Fifo_PutRank(float data);
 int Fifo_PutDec(int data);
+int Fifo_PutDist(float data);
+
 int Fifo_GetYN();
 float Fifo_GetRank();
 int Fifo_GetDec();
+float Fifo_GetDist();
+
 int Fifo_StatusYN();
 int Fifo_StatusDec();
+int Fifo_StatusDist();
+
 void displayYN();
 void displayRank();
 void displayDec();
+void displayDist();
+
 float getEntropy();
 float probabilityScore();

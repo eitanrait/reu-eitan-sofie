@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <math.h>
 #include "diver.h"
 
 #define K 10
@@ -320,9 +321,10 @@ int detectRandomWalk(struct Params * params, struct Point * u, struct Point * v)
 	while (fgets(line, 1024, params->fpt) != NULL) {
 
 		printf("\ncount %d\n", t);
-		// find current U and V positions
+		// store last coordinates of V
 		lastV.i = v->i;
 		lastV.j = v->j;
+		// find current U and V positions
 		u->i = atoi(strtok(line, ","));
 		u->j = atoi(strtok(NULL, ","));
 		v->i = atoi(strtok(NULL, ","));
@@ -366,4 +368,73 @@ int detectRandomWalk(struct Params * params, struct Point * u, struct Point * v)
 		t++;
 	} 
 	return 0;
+}
+
+// returns distance between points u and v
+float getDistance(struct Point * u, struct Point * v) {
+	float dist;
+	float x1 = v->i;
+	float y1 = v->j;
+	float x2 = u->i;
+	float y2 = u->j;
+
+	dist = sqrt ((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1));
+	printf("Distance between (%0.2f, %0.2f) and (%0.2f, %0.2f) is %0.2f\n", x1, y1, x2, y2, dist);
+
+	return dist;
+
+}
+
+int detectFollow(struct Params * params, struct Point * u, struct Point * v) {
+
+	char line[1024];
+	struct Point lastV;
+	int t = 0;
+	int dec;
+	float distance;
+	
+	while (fgets(line, 1024, params->fpt) != NULL) {
+
+		printf("\ncount %d\n", t);
+		// find current U and V positions
+		lastV.i = v->i;
+		lastV.j = v->j;
+		u->i = atoi(strtok(line, ","));
+		u->j = atoi(strtok(NULL, ","));
+		v->i = atoi(strtok(NULL, ","));
+		v->j = atoi(strtok(NULL, " "));
+
+		printf("U: (%d, %d) V: (%d, %d)\n", u->i, u->j, v->i, v->j);
+
+		// check distance away
+		// have a queue holding the distance?
+		if (t != 0) {
+
+			// check if full
+			if (Fifo_StatusDist() == FIFO_SIZE - 1) {
+				Fifo_GetDist();
+			}
+
+			// calculate distance and store in distancQueue
+			distance = getDistance(u, v);
+			Fifo_PutDist(distance);
+
+			// check how far from bresenham 
+
+		}
+
+		// check bresenham
+		// check randomwalk
+		displayDist();
+
+		if (t > params->maxsteps) {
+			printf("break\n");
+			break;
+		}	
+		t++;
+
+	}
+
+	return 0;
+
 }

@@ -6,6 +6,7 @@
 
 int is_verbose = 0;
 int add_noise = 0;
+int use_chasing_prob = 0;
 
 int main(int argc, char * argv[]) {
  	int ch;
@@ -26,7 +27,7 @@ int main(int argc, char * argv[]) {
 
 	params.maxsteps = DEFAULT_MAX_STEPS;
 	
-  	while ((ch = getopt(argc, argv, "VR:o:u:v:t:d:n:")) != -1) {
+  	while ((ch = getopt(argc, argv, "VR:o:u:v:t:d:n:c:")) != -1) {
     	switch(ch) {
     		case 'V':
 				is_verbose++;
@@ -56,6 +57,10 @@ int main(int argc, char * argv[]) {
 				break;
 			case 'd':
 				params.detection = strdup(optarg);
+				break;
+			case 'c':
+				use_chasing_prob++;
+				params.chasing_prob = atof(optarg);
 				break;
     		default:
       			printf("%s\n", USAGE_MESSAGE);
@@ -106,7 +111,7 @@ int main(int argc, char * argv[]) {
 	}
 
 	if(params.detection) {
-		if((strcmp(params.detection,"chasing") == 0) || (strcmp(params.detection,"randomwalk") == 0)){
+		if((strcmp(params.detection,"chasing") == 0) || (strcmp(params.detection,"randomwalk") == 0) || strcmp(params.detection,"follow") == 0) {
 			Fifo_Init();
 			if (!(params.fpt = fopen(params.path, "r"))) {
 				printf("\nERROR: no file %s\n", params.output_file);
@@ -116,6 +121,8 @@ int main(int argc, char * argv[]) {
   				detectChasing(&params, &u, &v);
 			} else if(strcmp(params.detection,"randomwalk") == 0) {
 		  		detectRandomWalk(&params, &u, &v);
+			} else if(strcmp(params.detection,"follow") == 0) {
+		  		detectFollow(&params, &u, &v);
 			}
 			
 			fclose(params.fpt);

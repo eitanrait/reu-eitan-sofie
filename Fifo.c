@@ -22,6 +22,10 @@ static int PutIndexDec;
 static int GetIndexDec;
 static int decisionQueue[FIFO_SIZE];
 
+static int PutIndexDist;
+static int GetIndexDist;
+static float distanceQueue[FIFO_SIZE];
+
 // *********** FiFo_Init**********
 // Initializes a software FIFO of a
 // fixed size and sets up indexes for
@@ -34,12 +38,15 @@ void Fifo_Init() {
 	GetIndexRank = 0;
 	PutIndexDec = 0;
 	GetIndexDec = 0;
+	PutIndexDist = 0;
+	GetIndexDist = 0;
 }
 
 // head - putIndex (also the 'rear')
 // tail - getIndex (the 'front')
+
 // *********** FiFo_Put**********
-// Adds an element to the FIFO
+// Adds an element to the ynQueue
 // Input: Character to be inserted
 // Output: 1 for success and 0 for failure
 //         failure is when the buffer is full
@@ -54,7 +61,7 @@ int Fifo_PutYN(int data) {
 }
 
 // *********** Fifo_Get**********
-// Gets an element from the FIFO
+// Gets an element from the ynQueue
 // Input: none
 // Output: removed character from FIFO
 //         0 failure is when the buffer is empty
@@ -68,11 +75,8 @@ int Fifo_GetYN(void){int data;
 	return (data);
 }
 
-// *********** FiFo_Put**********
-// Adds an element to the FIFO
-// Input: Character to be inserted
-// Output: 1 for success and 0 for failure
-//         failure is when the buffer is full
+
+// Adds an element to the rankQueue
 int Fifo_PutRank(float data) {
   if ((PutIndexRank + 1) % FIFO_SIZE == GetIndexRank) {
 		return (0);
@@ -82,11 +86,7 @@ int Fifo_PutRank(float data) {
 	return (1);
 }
 
-// *********** Fifo_Get**********
-// Gets an element from the FIFO
-// Input: none
-// Output: removed character from FIFO
-//         0 failure is when the buffer is empty
+// Gets an element from the rankQueue
 float Fifo_GetRank(void){float data;
   if (GetIndexRank == PutIndexRank) {
 		return (0);
@@ -96,11 +96,8 @@ float Fifo_GetRank(void){float data;
 	return (data);
 }
 
-// *********** FiFo_Put**********
-// Adds an element to the FIFO
-// Input: Character to be inserted
-// Output: 1 for success and 0 for failure
-//         failure is when the buffer is full
+
+// Adds an element to the decisionQueue
 int Fifo_PutDec(int data) {
   if ((PutIndexDec + 1) % FIFO_SIZE == GetIndexDec) {
 		return (0);
@@ -110,11 +107,7 @@ int Fifo_PutDec(int data) {
 	return (1);
 }
 
-// *********** Fifo_Get**********
-// Gets an element from the FIFO
-// Input: none
-// Output: removed character from FIFO
-//         0 failure is when the buffer is empty
+// gets an element from decisionQueue
 int Fifo_GetDec(void){int data;
   if (GetIndexDec == PutIndexDec) {
 		return (0);
@@ -123,6 +116,28 @@ int Fifo_GetDec(void){int data;
 	GetIndexDec = (GetIndexDec + 1) % FIFO_SIZE;
 	return (data);
 }
+
+
+// puts an element in distanceQueue
+int Fifo_PutDist(float data) {
+  if ((PutIndexDist + 1) % FIFO_SIZE == GetIndexDist) {
+		return (0);
+	}
+	distanceQueue[PutIndexDist] = data;
+	PutIndexDist = (PutIndexDist + 1) % FIFO_SIZE;
+	return (1);
+}
+
+// gets element from distance queue
+float Fifo_GetDist(void){float data;
+  if (GetIndexDist == PutIndexDist) {
+		return (0);
+	}
+	data = distanceQueue[GetIndexDist];
+	GetIndexDist = (GetIndexDist + 1) % FIFO_SIZE;
+	return (data);
+}
+
 
 // *********** Fifo_Status**********
 // returns number of elements in the FIFO
@@ -142,6 +157,14 @@ int Fifo_StatusDec(void)	{
 		return (FIFO_SIZE - GetIndexDec + PutIndexDec);
 	} else {
 		return (PutIndexDec - GetIndexDec);
+	}
+}
+
+int Fifo_StatusDist(void)	{
+	if (GetIndexDist > PutIndexDist) {
+		return (FIFO_SIZE - GetIndexDist + PutIndexDist);
+	} else {
+		return (PutIndexDist - GetIndexDist);
 	}
 }
 
@@ -183,6 +206,16 @@ void displayDec() {
 	printf("decisionQueue -> \t");
 	for (int i = GetIndexDec; i != PutIndexDec; i = (i+1) % FIFO_SIZE) {
 		printf("%d ", decisionQueue[i]);
+	}
+	printf("\n");
+
+}
+
+void displayDist() {
+
+	printf("distanceQueue -> \t");
+	for (int i = GetIndexDist; i != PutIndexDist; i = (i+1) % FIFO_SIZE) {
+		printf("%.2f ", distanceQueue[i]);
 	}
 	printf("\n");
 
