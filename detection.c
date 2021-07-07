@@ -76,10 +76,13 @@ int findRank(struct Point v, struct Point lastV, struct Point idealV) {
 
 float findProb(struct Point v, struct Point lastV, struct Point idealV) {
 
-	printf("v: (%d, %d) lastV: (%d, %d)\n", v.i, v.j, lastV.i, lastV.j);
+	printf("\nin findProb() \n");
+	printf("lastV: (%d, %d) current v: (%d, %d) idealV: (%d, %d)\n", lastV.i, lastV.j, v.i, v.j, idealV.i, idealV.j);
 	
+
 	// if stayed in place
 	if (lastV.i == v.i && lastV.j == v.j) {
+		printf("stayed in place\n\n");
 		return 1.0/100;	// change this from 0
 	}
 
@@ -91,26 +94,31 @@ float findProb(struct Point v, struct Point lastV, struct Point idealV) {
 		if (v.i == lastV.i + 1 && v.j == lastV.j) {
 		
 			// actual position of V is to E
+			printf("actually went to E\n\n");
 			return 20.0/100;
 
 		} else if (v.i == lastV.i && v.j == lastV.j + 1) {
 
 			// actual pos of V is to N
+			printf("actually went to N\n\n");
 			return 12.0/100;
 
 		} else if ((v.i == lastV.i - 1 && v.j == lastV.j + 1) || (v.i == lastV.i + 1 && v.j == lastV.j - 1)) {
 		
 			// actual position of V is to NW or SE
+			printf("actually went to NW or SE\n\n");
 			return 8.0/100;
 
 		} else if ((v.i == lastV.i - 1 && v.j == lastV.j) || (v.i == lastV.i && v.j == lastV.j - 1)) {
 		
 			// actual position of V is to W or S
+			printf("actually went to W or S\n\n");
 			return 4.0/100;
 
 		} else if (v.i == lastV.i - 1 && v.j == lastV.j - 1) {
 		
 			// actual position of V is to SW
+			printf("actually went to SW\n\n");
 			return 2.0/100;
 
 		} else {
@@ -129,31 +137,37 @@ float findProb(struct Point v, struct Point lastV, struct Point idealV) {
 		if (v.i == lastV.i + 1 && v.j == lastV.j + 1) {
 		
 			// actual position of V is to NE
+			printf("actually went to NE\n\n");
 			return 20.0/100;
 
 		} else if (v.i == lastV.i + 1 && v.j == lastV.j - 1) {
 
 			// actual position is to SE
+			printf("actually went to SE\n\n");
 			return 12.0/100;
 
 		} else if ((v.i == lastV.i && v.j == lastV.j + 1) || (v.i == lastV.i && v.j == lastV.j - 1)) {
 		
 			// actual position of V is to N or S
+			printf("actually went to N or S\n\n");
 			return 8.0/100;
 
 		} else if ((v.i == lastV.i - 1 && v.j == lastV.j + 1) || (v.i == lastV.i - 1 && v.j == lastV.j - 1)) {
 		
 			// actual position of V is to NW or SW
+			printf("actually went to NW or SW\n\n");
 			return 4.0/100; 
 
 		} else if (v.i == lastV.i - 1 && v.j == lastV.j) {
 		
 			// actual position of V is to W
+			printf("actually went to W\n\n");
 			return 2.0/100;
 
 		} else {
 
 			// ideal
+			printf("went ideal\n\n");
 			return 40.0/100;
 
 		}
@@ -341,24 +355,17 @@ int detectRandomWalk(struct Params * params, struct Point * u, struct Point * v)
 			if (Fifo_StatusDec() == FIFO_SIZE - 1) {
 				Fifo_GetDec();
 			}
-			//printf("before enQueue\n");
 			
 			// store decision taken into queueDecision
 			// find decision using last V and current V
 			dec = findDecision(lastV, *v);
 			Fifo_PutDec(dec);
 
-			// 
-			//runningSum = findSum(queueDecision, headDecision, tailDecision);
-			//printf("sum: %d\n", runningSum);
-
 		}
+
 		entropy = getEntropy();
-		// print contents of queue
-		//printf("%d - %d = %d: ", tailDecision, headDecision, tailDecision - headDecision);
 		
 		displayDec();
-		//display(headDecision, tailDecision, queueDecision);
 		printf("\nEntropy: %f\n\n", entropy);
 
 		if (t > params->maxsteps) {
@@ -388,17 +395,19 @@ float getDistance(struct Point * u, struct Point * v) {
 int detectFollow(struct Params * params, struct Point * u, struct Point * v) {
 
 	char line[1024];
+	struct Point idealV;
 	struct Point lastV;
 	int t = 0;
-	int dec;
 	float distance;
-	
+	float probability;
+
 	while (fgets(line, 1024, params->fpt) != NULL) {
 
 		printf("\ncount %d\n", t);
-		// find current U and V positions
+		// store last V
 		lastV.i = v->i;
 		lastV.j = v->j;
+		// find current U and V positions
 		u->i = atoi(strtok(line, ","));
 		u->j = atoi(strtok(NULL, ","));
 		v->i = atoi(strtok(NULL, ","));
@@ -413,6 +422,7 @@ int detectFollow(struct Params * params, struct Point * u, struct Point * v) {
 			// check if full
 			if (Fifo_StatusDist() == FIFO_SIZE - 1) {
 				Fifo_GetDist();
+				Fifo_GetRank();
 			}
 
 			// calculate distance and store in distancQueue
@@ -420,18 +430,33 @@ int detectFollow(struct Params * params, struct Point * u, struct Point * v) {
 			Fifo_PutDist(distance);
 
 			// check how far from bresenham 
+			// printf("V: (%d, %d) next best: (%d, %d)\n", v->i, v->j, idealV.i, idealV.j);
+			Fifo_PutRank(findProb(*v, lastV, idealV));
+
 
 		}
 
 		// check bresenham
-		// check randomwalk
+		printf("find best path between V: (%d, %d) U: (%d, %d)\n", v->i, v->j, u->i, u->j);	
+		findPathSofie(points, v->i, v->j, u->i, u->j);
+		idealV.i = points[1].i;
+		idealV.j = points[1].j;
+		printf("\tnext best: (%d, %d)\n", idealV.i, idealV.j);
+
+		printf("\n");
 		displayDist();
+		displayRank();
+
+		// multiply all probabilities
+		probability = probabilityScore();
+		printf("running probability: %f\n", probability);
 
 		if (t > params->maxsteps) {
 			printf("break\n");
 			break;
 		}	
 		t++;
+		printf("\n ------------------------------ \n");
 
 	}
 
