@@ -99,7 +99,7 @@ int main(int argc, char * argv[]) {
 	}
 
 	if(params.detection) {
-		if((strcmp(params.detection,"chasing") == 0) || (strcmp(params.detection,"randomwalk") == 0)){
+		if((strcmp(params.detection,"chasing") == 0) || (strcmp(params.detection,"randomwalk") == 0) || strcmp(params.detection,"follow") == 0) {
 			Fifo_Init();
 			if (!(params.fpt = fopen(params.output_file, "r"))) {
 				printf("\nERROR: no file %s\n", params.output_file);
@@ -109,6 +109,8 @@ int main(int argc, char * argv[]) {
   				detectChasing(&params, &u, &v);
 			} else if(strcmp(params.detection,"randomwalk") == 0) {
 		  		detectRandomWalk(&params, &u, &v);
+			} else if(strcmp(params.detection,"follow") == 0) {
+		  		detectFollow(&params, &u, &v);
 			}
 			
 			fclose(params.fpt);

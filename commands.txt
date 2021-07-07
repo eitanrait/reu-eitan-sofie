@@ -19,4 +19,5 @@ use -d <activity> for detection
 with chasing_vertical.csv as an existing file
 ./diver -V -o chasing_vertical.csv -d chasing
 ./diver -V -o watch_randomw.csv -d randomwalk
+./diver -V -o following.csv -d follow -t 20
  
