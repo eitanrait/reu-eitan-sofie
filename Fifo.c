@@ -193,7 +193,7 @@ float probabilityScore() {
 
 	float p = 1;
 	for (int i = GetIndexRank; i != PutIndexRank; i = (i+1) % FIFO_SIZE) {
-		printf("p = %.10f   rankQueue[i] = %f\n", p, rankQueue[i]);
+		//printf("p = %.10f   rankQueue[i] = %f\n", p, rankQueue[i]);
 		p *= rankQueue[i];
 	}
 	p = -log10f(p);

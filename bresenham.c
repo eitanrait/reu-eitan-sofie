@@ -74,7 +74,8 @@ void findPath(struct Point * points, int x1, int y1, int x2, int y2) {
 // use the Bresenham algorithm for drawing a line
 // to find the fastest pasth from pixel a to b 
 // assuming x0 < x1
-void findPathSofie(struct Point * points, int x0, int y0, int x1, int y1) { 
+void findPathSofie(struct Point * points, int x0, int y0, int x1, int y1) {
+
     int A, B, g, x, y, t;
 
     t = 0;
@@ -109,7 +110,7 @@ void findPathSofie(struct Point * points, int x0, int y0, int x1, int y1) {
 
 	}
 	if(is_verbose)
-		printf("\npoints[0]:%d,%d points[1]:%d,%d points[2]:%d,%d points[3]:%d,%d\n", points[0].i, points[0].j, points[1].i, points[1].j, points[2].i, points[2].j,points[3].i, points[3].j);
+		printf("points[0]:%d,%d points[1]:%d,%d points[2]:%d,%d points[3]:%d,%d\n", points[0].i, points[0].j, points[1].i, points[1].j, points[2].i, points[2].j,points[3].i, points[3].j);
  
 }
 
