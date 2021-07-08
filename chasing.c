@@ -27,7 +27,7 @@ void chase(struct Params * params, struct Point * u, struct Point * v) {
 			v->j = points[1].j;
 		} else {
 			// 50% chance to take random walk
-			// with each direction plus stay and inv having 10% chance
+			// with all 8 directions, stay, and inv having 10% chance each
 			coordPtr = randomPoint(v->i, v->j, prob);
 			v->i = *coordPtr;
 			v->j = *(coordPtr + 1);

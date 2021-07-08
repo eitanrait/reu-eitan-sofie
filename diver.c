@@ -10,21 +10,13 @@ int use_chasing_prob = 0;
 
 int main(int argc, char * argv[]) {
  	int ch;
- 	struct Params params;
+	struct Params params;
 	memset(&params, 0, sizeof(struct Params));
 	struct Point u;
 	struct Point v;
 
 	params.randomseed = DEFAULT_RAND_SEED;
-	params.dir = DEFAULT_DIRECTORY;
 	params.output_file = DEFAULT_OUTPUT_FILE;
-	printf("\nsize of path: %lu\n",sizeof(params.dir));
-	memset(params.path,0,sizeof(params.dir) + sizeof(params.output_file));
-	printf("\nsegfault\n\n");	
-
-	strcat(strcat(params.path,params.dir),params.output_file);
-	printf("\nsegfault\n\n");	
-
 	params.maxsteps = DEFAULT_MAX_STEPS;
 	
   	while ((ch = getopt(argc, argv, "VR:o:u:v:t:d:n:c:")) != -1) {
@@ -69,11 +61,7 @@ int main(int argc, char * argv[]) {
   	}
   	argc -= optind;
   	argv += optind;
-	
-	memset(params.path,0,sizeof(params.dir) + sizeof(params.output_file));
-	strcat(strcat(params.path,params.dir),params.output_file);
-	printf("\nsegfault\n\n");	
-	
+
 	if(params.u_activity && params.v_activity && v.i == u.i && v.j == u.j) {
 		printf("\nERROR: -u - v coordinates cannot be the same\n\n");	
 		exit(1);
@@ -86,7 +74,7 @@ int main(int argc, char * argv[]) {
 	if(params.v_activity) {
 		if(strcmp(params.v_activity,"randomwalk") == 0 || strcmp(params.v_activity,"approaching") == 0 || strcmp(params.v_activity,"chasing") == 0 || strcmp(params.v_activity,"following") == 0) {
   			
-  			if(!(params.fpt = fopen(params.path, "w+"))) {		
+  			if(!(params.fpt = fopen(params.output_file, "w+"))) {		
   				exit(1);
   			}
 			printf("V      U\n");
@@ -113,7 +101,7 @@ int main(int argc, char * argv[]) {
 	if(params.detection) {
 		if((strcmp(params.detection,"chasing") == 0) || (strcmp(params.detection,"randomwalk") == 0) || strcmp(params.detection,"follow") == 0) {
 			Fifo_Init();
-			if (!(params.fpt = fopen(params.path, "r"))) {
+			if (!(params.fpt = fopen(params.output_file, "r"))) {
 				printf("\nERROR: no file %s\n", params.output_file);
 				return 1;
 			}		
