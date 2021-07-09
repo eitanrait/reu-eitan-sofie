@@ -16,10 +16,11 @@ int main(int argc, char * argv[]) {
 	struct Point v;
 
 	params.randomseed = DEFAULT_RAND_SEED;
-	params.output_file = DEFAULT_OUTPUT_FILE;
+	params.output_file_csv = DEFAULT_OUTPUT_FILE_CSV;
+	params.output_file_txt = DEFAULT_OUTPUT_FILE_TXT;
 	params.maxsteps = DEFAULT_MAX_STEPS;
 	
-  	while ((ch = getopt(argc, argv, "VR:o:u:v:t:d:n:c:")) != -1) {
+  	while ((ch = getopt(argc, argv, "VR:o:u:v:t:d:n:c:f:")) != -1) {
     	switch(ch) {
     		case 'V':
 				is_verbose++;
@@ -32,7 +33,10 @@ int main(int argc, char * argv[]) {
       			params.randomseed = atoi(optarg);
       			break;
     		case 'o':
-      			params.output_file = strdup(optarg);
+      			params.output_file_csv = strdup(optarg);
+      			break;
+      		case 'f':
+      			params.output_file_txt = strdup(optarg);
       			break;
     		case 'u':
     			u.i = atoi(strtok(optarg, " "));
@@ -74,7 +78,7 @@ int main(int argc, char * argv[]) {
 	if(params.v_activity) {
 		if(strcmp(params.v_activity,"randomwalk") == 0 || strcmp(params.v_activity,"approaching") == 0 || strcmp(params.v_activity,"chasing") == 0 || strcmp(params.v_activity,"following") == 0) {
   			
-  			if(!(params.fpt = fopen(params.output_file, "w+"))) {		
+  			if(!(params.fpt = fopen(params.output_file_csv, "w+"))) {		
   				exit(1);
   			}
 			printf("V      U\n");
@@ -101,10 +105,16 @@ int main(int argc, char * argv[]) {
 	if(params.detection) {
 		if((strcmp(params.detection,"chasing") == 0) || (strcmp(params.detection,"randomwalk") == 0) || strcmp(params.detection,"follow") == 0) {
 			Fifo_Init();
-			if (!(params.fpt = fopen(params.output_file, "r"))) {
-				printf("\nERROR: no file %s\n", params.output_file);
+			if (!(params.fpt = fopen(params.output_file_csv, "r"))) {
+				printf("\nERROR: no file %s\n", params.output_file_csv);
 				return 1;
-			}		
+			}	
+			printf("here\n");
+			if(!(params.fpt_txt = fopen(params.output_file_txt, "w+"))) {
+				printf("\nERROR: unable to open file %s\n", params.output_file_txt);		
+  				exit(1);
+  			}
+  			printf("here2\n");
 			if(strcmp(params.detection,"chasing") == 0) {
   				detectChasing(&params, &u, &v);
 			} else if(strcmp(params.detection,"randomwalk") == 0) {
@@ -114,6 +124,7 @@ int main(int argc, char * argv[]) {
 			}
 			
 			fclose(params.fpt);
+			fclose(params.fpt_txt);
 		} else {
 			printf("\nERROR: -d unrecognized activity\n\n");
   			exit(1);

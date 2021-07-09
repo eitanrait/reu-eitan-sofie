@@ -196,6 +196,8 @@ int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
 	struct Point lastV;
 	int t = 0;
 	float probability;
+	float entropy;
+	int dec;
 	//int rankingSum = 0;
 	
 	while (fgets(line, 1024, params->fpt) != NULL) {
@@ -218,7 +220,7 @@ int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
 
 			// check if full
 			if (Fifo_StatusYN() == FIFO_SIZE - 1) {
-				Fifo_GetYN();
+				//Fifo_GetYN();
 				Fifo_GetRank();
 			}
 
@@ -230,24 +232,35 @@ int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
 				// next best point is equal to point actually chosen
 				printf("V: (%d, %d) next best: (%d, %d)\n", v->i, v->j, idealV.i, idealV.j);
 				printf("--YES--\n");
-				Fifo_PutYN(YES);
+				//Fifo_PutYN(YES);
 				Fifo_PutRank(findProb(*v, lastV, idealV));
 
 			} else {
 				printf("V: (%d, %d) next best: (%d, %d)\n", v->i, v->j, idealV.i, idealV.j);
 
-				Fifo_PutYN(NO);
+				//Fifo_PutYN(NO);
 				Fifo_PutRank(findProb(*v, lastV, idealV));
 				
 			}
-			//rankingSum = findSum(queueRank, headRank, tailRank);
-			//printf("sum: %d\n", rankingSum);
-			//printf("after enQueue\n");
-		}
 
-		// multiply all probabilities
-		probability = probabilityScore();
-		printf("running probability: %f\n", probability);
+			// for decision 
+			// check if full
+			if (Fifo_StatusDec() == FIFO_SIZE - 1) {
+				Fifo_GetDec();
+			}
+			
+			// store decision taken into queueDecision
+			// find decision using last V and current V
+			dec = findDecision(lastV, *v);
+			Fifo_PutDec(dec);
+
+			probability = probabilityScore();
+			printf("running probability: %f\n", probability);
+
+			entropy = getEntropy();
+			fprintf(params->fpt_txt, "%.4f\n", entropy);
+
+		}
 
 		// store position of V in position queue
 		// find next best point using Bresenham
@@ -257,13 +270,13 @@ int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
 		//printf("U: (%d, %d)\n", U.i, U.j);
 		idealV.i = points[1].i;
 		idealV.j = points[1].j;
-
-		// classify ranking queue
-		// find running sum of a queue :/
+		
+		displayDec();
+		printf("\nEntropy: %f\n\n", entropy);
 
 		// print contents of queue
 		if(is_verbose) {
-			displayYN();
+			//displayYN();
 			displayRank();
 
 		}
@@ -361,9 +374,10 @@ int detectRandomWalk(struct Params * params, struct Point * u, struct Point * v)
 			dec = findDecision(lastV, *v);
 			Fifo_PutDec(dec);
 
-		}
+			entropy = getEntropy();
+			fprintf(params->fpt_txt, "%.4f\n", entropy);
 
-		entropy = getEntropy();
+		}
 		
 		displayDec();
 		printf("\nEntropy: %f\n\n", entropy);
@@ -400,6 +414,8 @@ int detectFollow(struct Params * params, struct Point * u, struct Point * v) {
 	int t = 0;
 	float distance;
 	float probability;
+	float entropy;
+	int dec;
 
 	while (fgets(line, 1024, params->fpt) != NULL) {
 
@@ -433,6 +449,18 @@ int detectFollow(struct Params * params, struct Point * u, struct Point * v) {
 			// printf("V: (%d, %d) next best: (%d, %d)\n", v->i, v->j, idealV.i, idealV.j);
 			Fifo_PutRank(findProb(*v, lastV, idealV));
 
+			// check if decision queue is full
+			if (Fifo_StatusDec() == FIFO_SIZE - 1) {
+				Fifo_GetDec();
+			}
+			
+			// store decision taken into queueDecision
+			// find decision using last V and current V
+			dec = findDecision(lastV, *v);
+			Fifo_PutDec(dec);
+
+			entropy = getEntropy();
+			fprintf(params->fpt_txt, "%.4f\n", entropy);
 
 		}
 
