@@ -10,9 +10,10 @@
 #define USAGE_MESSAGE "usage: maritime [-V -R randomseed -O output_file] (-v \"vX vY v_activity\" -u \"uX uY u_activity\")"
 #define DEFAULT_DIRECTORY "./csv_files/"
 #define DEFAULT_RAND_SEED 0
-#define DEFAULT_OUTPUT_FILE "output.csv"
+#define DEFAULT_OUTPUT_FILE_CSV "output.csv"
+#define DEFAULT_OUTPUT_FILE_TXT "output_entropy.txt"
 #define DEFAULT_SIZE 100
-#define DEFAULT_MAX_STEPS 600
+#define DEFAULT_MAX_STEPS 6000
 #define DEFAULT_COORD 0 
 #define SIZE 1000
 
@@ -24,11 +25,14 @@ struct Params {
   int maxsteps;
   int randomseed;
   FILE * fpt;
+  FILE * fpt_txt;
   char * v_activity;
   char * u_activity;
-  char * dir;
-  char * output_file;
-  char * path;
+  char * output_file_csv;
+  char * output_file_txt;
+  //char * dir;
+  //char * output_file;
+  //char * path;
   char * detection;
   float noise_offset;
   float chasing_prob;

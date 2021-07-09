@@ -6,13 +6,19 @@
 void updateU(struct Point * u, char * s, int t, int prob) {
 	int * coordPtr;
 	printf("\n%s %d\n",s,t);
-	if(t%2 == 0) { // every other time tic
+
+	if(t%4 == 0) {
 		if(strcmp(s, "randomwalk") == 0) {
 			coordPtr = randomPoint(u->i, u->j, prob);
 			u->i = *coordPtr;
 			u->j = *(coordPtr + 1);
 		} else if (strcmp(s,"up") == 0) {		// straight up
-			u->j += 1;	// move up
+			if (u->i == u->j) {
+				u->i += 1;	// if at the diagonal, move to side 
+			} else {
+				u->j += 1;	// move up
+			}
+			
 		} else if (strcmp(s,"diagonal") == 0) {	// diagonally initially
 			u->i += 1;
 			u->j += 1;

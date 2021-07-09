@@ -60,8 +60,8 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
 	findPathSofie(points, v->i, v->j, u->i, u->j);
   	int noMovement = 2;
   
-  	fprintf(params->fpt, "%d, %d, %d, %d, %c, %d\n", u->i, u->j,  v->i, v->j, v->region, t); // initial point
-  	
+  	//fprintf(params->fpt, "%d, %d, %d, %d, %c, %d\n", u->i, u->j,  v->i, v->j, v->region, t); // initial point
+
   	while (1) {    
     
 		// remember last position of boat U

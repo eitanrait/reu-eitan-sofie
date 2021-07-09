@@ -9,10 +9,15 @@ random seed: -R <int seed>
     default seed 0
     for PRNG
 
-output_file: -o <output file>
+output_file_csv: -o <output file name.csv>
     no quotes
     enter output file name (.csv)
     default is output.csv
+
+output_file_tst: -f <output file name.txt>
+    no quotes
+    default is entropy_output.txt
+    created in detection.c
 
 boat U: -u "<i coordinate> <j coordinate> <u_activity>"
     u_activities: randomwalk, up, down, diagonal

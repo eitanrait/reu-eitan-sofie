@@ -12,15 +12,16 @@ to run
 following a diagonal path
 ./diver -V -o following.csv -u "1000 100 diagonal" -v "0 0 following" -t 6000
 
- chasing a vertical path
-./diver -V -o chasing_vertical.csv -u "1000 100 vertical" -v "200 0 chasing" -t 6000
+chasing a vertical path
+    70% chance of taking bresenham
+./diver -V -o chasing_vertical.csv -u "1000 100 up" -v "200 0 chasing" -t 10000 -c 0.7
 
 random 
 ./diver -V -n 0.01 -o random_w_noise.csv -u "1000 100 diagonal" -v "500 50 randomwalk" -t 100
 
 use -d <activity> for detection
 with chasing_vertical.csv as an existing file
-./diver -V -o chasing_vertical.csv -d chasing
-./diver -V -o watch_randomw.csv -d randomwalk
-./diver -V -o following.csv -d follow -t 20
+./diver -V -o chasing_vertical.csv -d chasing -f chasing_entropy.txt
+./diver -V -o watch_randomw.csv -d randomwalk -f randomwalk_entropy.txt
+./diver -V -o following.csv -d follow -t 20 -f following_entropy.txt
  
