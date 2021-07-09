@@ -83,9 +83,7 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
     	// if boat V in outer regions and behind, disguised walk towards boat U
     	// else, stay in place
     	// update prob for Y movement
-    	
     	prob = (rand() % 100) *.01;
-    
 	    if (behind == 1 && (v->region == 'a')) {
 	    	noMovement = 2;
     	 	// move Y towards X
@@ -93,51 +91,41 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
 			findPathSofie(points, v->i, v->j, u->i, u->j);
      	 	v->i = points[1].i;
      	 	v->j = points[1].j;
-      
-    	} else if (behind == 1 && (v->region == 'b')) {
+    	} else if (behind == 1 && (v->region == 'b')) { // in region B   		
     		noMovement = 2;
-     	 	// in region B
-      		// every couple tics (will swtich more often to move towards) switch from random walk to move towards
-      		if (t % 3 == 0) {
+			prob = (rand() % 100) *.01;    		
+     	 	if (prob < 0.33) {
 				// random walk
 				printf("randomwalk in region b\n");
 				coordPtr = randomPoint(v->i, v->j, prob);
 				v->i = *coordPtr;
 				v->j = *(coordPtr + 1);
+				//findPathSofie(points, v->i, v->j, u->i, u->j);
 	  		} else {
-				// walk towards
   				// walks towards X more often
 				printf("calculate new line and follow in region b\n");
 				findPathSofie(points, v->i, v->j, u->i, u->j);
 				v->i = points[1].i;
 				v->j = points[1].j;
 			}
-      
-   		} else if (behind == 1) {
-      	// behind and in regions C and D
-      	// every couple tics switch from random walk to move towards
+   		} else if (behind == 1) { // behind and in regions C and D
       		noMovement = 2;
-      		if (t % 6 == 0 || t % 6 == 1 || t % 6 == 2) {
-				// walk towards
-				findPathSofie(points, v->i, v->j, u->i, u->j);
-	
+			prob = (rand() % 100) *.01;    		
+      		if (prob < 0.50) { // move forward along bresenham's line
+				findPathSofie(points, v->i, v->j, u->i, u->j);	
 				v->i = points[1].i;
 				v->j = points[1].j;
-				
-      		} else {
-				// random walk
-				// random walks more often
+      		} else { //randomwalk
 				coordPtr = randomPoint(v->i, v->j, prob);
 				v->i = *coordPtr;
 				v->j = *(coordPtr + 1);
-				
+				//findPathSofie(points, v->i, v->j, u->i, u->j);					
     		}
     		
     } else if (behind == 2) { // enter this condition if no movement of boat U is detected
       						  // boat V should continue moving along the path determined from 
       						  // the last time findPath() updated the contents of the points array
-  		if (t == 1) {
-  							  // if U does not move at 1st tic, update v position to the next coordinate on the line 
+		if (t == 1) { // if U does not move at 1st tic, update v position to the next coordinate on the line 
       		v->i = points[1].i;
       		v->j = points[1].j;
       	} else { 			  // u does not move, keep updating v position to the following coordinate on the line
@@ -150,19 +138,16 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
       noMovement = 2; // starting index of boat V's position when boat U does not move that tic
     }
     
-    printf("%d, %d  %d, %d  %d\n", v->i, v->j, u->i, u->j, t);
+    printf(" v: %d, %d  u: %d, %d  %d\n", v->i, v->j, u->i, u->j, t);
 	fprintf(params->fpt, "%d, %d, %d, %d, %c, %d\n", u->i, u->j,  v->i, v->j, v->region, t);	// print to csv file
     
     if (t > params->maxsteps || (v->i == u->i && v->j == u->j)) {
       printf("break\n");
       break;
     }
-    
     prob = (rand() % 100) *.01;
     t++;
-    
   }
-  
 }
 
 struct Point * findPerpendicularPoint(struct Point * u, struct Point * v,double last_i, double last_j) {

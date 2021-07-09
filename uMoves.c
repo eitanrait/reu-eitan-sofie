@@ -6,7 +6,7 @@
 void updateU(struct Point * u, char * s, int t, int prob) {
 	int * coordPtr;
 	printf("\n%s %d\n",s,t);
-	if(t%2 == 0) {
+	if(t%2 == 0) { // every other time tic
 		if(strcmp(s, "randomwalk") == 0) {
 			coordPtr = randomPoint(u->i, u->j, prob);
 			u->i = *coordPtr;
@@ -18,6 +18,13 @@ void updateU(struct Point * u, char * s, int t, int prob) {
 			u->j += 1;
 		} else if (strcmp(s,"down") == 0) {	// straight down
 			u->j -= 1;
+		}
+		 else if (strcmp(s,"right") == 0) {	// right
+			u->i += 1;
+		}
+		else {
+			printf("\n ERROR: -u INVALID ACTIVITY\n");
+			exit(1);
 		}
 	} 
 	//... (can add different movement patterns)

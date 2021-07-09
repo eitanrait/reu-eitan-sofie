@@ -8,10 +8,62 @@
 
 struct Point points[SIZE];
 
+void probabilisticMove(struct Point * v, struct Point idealV, float bresenhamP) {
+	// when ideal is to NE
+	float p = (1.0 - bresenhamP) / 9.0;
+	
+	if ((v.i + 1 == idealV.i) && (v.j + 1 == idealV.j)) {	
+
+		if(prob <= bresenhamP + p) { // E
+			v->i += 1;
+		} else if (prob <= bresenhamP + (2.0 * p)) { // SE
+			v->i += 1;
+			v->j -= 1;
+		} else if (prob <= bresenhamP + (3.0 * p)) { // S
+			v->j -= 1;
+		} else if (prob <= bresenhamP + (4.0 * p)) { // SW
+			v->i -= 1;
+			v->j -= 1;
+		} else if (prob <= bresenhamP + (5.0 * p)) { // W
+			v->i -= 1;
+		} else if (prob <= bresenhamP + (6.0 * p)) { // NW
+			v->i -= 1;
+			v->j += 1;
+		} else if (prob <= bresenhamP + (7.0 * p)) { // N
+			v->j += 1;
+		}
+	}
+
+	// when ideal is directly E:
+	if ((v.i + 1 == idealV.i) && (v.j == idealV.j)) {
+
+		if(prob <= bresenhamP + p) { // NE
+			v->i += 1;
+			v->j += 1;
+		} else if (prob <= bresenhamP + (2.0 * p)) { // N
+			v->j += 1;
+		} else if (prob <= bresenhamP + (3.0 * p)) { // NW
+			v->i -= 1;
+			v->j += 1;
+		} else if (prob <= bresenhamP + (4.0 * p)) { // W
+			v->i -= 1;
+		} else if (prob <= bresenhamP + (5.0 * p)) { // SW
+			v->i -= 1;
+			v->j -= 1;
+		} else if (prob <= bresenhamP + (6.0 * p)) { // S
+			v->j -= 1;
+		} else if (prob <= bresenhamP + (7.0 * p)) { // SE
+			v->i += 1;
+			v->j -= 1;
+		}
+	} 
+}
+
 void chase(struct Params * params, struct Point * u, struct Point * v) {
 	
 	int t = 0;
   	float prob = (rand() % 100) *.01;
+  	struct Point idealV;
   	int * coordPtr;
   	float take_bresenham_prob = (use_chasing_prob) ? params->chasing_prob : 1.0;
 	
@@ -26,17 +78,24 @@ void chase(struct Params * params, struct Point * u, struct Point * v) {
 			v->i = points[1].i;
 			v->j = points[1].j;
 		} else {
+			idealV.i = points[1].i;
+			idealV.j = points[1].j;
+			moveWithProbability(v,idealV,take_bresenham_prob);
+		} 
+		
+		/*
+		else {
 			// 50% chance to take random walk
 			// with all 8 directions, stay, and inv having 10% chance each
 			coordPtr = randomPoint(v->i, v->j, prob);
 			v->i = *coordPtr;
 			v->j = *(coordPtr + 1);
 		}
-
+		*/
 		// take bresenham every time
 		//v->i = points[1].i;
 		//v->j = points[1].j;
-
+		
 		// new prob?
 		prob = (rand() & 100) * .01;
 		
