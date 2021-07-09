@@ -5,6 +5,9 @@ gcc -Wall approaching.c bresenham.c chasing.c classification.c detection.c diver
 compile in queue_branch
 gcc -Wall approaching.c bresenham.c chasing.c classification.c detection.c diver.c following.c randomwalk.c uMoves.c Fifo.c -lm -o diver
 
+compile in eitan (using probability for following and chasing)
+gcc -Wall approaching.c bresenham.c chasing_prob.c classification.c detection.c diver.c following_prob.c randomwalk.c uMoves.c Fifo.c -lm -o diver
+
 to run
 following a diagonal path
 ./diver -V -o following.csv -u "1000 100 diagonal" -v "0 0 following" -t 6000

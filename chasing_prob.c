@@ -8,55 +8,61 @@
 
 struct Point points[SIZE];
 
-void probabilisticMove(struct Point * v, struct Point idealV, float bresenhamP) {
+int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP) {
 	// when ideal is to NE
+	int coord[2];
+	int * coord_ptr = coord;
 	float p = (1.0 - bresenhamP) / 9.0;
+	printf("p: %f p x 9: %f\n",p,p*9.0);
 	
-	if ((v.i + 1 == idealV.i) && (v.j + 1 == idealV.j)) {	
+	if ((x + 1 == idealV.i) && (y + 1 == idealV.j)) {	
 
-		if(prob <= bresenhamP + p) { // E
-			v->i += 1;
-		} else if (prob <= bresenhamP + (2.0 * p)) { // SE
-			v->i += 1;
-			v->j -= 1;
-		} else if (prob <= bresenhamP + (3.0 * p)) { // S
-			v->j -= 1;
-		} else if (prob <= bresenhamP + (4.0 * p)) { // SW
-			v->i -= 1;
-			v->j -= 1;
-		} else if (prob <= bresenhamP + (5.0 * p)) { // W
-			v->i -= 1;
-		} else if (prob <= bresenhamP + (6.0 * p)) { // NW
-			v->i -= 1;
-			v->j += 1;
-		} else if (prob <= bresenhamP + (7.0 * p)) { // N
-			v->j += 1;
+		if(p <= bresenhamP + p) { // E
+			x += 1;
+		} else if (p <= bresenhamP + (2.0 * p)) { // SE
+			x += 1;
+			y -= 1;
+		} else if (p <= bresenhamP + (3.0 * p)) { // S
+			y -= 1;
+		} else if (p <= bresenhamP + (4.0 * p)) { // SW
+			x -= 1;
+			y -= 1;
+		} else if (p <= bresenhamP + (5.0 * p)) { // W
+			x -= 1;
+		} else if (p <= bresenhamP + (6.0 * p)) { // NW
+			x -= 1;
+			y += 1;
+		} else if (p <= bresenhamP + (7.0 * p)) { // N
+			y += 1;
 		}
 	}
 
 	// when ideal is directly E:
-	if ((v.i + 1 == idealV.i) && (v.j == idealV.j)) {
+	if ((x + 1 == idealV.i) && (y == idealV.j)) {
 
-		if(prob <= bresenhamP + p) { // NE
-			v->i += 1;
-			v->j += 1;
-		} else if (prob <= bresenhamP + (2.0 * p)) { // N
-			v->j += 1;
-		} else if (prob <= bresenhamP + (3.0 * p)) { // NW
-			v->i -= 1;
-			v->j += 1;
-		} else if (prob <= bresenhamP + (4.0 * p)) { // W
-			v->i -= 1;
-		} else if (prob <= bresenhamP + (5.0 * p)) { // SW
-			v->i -= 1;
-			v->j -= 1;
-		} else if (prob <= bresenhamP + (6.0 * p)) { // S
-			v->j -= 1;
-		} else if (prob <= bresenhamP + (7.0 * p)) { // SE
-			v->i += 1;
-			v->j -= 1;
+		if(p <= bresenhamP + p) { // NE
+			x += 1;
+			y += 1;
+		} else if (p <= bresenhamP + (2.0 * p)) { // N
+			y += 1;
+		} else if (p <= bresenhamP + (3.0 * p)) { // NW
+			x -= 1;
+			y += 1;
+		} else if (p <= bresenhamP + (4.0 * p)) { // W
+			x -= 1;
+		} else if (p <= bresenhamP + (5.0 * p)) { // SW
+			x -= 1;
+			y -= 1;
+		} else if (p <= bresenhamP + (6.0 * p)) { // S
+			y -= 1;
+		} else if (p <= bresenhamP + (7.0 * p)) { // SE
+			x += 1;
+			y -= 1;
 		}
 	} 
+	coord[0] = x;
+	coord[1] = y;
+	return coord_ptr;
 }
 
 void chase(struct Params * params, struct Point * u, struct Point * v) {
@@ -78,10 +84,13 @@ void chase(struct Params * params, struct Point * u, struct Point * v) {
 			v->i = points[1].i;
 			v->j = points[1].j;
 		} else {
+			printf("not taking brezzies\n");
 			idealV.i = points[1].i;
 			idealV.j = points[1].j;
-			moveWithProbability(v,idealV,take_bresenham_prob);
-		} 
+			coordPtr = moveWithProbability(v->i,v->j,idealV,take_bresenham_prob);
+			v->i = *coordPtr;
+			v->j = *(coordPtr+1);
+		} 	
 		
 		/*
 		else {
