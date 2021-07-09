@@ -109,7 +109,7 @@ int main(int argc, char * argv[]) {
 				printf("\nERROR: no file %s\n", params.output_file_csv);
 				return 1;
 			}	
-			printf("here\n");
+			
 			if(!(params.fpt_txt = fopen(params.output_file_txt, "w+"))) {
 				printf("\nERROR: unable to open file %s\n", params.output_file_txt);		
   				exit(1);
