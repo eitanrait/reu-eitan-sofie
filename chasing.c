@@ -34,6 +34,8 @@ void chase(struct Params * params, struct Point * u, struct Point * v) {
 			printf("\n random \n");
 			prob = (rand() & 100) * .01;
 			printf("prob for coordinate point: %f\n", prob);
+
+			// with all 8 directions, stay, and inv having 10% chance each
 			coordPtr = randomPoint(v->i, v->j, prob);
 			v->i = *coordPtr;
 			v->j = *(coordPtr + 1);

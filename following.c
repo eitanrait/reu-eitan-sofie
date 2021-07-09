@@ -100,12 +100,14 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
       		// every couple tics (will swtich more often to move towards) switch from random walk to move towards
       		if (t % 3 == 0) {
 				// random walk
+				printf("randomwalk in region b\n");
 				coordPtr = randomPoint(v->i, v->j, prob);
 				v->i = *coordPtr;
 				v->j = *(coordPtr + 1);
 	  		} else {
 				// walk towards
   				// walks towards X more often
+				printf("calculate new line and follow in region b\n");
 				findPathSofie(points, v->i, v->j, u->i, u->j);
 				v->i = points[1].i;
 				v->j = points[1].j;
