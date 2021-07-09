@@ -15,7 +15,6 @@ void chase(struct Params * params, struct Point * u, struct Point * v) {
   	int * coordPtr;
   	float take_bresenham_prob = (use_chasing_prob) ? params->chasing_prob : 1.0;
   	//fprintf(params->fpt, "ui, uj, vi, vj\n");
-  	srand(time(0));
 	
 	while (1) {
 

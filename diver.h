@@ -13,7 +13,7 @@
 #define DEFAULT_OUTPUT_FILE_CSV "output.csv"
 #define DEFAULT_OUTPUT_FILE_TXT "output_entropy.txt"
 #define DEFAULT_SIZE 100
-#define DEFAULT_MAX_STEPS 600
+#define DEFAULT_MAX_STEPS 6000
 #define DEFAULT_COORD 0 
 #define SIZE 1000
 

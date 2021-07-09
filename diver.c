@@ -63,8 +63,11 @@ int main(int argc, char * argv[]) {
       			return 0;
     	}
   	}
+  	
   	argc -= optind;
   	argv += optind;
+
+  	srand(params.randomseed);
 
 	if(params.u_activity && params.v_activity && v.i == u.i && v.j == u.j) {
 		printf("\nERROR: -u - v coordinates cannot be the same\n\n");	
