@@ -73,7 +73,7 @@ void MyLine(struct Point * points, int xs, int ys, int xe, int ye);
 
 //chasing methods
 void chase(struct Params * params, struct Point * u, struct Point * v);
-int* moveWithProbability(int x, int y, struct Point idealV, float prob);
+int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, float * prob);
 
 //uMoves
 void updateU(struct Point * u, char * s, int t, int prob);

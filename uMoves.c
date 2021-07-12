@@ -5,9 +5,9 @@
 #include "diver.h"
 void updateU(struct Point * u, char * s, int t, int prob) {
 	int * coordPtr;
-	printf("\n%s %d\n",s,t);
+	//printf("\n%s %d\n",s,t);
 
-	if(t%4 == 0) {
+	if(t%2 == 0) {
 		if(strcmp(s, "randomwalk") == 0) {
 			coordPtr = randomPoint(u->i, u->j, prob);
 			u->i = *coordPtr;

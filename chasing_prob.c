@@ -7,57 +7,90 @@
 #include "diver.h"
 
 struct Point points[SIZE];
+int ratios[9] = {0};
 
-int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP) {
-	// when ideal is to NE
+int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, float * prob) {
 	int coord[2];
 	int * coord_ptr = coord;
-	float p = (1.0 - bresenhamP) / 9.0;
-	printf("p: %f p x 9: %f\n",p,p*9.0);
-	
+	printf("random number is %.2f\n",*prob);
+	float p = (1.0 - bresenhamP) / 8.0;
+	//printf("split p: %.2f total p: %.2f\n",p,p*8.0);
+	// when ideal is to NE
 	if ((x + 1 == idealV.i) && (y + 1 == idealV.j)) {	
-
-		if(p <= bresenhamP + p) { // E
+			printf("Ideal is Northeast\n");
+		if(*prob <= bresenhamP + p) { // E
+			printf("East\n");
 			x += 1;
-		} else if (p <= bresenhamP + (2.0 * p)) { // SE
+			ratios[0]++;
+		} else if (*prob <= bresenhamP + (2.0 * p)) { // SE
+			printf("Southeast\n");
 			x += 1;
 			y -= 1;
-		} else if (p <= bresenhamP + (3.0 * p)) { // S
+			ratios[1]++;
+		} else if (*prob <= bresenhamP + (3.0 * p)) { // S
+			printf("South\n");
 			y -= 1;
-		} else if (p <= bresenhamP + (4.0 * p)) { // SW
+			ratios[2]++;
+		} else if (*prob <= bresenhamP + (4.0 * p)) { // SW
+			printf("Southwest\n");
 			x -= 1;
 			y -= 1;
-		} else if (p <= bresenhamP + (5.0 * p)) { // W
+			ratios[3]++;
+		} else if (*prob <= bresenhamP + (5.0 * p)) { // W
+			printf("West\n");
 			x -= 1;
-		} else if (p <= bresenhamP + (6.0 * p)) { // NW
+			ratios[4]++;
+		} else if (*prob <= bresenhamP + (6.0 * p)) { // NW
+			printf("Northwest\n");
 			x -= 1;
 			y += 1;
-		} else if (p <= bresenhamP + (7.0 * p)) { // N
+			ratios[5]++;
+		} else if (*prob <= bresenhamP + (7.0 * p)) { // N
+			printf("North\n");
 			y += 1;
+			ratios[6]++;
+		} else {
+			ratios[8]++;
 		}
 	}
 
 	// when ideal is directly E:
-	if ((x + 1 == idealV.i) && (y == idealV.j)) {
-
-		if(p <= bresenhamP + p) { // NE
+	else if ((x + 1 == idealV.i) && (y == idealV.j)) {
+			printf("Ideal is East\n");
+		if(*prob <= bresenhamP + p) { // NE
+			printf("Northeast\n");
 			x += 1;
 			y += 1;
-		} else if (p <= bresenhamP + (2.0 * p)) { // N
+			ratios[7]++;
+		} else if (*prob <= bresenhamP + (2.0 * p)) { // N
+			printf("North\n");
 			y += 1;
-		} else if (p <= bresenhamP + (3.0 * p)) { // NW
+			ratios[6]++;
+		} else if (*prob <= bresenhamP + (3.0 * p)) { // NW
+			printf("Northwest\n");
 			x -= 1;
 			y += 1;
-		} else if (p <= bresenhamP + (4.0 * p)) { // W
+			ratios[5]++;
+		} else if (*prob <= bresenhamP + (4.0 * p)) { // W
+			printf("West\n");
 			x -= 1;
-		} else if (p <= bresenhamP + (5.0 * p)) { // SW
+			ratios[4]++;
+		} else if (*prob <= bresenhamP + (5.0 * p)) { // SW
+			printf("Southwest\n");
 			x -= 1;
 			y -= 1;
-		} else if (p <= bresenhamP + (6.0 * p)) { // S
+			ratios[3]++;
+		} else if (*prob <= bresenhamP + (6.0 * p)) { // S
+			printf("South\n");
 			y -= 1;
-		} else if (p <= bresenhamP + (7.0 * p)) { // SE
+			ratios[2]++;
+		} else if (*prob <= bresenhamP + (7.0 * p)) { // SE
+			printf("Southeast\n");			
 			x += 1;
 			y -= 1;
+			ratios[1]++;
+		} else {
+			ratios[8]++;
 		}
 	} 
 	coord[0] = x;
@@ -74,23 +107,26 @@ void chase(struct Params * params, struct Point * u, struct Point * v) {
   	float take_bresenham_prob = (use_chasing_prob) ? params->chasing_prob : 1.0;
 	
 	while (1) {
-
+		printf("time %d\n",t);
 		// get new line
 		findPathSofie(points, v->i, v->j, u->i, u->j);
 
 		// add probability to if boat V will take bresenham's move
-		if (prob < take_bresenham_prob) {
+		if (prob <= take_bresenham_prob) {
 			// 50% chance to take bresenham's line
 			v->i = points[1].i;
 			v->j = points[1].j;
 		} else {
-			printf("not taking brezzies\n");
+			// definitely check this, it does not seem right
 			idealV.i = points[1].i;
 			idealV.j = points[1].j;
-			coordPtr = moveWithProbability(v->i,v->j,idealV,take_bresenham_prob);
+			printf("idealV.i: %d  idealV.j: %d\n",idealV.i,idealV.j);
+			coordPtr = moveWithProbability(v->i,v->j,idealV,take_bresenham_prob,&prob);
 			v->i = *coordPtr;
 			v->j = *(coordPtr+1);
 		} 	
+		
+		printf("Move Direction Count:\n\tE: %d\n\tSE: %d\n\tS: %d\n\tSW: %d\n\tW: %d\n\tNW: %d\n\tN: %d\n\tNE: %d\n\tSTAY: %d\n",ratios[0],ratios[1],ratios[2],ratios[3],ratios[4],ratios[5],ratios[6],ratios[7],ratios[8]);
 		
 		/*
 		else {
@@ -106,7 +142,8 @@ void chase(struct Params * params, struct Point * u, struct Point * v) {
 		//v->j = points[1].j;
 		
 		// new prob?
-		prob = (rand() & 100) * .01;
+		prob = (rand() % 100) * .01;
+		printf("random number changed to %.2f\n",prob);
 		
 		updateU(u, params->u_activity, t, prob);
 		
@@ -121,8 +158,7 @@ void chase(struct Params * params, struct Point * u, struct Point * v) {
 			printf("break   chasing prob: %.2f\n", take_bresenham_prob);
 			break;
 		}
-		
-		prob = (rand() & 100) * .01;
+
 		t++;
 	}
 }
