@@ -15,7 +15,7 @@
 #define DEFAULT_SIZE 100
 #define DEFAULT_MAX_STEPS 6000
 #define DEFAULT_COORD 0 
-#define SIZE 1000
+#define SIZE 10
 
 extern int is_verbose;
 extern int add_noise;
@@ -72,6 +72,7 @@ void findPathSofie(struct Point * points, int x0, int y0, int x1, int y1);
 void MyLine(struct Point * points, int xs, int ys, int xe, int ye);
 
 //chasing methods
+int* randomPointAway(struct Point ideal, struct Point * current, float prob);
 void chase(struct Params * params, struct Point * u, struct Point * v);
 
 //uMoves

@@ -23,6 +23,8 @@ void updateU(struct Point * u, char * s, int t, int prob) {
 			u->j += 1;
 		} else if (strcmp(s,"down") == 0) {	// straight down
 			u->j -= 1;
+		} else if (strcmp(s,"static") == 0) {	// stay in place
+			// do nothing
 		}
 	} 
 	//... (can add different movement patterns)

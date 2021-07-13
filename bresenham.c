@@ -76,8 +76,8 @@ void findPath(struct Point * points, int x1, int y1, int x2, int y2) {
 // assuming x0 < x1
 void findPathSofie(struct Point * points, int x0, int y0, int x1, int y1) {
 
-    int A, B, g, x, y, t;
-
+    int A, B, g, t;
+    double x, y;
     t = 0;
  	B = x0 - x1;
 	A = y1 - y0;
@@ -89,6 +89,10 @@ void findPathSofie(struct Point * points, int x0, int y0, int x1, int y1) {
 	int diag_inc = 2 * (A + B);
 	int right_inc = 2 * A; 
  
+ 	printf("\nfinding path -\n");
+ 	printf("between: (%.0f, %.0f) (%d, %d)\n", x, y, x1, y1);
+ 	// print slope
+ 	printf("slope: %f\n", (y1-y)/(x1-x));
 	while (x <= x1 && t < SIZE) {
 		points[t].i = x;
 		points[t].j = y;
@@ -105,10 +109,12 @@ void findPathSofie(struct Point * points, int x0, int y0, int x1, int y1) {
 			g = g + right_inc;
 
 		}
+		printf("t: %d x: %.0f\n", t, x);
 		x = x + 1;	// increment in x direction
 		t = t + 1;	// increment array index
 
 	}
+
 	if(is_verbose)
 		printf("points[0]:%d,%d points[1]:%d,%d points[2]:%d,%d points[3]:%d,%d\n", points[0].i, points[0].j, points[1].i, points[1].j, points[2].i, points[2].j,points[3].i, points[3].j);
  
