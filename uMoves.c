@@ -13,11 +13,11 @@ void updateU(struct Point * u, char * s, int t, int prob) {
 			u->i = *coordPtr;
 			u->j = *(coordPtr + 1);
 		} else if (strcmp(s,"up") == 0) {		// straight up
-			if (u->i == u->j) {
-				u->i += 1;	// if at the diagonal, move to side 
-			} else {
+			//if (u->i == u->j) {
+			//	u->i += 1;	// if at the diagonal, move to side 
+			//} else {
 				u->j += 1;	// move up
-			}
+			//}
 			
 		} else if (strcmp(s,"diagonal") == 0) {	// diagonally initially
 			u->i += 1;

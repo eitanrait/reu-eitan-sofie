@@ -9,90 +9,285 @@
 struct Point points[SIZE];
 int ratios[9] = {0};
 
+int switchDirection(int x, int y, struct Point idealV) {
+	if ((x == idealV.i) && (y+1 == idealV.j)) {
+		printf("Ideal: North\n");
+		return 1;
+	} else if ((x+1 == idealV.i) && (y+1 == idealV.j)) {
+		printf("Ideal: Northeast\n");
+		return 2;
+	} else if ((x+1 == idealV.i) && (y == idealV.j)) {
+		printf("Ideal: East\n");
+		return 3;
+	} else if ((x+1 == idealV.i) && (y-1 == idealV.j)) {
+		printf("Ideal: Southeast\n");
+		return 4;
+	} else if ((x == idealV.i) && (y-1 == idealV.j)) {
+		printf("Ideal: South\n");
+		return 5;
+	} else if ((x-1 == idealV.i) && (y-1 == idealV.j)) {
+		printf("Ideal: Southwest\n");
+		return 6;
+	} else if ((x-1 == idealV.i) && (y == idealV.j)) {
+		printf("Ideal: West\n");
+		return 7;
+	} else if ((x-1 == idealV.i) && (y+1 == idealV.j)) {
+		printf("Ideal: Northwest\n");
+		return 8;
+	}
+	else {
+		return 0;
+	}
+}
+
 int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, float * prob) {
+
 	int coord[2];
 	int * coord_ptr = coord;
-	printf("random number is %.2f\n",*prob);
+	int ideal = 0;
+	ideal = switchDirection(x, y, idealV);
+	printf("value of ideal: %d\n",ideal);
 	float p = (1.0 - bresenhamP) / 8.0;
-	//printf("split p: %.2f total p: %.2f\n",p,p*8.0);
-	// when ideal is to NE
-	if ((x + 1 == idealV.i) && (y + 1 == idealV.j)) {	
-			printf("Ideal is Northeast\n");
-		if(*prob <= bresenhamP + p) { // E
-			printf("East\n");
-			x += 1;
-			ratios[0]++;
-		} else if (*prob <= bresenhamP + (2.0 * p)) { // SE
-			printf("Southeast\n");
-			x += 1;
-			y -= 1;
-			ratios[1]++;
-		} else if (*prob <= bresenhamP + (3.0 * p)) { // S
-			printf("South\n");
-			y -= 1;
-			ratios[2]++;
-		} else if (*prob <= bresenhamP + (4.0 * p)) { // SW
-			printf("Southwest\n");
-			x -= 1;
-			y -= 1;
-			ratios[3]++;
-		} else if (*prob <= bresenhamP + (5.0 * p)) { // W
-			printf("West\n");
-			x -= 1;
-			ratios[4]++;
-		} else if (*prob <= bresenhamP + (6.0 * p)) { // NW
-			printf("Northwest\n");
-			x -= 1;
-			y += 1;
-			ratios[5]++;
-		} else if (*prob <= bresenhamP + (7.0 * p)) { // N
-			printf("North\n");
-			y += 1;
-			ratios[6]++;
-		} else {
-			ratios[8]++;
+	printf("bresenhamP+(1*p): %f\n",bresenhamP+(1*p));
+	printf("random number is %.2f\n",*prob);
+	printf("split probability: %f\n", p);
+	
+	if (*prob <= bresenhamP + (1.0 * p)) { 		  // probability of moving in direction 1 unit away from ideal this one
+		switch(ideal) {
+			case 1: // Ideal N
+				x += 1;
+				y += 1;
+				break;
+			case 2: // Ideal NE
+				x += 1;
+				break;
+			case 3: // Ideal E
+				x += 1;
+				y -= 1;
+				break;
+			case 4: // Ideal SE
+				y -= 1;
+				break;
+			case 5: // Ideal S
+				x -= 1;
+				y -= 1;
+				break;
+			case 6: // Ideal SW
+				x -= 1;
+				break;
+			case 7: // Ideal W
+				x -= 1;
+				y += 1;
+				break;
+			case 8: // Ideal NW
+				y += 1;
+				break;
+			default:
+				break;
 		}
+	} else if (*prob <= bresenhamP + (2.0 * p)) { // probability of moving in direction 2 unit away from ideal
+		switch(ideal) {
+			case 1: // Ideal N
+				x += 1;
+				break;
+			case 2: // Ideal NE
+				x += 1;
+				y -= 1;
+				break;
+			case 3: // Ideal E
+				y -= 1;
+				break;
+			case 4: // Ideal SE
+				x -= 1;
+				y -= 1;
+				break;
+			case 5: // Ideal S
+				x -= 1;
+				break;
+			case 6: // Ideal SW
+				x -= 1;
+				y += 1;
+				break;
+			case 7: // Ideal W
+				y += 1;
+				break;
+			case 8: // Ideal NW
+				x += 1;
+				y += 1;
+				break;
+			default:
+				break;
+		}
+	} else if (*prob <= bresenhamP + (3.0 * p)) { // probability of moving in direction 3 unit away from ideal
+		switch(ideal) {
+			case 1: // Ideal N
+				x += 1;
+				y -= 1;
+				break;
+			case 2: // Ideal NE
+				y -= 1;
+				break;
+			case 3: // Ideal E
+				x -= 1;
+				y -= 1;
+				break;
+			case 4: // Ideal SE
+				x -= 1;
+				break;
+			case 5: // Ideal S
+				x -= 1;
+				y += 1;
+				break;
+			case 6: // Ideal SW
+				y += 1;
+				break;
+			case 7: // Ideal W
+				x += 1;
+				y += 1;
+				break;
+			case 8: // Ideal NW
+				x += 1;
+				break;
+			default:
+				break;
+		}
+	} else if (*prob <= bresenhamP + (4.0 * p)) { // probability of moving in direction 4 unit away from ideal
+		switch(ideal) {
+			case 1: // Ideal N
+				y -= 1;
+				break;
+			case 2: // Ideal NE
+				x -= 1;
+				y -= 1;
+				break;
+			case 3: // Ideal E
+				x -= 1;
+				break;
+			case 4: // Ideal SE
+				x -= 1;
+				y += 1;
+				break;
+			case 5: // Ideal S
+				y += 1;
+				break;
+			case 6: // Ideal SW
+				x += 1;
+				y += 1;
+				break;
+			case 7: // Ideal W
+				x += 1;
+				break;
+			case 8: // Ideal NW
+				x += 1;
+				y -= 1;
+				break;
+			default:
+				break;
+		}
+	} else if (*prob <= bresenhamP + (5.0 * p)) { // probability of moving in direction 5 unit away from ideal
+		switch(ideal) {
+			case 1: // Ideal N
+				x -= 1; 
+				y -= 1; 
+				break; // southwest
+			case 2: // Ideal NE
+				x -= 1; 
+				break; // west
+			case 3: // Ideal E
+				x -= 1;
+				y += 1;
+				break; // northwest
+			case 4: // Ideal SE
+				y += 1;
+				break; // north
+			case 5: // Ideal S
+				x += 1;
+				y += 1;
+				break; // northeast
+			case 6: // Ideal SW
+				x += 1;
+				break; // east
+			case 7: // Ideal W
+				x += 1;
+				y -= 1;
+				break; // southeast
+			case 8: // Ideal NW
+				y -= 1;
+				break; // south
+			default:
+				break;
+		}
+	} else if (*prob <= bresenhamP + (6.0 * p)) { // probability of moving in direction 6 unit away from ideal
+		switch(ideal) {
+			case 1: // Ideal N
+				x -= 1;
+				break; // west
+			case 2: // Ideal NE
+				x -= 1; 
+				y += 1;
+				break; // northwest
+			case 3: // Ideal E
+				y += 1;
+				break; // north
+			case 4: // Ideal SE
+				x += 1;
+				y += 1;
+				break; // northeast
+			case 5: // Ideal S
+				x += 1;
+				break; // east
+			case 6: // Ideal SW
+				x += 1;
+				y -= 1;
+				break; // southeast
+			case 7: // Ideal W
+				y -= 1;
+				break; // south
+			case 8: // Ideal NW
+				x -= 1;
+				y -= 1;
+				break; // southwest
+			default:
+				break;
+		}
+	} else if (*prob <= bresenhamP + (7.0 * p)) { // probability of moving in direction 7 unit away from ideal this one
+		switch(ideal) {
+			case 1: // Ideal N
+				x -= 1; 
+				y += 1; 
+				break; // northwest
+			case 2: // Ideal NE
+				y += 1; 
+				break; // north
+			case 3: // Ideal E
+				x += 1;
+				y += 1;
+				break; // northeast
+			case 4: // Ideal SE
+				x += 1;
+				break; // east
+			case 5: // Ideal S
+				x += 1;
+				y -= 1;
+				break; // southeast
+			case 6: // Ideal SW
+				y -= 1;
+				break; // south
+			case 7: // Ideal W
+				x -= 1;
+				y -= 1;
+				break; // southwest
+			case 8: // Ideal NW
+				x -= 1;
+				break; // west
+			default:
+				break;
+		}
+	} else { 									  // probability of not moving in any direction
+		ratios[8]++;
 	}
 
-	// when ideal is directly E:
-	else if ((x + 1 == idealV.i) && (y == idealV.j)) {
-			printf("Ideal is East\n");
-		if(*prob <= bresenhamP + p) { // NE
-			printf("Northeast\n");
-			x += 1;
-			y += 1;
-			ratios[7]++;
-		} else if (*prob <= bresenhamP + (2.0 * p)) { // N
-			printf("North\n");
-			y += 1;
-			ratios[6]++;
-		} else if (*prob <= bresenhamP + (3.0 * p)) { // NW
-			printf("Northwest\n");
-			x -= 1;
-			y += 1;
-			ratios[5]++;
-		} else if (*prob <= bresenhamP + (4.0 * p)) { // W
-			printf("West\n");
-			x -= 1;
-			ratios[4]++;
-		} else if (*prob <= bresenhamP + (5.0 * p)) { // SW
-			printf("Southwest\n");
-			x -= 1;
-			y -= 1;
-			ratios[3]++;
-		} else if (*prob <= bresenhamP + (6.0 * p)) { // S
-			printf("South\n");
-			y -= 1;
-			ratios[2]++;
-		} else if (*prob <= bresenhamP + (7.0 * p)) { // SE
-			printf("Southeast\n");			
-			x += 1;
-			y -= 1;
-			ratios[1]++;
-		} else {
-			ratios[8]++;
-		}
-	} 
+
 	coord[0] = x;
 	coord[1] = y;
 	return coord_ptr;
@@ -109,7 +304,7 @@ void chase(struct Params * params, struct Point * u, struct Point * v) {
 	while (1) {
 		printf("time %d\n",t);
 		// get new line
-		findPathSofie(points, v->i, v->j, u->i, u->j);
+		findPath(points, v->i, v->j, u->i, u->j);
 
 		// add probability to if boat V will take bresenham's move
 		if (prob <= take_bresenham_prob) {
