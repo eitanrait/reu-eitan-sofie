@@ -68,6 +68,11 @@ void findPath(struct Point * points, int x1, int y1, int x2, int y2) {
 	points[t].j = y;
 	
   }
+
+  if(is_verbose)
+		printf("points[0]:%d,%d points[1]:%d,%d points[2]:%d,%d points[3]:%d,%d\n", points[0].i, points[0].j, points[1].i, points[1].j, points[2].i, points[2].j,points[3].i, points[3].j);
+ 
+ 
 }
 
 

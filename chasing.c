@@ -7,7 +7,7 @@
 #include "diver.h"
 
 struct Point points[SIZE];
-int steps[9] = {0};
+int steps1[9] = {0};
 
 
 // use to get a random point based on previous point and probability
@@ -26,71 +26,135 @@ int* randomPointAway(struct Point idealV, struct Point* currentV, float prob) {
   	printf("ideal is NE\n");
   	if (prob >= 0 && prob < 0.12) {   // N
     	y++;
-    	steps[0]++;
+    	steps1[0]++;
   	} else if (prob < 0.14) {         // NE
     	x++;
     	y++;
-    	steps[1]++;
+    	steps1[1]++;
   	} else if (prob < 0.18) {         // E
     	x++;
-    	steps[2]++;
+    	steps1[2]++;
   	} else if (prob < 0.30) {        // SE
     	x++;
     	y--;
-    	steps[3]++;
+    	steps1[3]++;
   	} else if (prob < 0.50) {         // S
     	y--;  
-    	steps[4]++;
+    	steps1[4]++;
   	} else if (prob < 0.60) {         // SW
     	x--;
     	y--;
-    	steps[5]++;
+    	steps1[5]++;
   	} else if(prob < 0.80) {          // W
     	x--;
-    	steps[6]++;
+    	steps1[6]++;
   	} else if (prob < 1.0) {         // NW
     	x--;
     	y++;
-    	steps[7]++;
+    	steps1[7]++;
   	}
 
   } else if (idealV.i == x + 1 && idealV.j == y) {	// ideal move is E
   	printf("ideal is E\n");
   	if (prob >= 0 && prob < 0.12) {   // N
     	y++;
-    	steps[0]++;
+    	steps1[0]++;
   	} else if (prob < 0.16) {         // NE
     	x++;
     	y++;
-    	steps[1]++;
+    	steps1[1]++;
   	} else if (prob < 0.18) {         // E
     	x++;
-    	steps[2]++;
+    	steps1[2]++;
   	} else if ( prob < 0.30) {        // SE
     	x++;
     	y--;
-    	steps[3]++;
+    	steps1[3]++;
   	} else if (prob < 0.50) {         // S
     	y--;  
-    	steps[4]++;
+    	steps1[4]++;
   	} else if (prob < 0.70) {         // SW
     	x--;
     	y--;
-    	steps[5]++;
+    	steps1[5]++;
   	} else if(prob < 0.80) {          // W
     	x--;
-    	steps[6]++;
+    	steps1[6]++;
   	} else if (prob < 1.0) {         // NW
     	x--;
     	y++;
-    	steps[7]++;
+    	steps1[7]++;
+  	}
+
+  } else if (idealV.i == x + 1 && idealV.j == y - 1) {	// ideal move is SE
+  	printf("ideal is SE\n");
+  	if (prob >= 0 && prob < 0.20) {   // N
+    	y++;
+    	steps1[0]++;
+  	} else if (prob < 0.32) {         // NE
+    	x++;
+    	y++;
+    	steps1[1]++;
+  	} else if (prob < 0.36) {         // E
+    	x++;
+    	steps1[2]++;
+  	} else if ( prob < 0.38) {        // SE
+    	x++;
+    	y--;
+    	steps1[3]++;
+  	} else if (prob < 0.50) {         // S
+    	y--;  
+    	steps1[4]++;
+  	} else if (prob < 0.70) {         // SW
+    	x--;
+    	y--;
+    	steps1[5]++;
+  	} else if(prob < 0.90) {          // W
+    	x--;
+    	steps1[6]++;
+  	} else if (prob < 1.0) {         // NW
+    	x--;
+    	y++;
+    	steps1[7]++;
+  	}
+
+  } else if (idealV.i == x && idealV.j == y + 1) {	// ideal move is N
+  	printf("ideal is E\n");
+  	if (prob >= 0 && prob < 0.2) {   // N
+    	y++;
+    	steps1[0]++;
+  	} else if (prob < 0.6) {         // NE
+    	x++;
+    	y++;
+    	steps1[1]++;
+  	} else if (prob < 0.18) {         // E
+    	x++;
+    	steps1[2]++;
+  	} else if ( prob < 0.38) {        // SE
+    	x++;
+    	y--;
+    	steps1[3]++;
+  	} else if (prob < 0.48) {         // S
+    	y--;  
+    	steps1[4]++;
+  	} else if (prob < 0.68) {         // SW
+    	x--;
+    	y--;
+    	steps1[5]++;
+  	} else if(prob < 0.88) {          // W
+    	x--;
+    	steps1[6]++;
+  	} else if (prob < 1.0) {         // NW
+    	x--;
+    	y++;
+    	steps1[7]++;
   	}
 
   } else {
   	//y++;
   	//x--;
-  	//steps[0]++;
-  	steps[8]++;
+  	//steps1[0]++;
+  	steps1[8]++;
   }
  
   p[0] = x;
@@ -167,19 +231,19 @@ void chase(struct Params * params, struct Point * u, struct Point * v) {
 			// calculate for debugging
 			double total = 0;
 			for (int k = 0; k < 9; k++) {
-				total += steps[k];
+				total += steps1[k];
 			}
 
-			printf("steps taken randomly: %.0f\n", total);
-			printf("N  %d\t%.3f\n", steps[0], steps[0]/total);
-			printf("NE %d\t%.3f\n", steps[1], steps[1]/total);
-			printf("E  %d\t%.3f\n", steps[2], steps[2]/total);
-			printf("SE %d\t%.3f\n", steps[3], steps[3]/total);
-			printf("S  %d\t%.3f\n", steps[4], steps[4]/total);
-			printf("SW %d\t%.3f\n", steps[5], steps[5]/total);
-			printf("W  %d\t%.3f\n", steps[6], steps[6]/total);
-			printf("NW %d\t%.3f\n", steps[7], steps[7]/total);
-			printf("-- %d\t%.3f\n", steps[8], steps[8]/total);
+			printf("steps1 taken randomly: %.0f\n", total);
+			printf("N  %d\t%.3f\n", steps1[0], steps1[0]/total);
+			printf("NE %d\t%.3f\n", steps1[1], steps1[1]/total);
+			printf("E  %d\t%.3f\n", steps1[2], steps1[2]/total);
+			printf("SE %d\t%.3f\n", steps1[3], steps1[3]/total);
+			printf("S  %d\t%.3f\n", steps1[4], steps1[4]/total);
+			printf("SW %d\t%.3f\n", steps1[5], steps1[5]/total);
+			printf("W  %d\t%.3f\n", steps1[6], steps1[6]/total);
+			printf("NW %d\t%.3f\n", steps1[7], steps1[7]/total);
+			printf("-- %d\t%.3f\n", steps1[8], steps1[8]/total);
 			break;
 		}
 		
