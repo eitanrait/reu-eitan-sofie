@@ -20,7 +20,7 @@ int main(int argc, char * argv[]) {
 	params.output_file_txt = DEFAULT_OUTPUT_FILE_TXT;
 	params.maxsteps = DEFAULT_MAX_STEPS;
 	
-  	while ((ch = getopt(argc, argv, "VR:o:u:v:t:d:n:c:f:")) != -1) {
+  	while ((ch = getopt(argc, argv, "VR:o:u:v:t:d:n:p:f:")) != -1) {
     	switch(ch) {
     		case 'V':
 				is_verbose++;
@@ -54,7 +54,7 @@ int main(int argc, char * argv[]) {
 			case 'd':
 				params.detection = strdup(optarg);
 				break;
-			case 'c':
+			case 'p':
 				use_chasing_prob++;
 				params.chasing_prob = atof(optarg);
 				break;
