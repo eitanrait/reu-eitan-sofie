@@ -51,42 +51,42 @@ int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, fl
 	//printf("bresenhamP+(1*p): %f\n",bresenhamP+(1*p));
 	printf("random number is %.2f\n",*prob);
 	//printf("split probability: %f\n", p);
-	
+	/*
 	if (*prob <= bresenhamP + (1.0 * p)) { 		  // probability of moving in direction 1 unit away from ideal this one
 		switch(ideal) {
-			case 1: // Ideal N
+			case 0: // Ideal N
 				x += 1;
 				y += 1;
 				ratios[1]++;
 				break;
-			case 2: // Ideal NE
+			case 1: // Ideal NE
 				x += 1;
 				ratios[2]++;
 				break;
-			case 3: // Ideal E
+			case 2: // Ideal E
 				x += 1;
 				y -= 1;
 				ratios[3]++;
 				break;
-			case 4: // Ideal SE
+			case 3: // Ideal SE
 				y -= 1;
 				ratios[4]++;
 				break;
-			case 5: // Ideal S
+			case 4: // Ideal S
 				x -= 1;
 				y -= 1;
 				ratios[5]++;
 				break;
-			case 6: // Ideal SW
+			case 5: // Ideal SW
 				x -= 1;
 				ratios[6]++;
 				break;
-			case 7: // Ideal W
+			case 6: // Ideal W
 				x -= 1;
 				y += 1;
 				ratios[7]++;
 				break;
-			case 8: // Ideal NW
+			case 7: // Ideal NW
 				y += 1;
 				ratios[0]++;
 				break;
@@ -96,38 +96,38 @@ int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, fl
 		}
 	} else if (*prob <= bresenhamP + (1.5 * p)) { // probability of moving in direction 2 unit away from ideal
 		switch(ideal) {
-			case 1: // Ideal N
+			case 0: // Ideal N
 				x += 1;
 				ratios[2]++;
 				break;
-			case 2: // Ideal NE
+			case 1: // Ideal NE
 				x += 1;
 				y -= 1;
 				ratios[3]++;
 				break;
-			case 3: // Ideal E
+			case 2: // Ideal E
 				y -= 1;
 				ratios[4]++;
 				break;
-			case 4: // Ideal SE
+			case 3: // Ideal SE
 				x -= 1;
 				y -= 1;
 				ratios[5]++;
 				break;
-			case 5: // Ideal S
+			case 4: // Ideal S
 				x -= 1;
 				ratios[6]++;
 				break;
-			case 6: // Ideal SW
+			case 5: // Ideal SW
 				x -= 1;
 				y += 1;
 				ratios[7]++;
 				break;
-			case 7: // Ideal W
+			case 6: // Ideal W
 				y += 1;
 				ratios[0]++;
 				break;
-			case 8: // Ideal NW
+			case 7: // Ideal NW
 				x += 1;
 				y += 1;
 				ratios[1]++;
@@ -138,39 +138,39 @@ int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, fl
 		}
 	} else if (*prob <= bresenhamP + (2.5 * p)) { // probability of moving in direction 3 unit away from ideal
 		switch(ideal) {
-			case 1: // Ideal N
+			case 0: // Ideal N
 				x += 1;
 				y -= 1;
 				ratios[3]++;
 				break;
-			case 2: // Ideal NE
+			case 1: // Ideal NE
 				y -= 1;
 				ratios[4]++;
 				break;
-			case 3: // Ideal E
+			case 2: // Ideal E
 				x -= 1;
 				y -= 1;
 				ratios[5]++;
 				break;
-			case 4: // Ideal SE
+			case 3: // Ideal SE
 				x -= 1;
 				ratios[6]++;
 				break;
-			case 5: // Ideal S
+			case 4: // Ideal S
 				x -= 1;
 				y += 1;
 				ratios[7]++;
 				break;
-			case 6: // Ideal SW
+			case 5: // Ideal SW
 				y += 1;
 				ratios[0]++;
 				break;
-			case 7: // Ideal W
+			case 6: // Ideal W
 				x += 1;
 				y += 1;
 				ratios[1]++;
 				break;
-			case 8: // Ideal NW
+			case 7: // Ideal NW
 				x += 1;
 				ratios[2]++;
 				break;
@@ -179,38 +179,38 @@ int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, fl
 		}
 	} else if (*prob <= bresenhamP + (5.5 * p)) { // probability of moving in direction 4 unit away from ideal
 		switch(ideal) {
-			case 1: // Ideal N
+			case 0: // Ideal N
 				y -= 1;
 				ratios[4]++;
 				break;
-			case 2: // Ideal NE
+			case 1: // Ideal NE
 				x -= 1;
 				y -= 1;
 				ratios[5]++;
 				break;
-			case 3: // Ideal E
+			case 2: // Ideal E
 				x -= 1;
 				ratios[6]++;
 				break;
-			case 4: // Ideal SE
+			case 3: // Ideal SE
 				x -= 1;
 				y += 1;
 				ratios[7]++;
 				break;
-			case 5: // Ideal S
+			case 4: // Ideal S
 				y += 1;
 				ratios[0]++;
 				break;
-			case 6: // Ideal SW
+			case 5: // Ideal SW
 				x += 1;
 				y += 1;
 				ratios[1]++;
 				break;
-			case 7: // Ideal W
+			case 6: // Ideal W
 				x += 1;
 				ratios[2]++;
 				break;
-			case 8: // Ideal NW
+			case 7: // Ideal NW
 				x += 1;
 				y -= 1;
 				ratios[3]++;
@@ -221,39 +221,39 @@ int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, fl
 		}
 	} else if (*prob <= bresenhamP + (6.5 * p)) { // probability of moving in direction 5 unit away from ideal
 		switch(ideal) {
-			case 1: // Ideal N
+			case 0: // Ideal N
 				x -= 1; 
 				y -= 1; 
 				ratios[5]++;
 				break; // southwest
-			case 2: // Ideal NE
+			case 1: // Ideal NE
 				x -= 1; 
 				ratios[6]++;
 				break; // west
-			case 3: // Ideal E
+			case 2: // Ideal E
 				x -= 1;
 				y += 1;
 				ratios[7]++;
 				break; // northwest
-			case 4: // Ideal SE
+			case 3: // Ideal SE
 				y += 1;
 				ratios[0]++;
 				break; // north
-			case 5: // Ideal S
+			case 4: // Ideal S
 				x += 1;
 				y += 1;
 				ratios[1]++;
 				break; // northeast
-			case 6: // Ideal SW
+			case 5: // Ideal SW
 				x += 1;
 				ratios[2]++;
 				break; // east
-			case 7: // Ideal W
+			case 6: // Ideal W
 				x += 1;
 				y -= 1;
 				ratios[3]++;
 				break; // southeast
-			case 8: // Ideal NW
+			case 7: // Ideal NW
 				y -= 1;
 				ratios[4]++;
 				break; // south
@@ -263,38 +263,38 @@ int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, fl
 		}
 	} else if (*prob <= bresenhamP + (7.3 * p)) { // probability of moving in direction 6 unit away from ideal
 		switch(ideal) {
-			case 1: // Ideal N
+			case 0: // Ideal N
 				x -= 1;
 				ratios[6]++;
 				break; // west
-			case 2: // Ideal NE
+			case 1: // Ideal NE
 				x -= 1; 
 				y += 1;
 				ratios[7]++;
 				break; // northwest
-			case 3: // Ideal E
+			case 2: // Ideal E
 				y += 1;
 				ratios[0]++;
 				break; // north
-			case 4: // Ideal SE
+			case 3: // Ideal SE
 				x += 1;
 				y += 1;
 				ratios[1]++;
 				break; // northeast
-			case 5: // Ideal S
+			case 4: // Ideal S
 				x += 1;
 				ratios[2]++;
 				break; // east
-			case 6: // Ideal SW
+			case 5: // Ideal SW
 				x += 1;
 				y -= 1;
 				ratios[3]++;
 				break; // southeast
-			case 7: // Ideal W
+			case 6: // Ideal W
 				y -= 1;
 				ratios[4]++;
 				break; // south
-			case 8: // Ideal NW
+			case 7: // Ideal NW
 				x -= 1;
 				y -= 1;
 				ratios[5]++;
@@ -305,39 +305,39 @@ int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, fl
 		}
 	} else if (*prob <= bresenhamP + (7.8 * p)) { // probability of moving in direction 7 unit away from ideal this one
 		switch(ideal) {
-			case 1: // Ideal N
+			case 0: // Ideal N
 				x -= 1; 
 				y += 1; 
 				ratios[7]++;
 				break; // northwest
-			case 2: // Ideal NE
+			case 1: // Ideal NE
 				y += 1; 
 				ratios[0]++;
 				break; // north
-			case 3: // Ideal E
+			case 2: // Ideal E
 				x += 1;
 				y += 1;
 				ratios[1]++;
 				break; // northeast
-			case 4: // Ideal SE
+			case 3: // Ideal SE
 				x += 1;
 				ratios[2]++;
 				break; // east
-			case 5: // Ideal S
+			case 4: // Ideal S
 				x += 1;
 				y -= 1;
 				ratios[3]++;
 				break; // southeast
-			case 6: // Ideal SW
+			case 5: // Ideal SW
 				y -= 1;
 				ratios[4]++;
 				break; // south
-			case 7: // Ideal W
+			case 6: // Ideal W
 				x -= 1;
 				y -= 1;
 				ratios[5]++;
 				break; // southwest
-			case 8: // Ideal NW
+			case 7: // Ideal NW
 				x -= 1;
 				ratios[6]++;
 				break; // west
@@ -348,42 +348,42 @@ int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, fl
 	} else { 									  // probability of not moving in any direction
 		ratios[8]++;
 	} 
-	
+	*/
 	if (*prob <= bresenhamP + (3.0 * p)) { 		  // probability of moving in direction 1 unit away from ideal this one
 		switch(ideal) {
-			case 1: // Ideal N
+			case 0: // Ideal N
 				x += 1;
 				y += 1;
 				ratios[1]++;
 				break;
-			case 2: // Ideal NE
+			case 1: // Ideal NE
 				x += 1;
 				ratios[2]++;
 				break;
-			case 3: // Ideal E
+			case 2: // Ideal E
 				x += 1;
 				y -= 1;
 				ratios[3]++;
 				break;
-			case 4: // Ideal SE
+			case 3: // Ideal SE
 				y -= 1;
 				ratios[4]++;
 				break;
-			case 5: // Ideal S
+			case 4: // Ideal S
 				x -= 1;
 				y -= 1;
 				ratios[5]++;
 				break;
-			case 6: // Ideal SW
+			case 5: // Ideal SW
 				x -= 1;
 				ratios[6]++;
 				break;
-			case 7: // Ideal W
+			case 6: // Ideal W
 				x -= 1;
 				y += 1;
 				ratios[7]++;
 				break;
-			case 8: // Ideal NW
+			case 7: // Ideal NW
 				y += 1;
 				ratios[0]++;
 				break;
@@ -393,38 +393,38 @@ int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, fl
 		}
 	} else if (*prob <= bresenhamP + (4.0 * p)) { // probability of moving in direction 2 unit away from ideal
 		switch(ideal) {
-			case 1: // Ideal N
+			case 0: // Ideal N
 				x += 1;
 				ratios[2]++;
 				break;
-			case 2: // Ideal NE
+			case 1: // Ideal NE
 				x += 1;
 				y -= 1;
 				ratios[3]++;
 				break;
-			case 3: // Ideal E
+			case 2: // Ideal E
 				y -= 1;
 				ratios[4]++;
 				break;
-			case 4: // Ideal SE
+			case 3: // Ideal SE
 				x -= 1;
 				y -= 1;
 				ratios[5]++;
 				break;
-			case 5: // Ideal S
+			case 4: // Ideal S
 				x -= 1;
 				ratios[6]++;
 				break;
-			case 6: // Ideal SW
+			case 5: // Ideal SW
 				x -= 1;
 				y += 1;
 				ratios[7]++;
 				break;
-			case 7: // Ideal W
+			case 6: // Ideal W
 				y += 1;
 				ratios[0]++;
 				break;
-			case 8: // Ideal NW
+			case 7: // Ideal NW
 				x += 1;
 				y += 1;
 				ratios[1]++;
@@ -435,39 +435,39 @@ int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, fl
 		}
 	} else if (*prob <= bresenhamP + (0 * p)) { // probability of moving in direction 3 unit away from ideal
 		switch(ideal) {
-			case 1: // Ideal N
+			case 0: // Ideal N
 				x += 1;
 				y -= 1;
 				ratios[3]++;
 				break;
-			case 2: // Ideal NE
+			case 1: // Ideal NE
 				y -= 1;
 				ratios[4]++;
 				break;
-			case 3: // Ideal E
+			case 2: // Ideal E
 				x -= 1;
 				y -= 1;
 				ratios[5]++;
 				break;
-			case 4: // Ideal SE
+			case 3: // Ideal SE
 				x -= 1;
 				ratios[6]++;
 				break;
-			case 5: // Ideal S
+			case 4: // Ideal S
 				x -= 1;
 				y += 1;
 				ratios[7]++;
 				break;
-			case 6: // Ideal SW
+			case 5: // Ideal SW
 				y += 1;
 				ratios[0]++;
 				break;
-			case 7: // Ideal W
+			case 6: // Ideal W
 				x += 1;
 				y += 1;
 				ratios[1]++;
 				break;
-			case 8: // Ideal NW
+			case 7: // Ideal NW
 				x += 1;
 				ratios[2]++;
 				break;
@@ -476,38 +476,38 @@ int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, fl
 		}
 	} else if (*prob <= bresenhamP + (0 * p)) { // probability of moving in direction 4 unit away from ideal
 		switch(ideal) {
-			case 1: // Ideal N
+			case 0: // Ideal N
 				y -= 1;
 				ratios[4]++;
 				break;
-			case 2: // Ideal NE
+			case 1: // Ideal NE
 				x -= 1;
 				y -= 1;
 				ratios[5]++;
 				break;
-			case 3: // Ideal E
+			case 2: // Ideal E
 				x -= 1;
 				ratios[6]++;
 				break;
-			case 4: // Ideal SE
+			case 3: // Ideal SE
 				x -= 1;
 				y += 1;
 				ratios[7]++;
 				break;
-			case 5: // Ideal S
+			case 4: // Ideal S
 				y += 1;
 				ratios[0]++;
 				break;
-			case 6: // Ideal SW
+			case 5: // Ideal SW
 				x += 1;
 				y += 1;
 				ratios[1]++;
 				break;
-			case 7: // Ideal W
+			case 6: // Ideal W
 				x += 1;
 				ratios[2]++;
 				break;
-			case 8: // Ideal NW
+			case 7: // Ideal NW
 				x += 1;
 				y -= 1;
 				ratios[3]++;
@@ -518,39 +518,39 @@ int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, fl
 		}
 	} else if (*prob <= bresenhamP + (0 * p)) { // probability of moving in direction 5 unit away from ideal
 		switch(ideal) {
-			case 1: // Ideal N
+			case 0: // Ideal N
 				x -= 1; 
 				y -= 1; 
 				ratios[5]++;
 				break; // southwest
-			case 2: // Ideal NE
+			case 1: // Ideal NE
 				x -= 1; 
 				ratios[6]++;
 				break; // west
-			case 3: // Ideal E
+			case 2: // Ideal E
 				x -= 1;
 				y += 1;
 				ratios[7]++;
 				break; // northwest
-			case 4: // Ideal SE
+			case 3: // Ideal SE
 				y += 1;
 				ratios[0]++;
 				break; // north
-			case 5: // Ideal S
+			case 4: // Ideal S
 				x += 1;
 				y += 1;
 				ratios[1]++;
 				break; // northeast
-			case 6: // Ideal SW
+			case 5: // Ideal SW
 				x += 1;
 				ratios[2]++;
 				break; // east
-			case 7: // Ideal W
+			case 6: // Ideal W
 				x += 1;
 				y -= 1;
 				ratios[3]++;
 				break; // southeast
-			case 8: // Ideal NW
+			case 7: // Ideal NW
 				y -= 1;
 				ratios[4]++;
 				break; // south
@@ -560,38 +560,38 @@ int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, fl
 		}
 	} else if (*prob <= bresenhamP + (5.0 * p)) { // probability of moving in direction 6 unit away from ideal
 		switch(ideal) {
-			case 1: // Ideal N
+			case 0: // Ideal N
 				x -= 1;
 				ratios[6]++;
 				break; // west
-			case 2: // Ideal NE
+			case 1: // Ideal NE
 				x -= 1; 
 				y += 1;
 				ratios[7]++;
 				break; // northwest
-			case 3: // Ideal E
+			case 2: // Ideal E
 				y += 1;
 				ratios[0]++;
 				break; // north
-			case 4: // Ideal SE
+			case 3: // Ideal SE
 				x += 1;
 				y += 1;
 				ratios[1]++;
 				break; // northeast
-			case 5: // Ideal S
+			case 4: // Ideal S
 				x += 1;
 				ratios[2]++;
 				break; // east
-			case 6: // Ideal SW
+			case 5: // Ideal SW
 				x += 1;
 				y -= 1;
 				ratios[3]++;
 				break; // southeast
-			case 7: // Ideal W
+			case 6: // Ideal W
 				y -= 1;
 				ratios[4]++;
 				break; // south
-			case 8: // Ideal NW
+			case 7: // Ideal NW
 				x -= 1;
 				y -= 1;
 				ratios[5]++;
@@ -602,39 +602,39 @@ int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, fl
 		}
 	} else if (*prob <= bresenhamP + (8.0 * p)) { // probability of moving in direction 7 unit away from ideal this one
 		switch(ideal) {
-			case 1: // Ideal N
+			case 0: // Ideal N
 				x -= 1; 
 				y += 1; 
 				ratios[7]++;
 				break; // northwest
-			case 2: // Ideal NE
+			case 1: // Ideal NE
 				y += 1; 
 				ratios[0]++;
 				break; // north
-			case 3: // Ideal E
+			case 2: // Ideal E
 				x += 1;
 				y += 1;
 				ratios[1]++;
 				break; // northeast
-			case 4: // Ideal SE
+			case 3: // Ideal SE
 				x += 1;
 				ratios[2]++;
 				break; // east
-			case 5: // Ideal S
+			case 4: // Ideal S
 				x += 1;
 				y -= 1;
 				ratios[3]++;
 				break; // southeast
-			case 6: // Ideal SW
+			case 5: // Ideal SW
 				y -= 1;
 				ratios[4]++;
 				break; // south
-			case 7: // Ideal W
+			case 6: // Ideal W
 				x -= 1;
 				y -= 1;
 				ratios[5]++;
 				break; // southwest
-			case 8: // Ideal NW
+			case 7: // Ideal NW
 				x -= 1;
 				ratios[6]++;
 				break; // west
@@ -670,9 +670,9 @@ void chase(struct Params * params, struct Point * u, struct Point * v) {
 		// add probability to if boat V will take bresenham's move
 		if (prob <= take_bresenham_prob) {
 			// 50% chance to take bresenham's line
+			ratios[switchDirection(v->i,v->j,idealV)]++;
 			v->i = points[1].i;
 			v->j = points[1].j;
-			ratios[switchDirection(v->i,v->j,idealV)]++;
 		} else {
 			coordPtr = moveWithProbability(v->i,v->j,idealV,take_bresenham_prob,&prob);
 			v->i = *coordPtr;

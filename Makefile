@@ -14,8 +14,8 @@ COPTS= -D
 COPTS= -Wall
 
 RANDOMSEED = 0
-TIME = 6000
-PROB = .3
+TIME = 7000
+PROB = .5
 FILE_O = output.csv
 FILE_I = output.csv
 BOATV = "0 0 chasing"
