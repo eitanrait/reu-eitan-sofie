@@ -165,6 +165,7 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
 	double prob = (rand() % 100) *.01;
   	//int noMovement = 2;
   	int idealDirectionIndex = 0;
+  	int lastIdealDirection = 0;
   	int offsetIndex;
   	double bres, random, behindCount= 0.0;
   	double take_bresenham_prob = (use_chasing_prob) ? params->chasing_prob : 1.0;
@@ -204,10 +205,14 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
 	    		random++;
 	    	}
 
+	    	lastIdealDirection = idealDirectionIndex;
+
     	} else if (behind == 2) {
 
-    		offsetIndex = idealDirectionIndex;
-    		bres++;
+    		// choose randomly skewed
+	    	prob = (rand() % 100) *.01;
+	    	offsetIndex = checkProbability(idealDirectionIndex, prob);
+	    	random++;
     	}
     	
 
