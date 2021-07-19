@@ -9,6 +9,8 @@
 #include <stdbool.h>
 #include "diver.h"
 
+/*
+// original
 #define ideal .02	// 2%
 #define step1 .06	// 4%
 #define step2 .18	// 12%
@@ -17,9 +19,46 @@
 #define step5 .68	// 20%
 #define step6 .88 	// 20%
 #define step7 1.0	// 12%
+*/
+
+/*
+// random walk
+#define ideal .125	// 12%
+#define step1 .25	// 12%
+#define step2 .375	// 12%
+#define step3 .50	// 12%
+#define step4 .625	// 12%
+#define step5 .75	// 12%
+#define step6 .875 	// 12%
+#define step7 1.0	// 12%
+*/
+
+/*
+// option 2
+#define ideal .02	// 2%
+#define step1 .14	// 12%
+#define step2 .36	// 22%
+#define step3 .46	// 10%
+#define step4 .56	// 10%
+#define step5 .66	// 10%
+#define step6 .88 	// 22%
+#define step7 1.0	// 12%
+*/
+
+
+// prefer steps 1, 2, 6, and 7 away
+#define ideal .05	// 5%
+#define step1 .25	// 20%
+#define step2 .45	// 20%
+#define step3 .50	// 5%
+#define step4 .55	// 5%
+#define step5 .60	// 5%
+#define step6 .80 	// 20%
+#define step7 1.0	// 20%
+
 
 struct Point points[SIZE];
-int steps[8] = {0};
+int steps[9] = {0};
 
 typedef struct {
 	int offset[2];	
@@ -165,9 +204,9 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
 	double prob = (rand() % 100) *.01;
   	//int noMovement = 2;
   	int idealDirectionIndex = 0;
-  	int lastIdealDirection = 0;
-  	int offsetIndex;
-  	double bres, random, behindCount= 0.0;
+  	int lastOffsetDirection = 0;
+  	int offsetIndex = 0;
+  	double bres, random, behindCount, countChase, countRand, regionACount= 0.0;
   	double take_bresenham_prob = (use_chasing_prob) ? params->chasing_prob : 1.0;
   	//fprintf(params->fpt, "%d, %d, %d, %d, %c, %d\n", u->i, u->j,  v->i, v->j, v->region, t); // initial point
 
@@ -189,10 +228,24 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
     	prob = (rand() % 100) *.01;
     	printf("take bres? %f\n", prob);
 
-    	if (behind == 1) {
+    	if ((behind == 1 || behind == 2) && v->region == 'a') {
+    		// closest region
+    		// do more chasing than random movement
+    		regionACount++;
+    		if (t%3 == 0 || t%3 == 1) {
+    			offsetIndex = idealDirectionIndex;
+    			countChase++;
+    		} else {
+    			prob = (rand() % 100) *.01;
+    			offsetIndex = checkProbability(idealDirectionIndex, prob);
+    			countRand++;
+    		}
+
+    		
+    	} else if (behind == 1) {
 
     		behindCount++;
-    		printf("in here\n");
+    		printf("boat V is behind U\n");
 
     		if (prob <= take_bresenham_prob) {
 	    		// take ideal
@@ -205,17 +258,26 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
 	    		random++;
 	    	}
 
-	    	lastIdealDirection = idealDirectionIndex;
+	    	lastOffsetDirection = offsetIndex;
 
     	} else if (behind == 2) {
 
     		// choose randomly skewed
-	    	prob = (rand() % 100) *.01;
-	    	offsetIndex = checkProbability(idealDirectionIndex, prob);
-	    	random++;
+	    	//prob = (rand() % 100) *.01;
+	    	//offsetIndex = checkProbability(idealDirectionIndex, prob);
+	    	//random++;
+    		offsetIndex = lastOffsetDirection;
+    	} else {
+    		// when behind = 0
+    		// V is in front of U
+    		if (t != 0) {
+    			printf("\nboat V is ahead of U\n");
+    			break;
+    		}
+    		
     	}
     	
-
+    	printf("offsetIndex: %d\n", offsetIndex);
     	// move boat V by the offset specified in directions struct
     	v->i += directions[offsetIndex].offset[0];
     	v->j += directions[offsetIndex].offset[1];
@@ -233,9 +295,9 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
 		fprintf(params->fpt, "%d, %d, %d, %d, %c, %d\n", u->i, u->j,  v->i, v->j, v->region, t);	// print to csv file
     
     	if (t > params->maxsteps || (v->i == u->i && v->j == u->j)) {
-      		printf("\nbreak\n");
-      		printf("behind_count: %.0f\t%f\nbres taken: %.0f\t%f\nrandom taken: %.0f\t%f\n", behindCount, behindCount/t, bres, bres/t, random, random/t);
-
+      		printf("\n-------\nbreak\n");
+      		printf("behind_count: %.0f\t%f\nbres taken: %.0f\t%f\nrandom taken: %.0f\t%f\n", behindCount, behindCount/t, bres, bres/behindCount, random, random/behindCount);
+      		printf("\nin region A: %.0f\nchasing: %.0f\t%f\nrandom: %.0f\t%f\n\n", regionACount, countChase, countChase/regionACount, countRand, countRand/regionACount);
 			// calculate for debugging
 			double total = 0;
 			for (int k = 0; k < 9; k++) {
