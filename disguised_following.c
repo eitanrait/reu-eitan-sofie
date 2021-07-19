@@ -19,7 +19,7 @@
 #define step7 1.0	// 12%
 
 struct Point points[SIZE];
-int steps[8] = {0};
+int steps[9] = {0};
 
 typedef struct {
 	int offset[2];	
