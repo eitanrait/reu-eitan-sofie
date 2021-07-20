@@ -58,8 +58,7 @@ void approach(struct Point * u, struct Point * v);
 #define RIGHT 1
 #define LEFT -1
 #define ZERO 0
-
-//following methods
+//following and disguised_following methods
 struct Point * findPerpendicularPoint(struct Point * u, struct Point * v, double last_i, double last_j);
 int directionOfPoint(struct Point A, struct Point B, struct Point P);
 int isVBehind(struct Point * u, struct Point * v, double last_i, double last_j);
@@ -71,7 +70,7 @@ void findPath(struct Point * points, int x1, int y1, int x2, int y2);
 void findPathSofie(struct Point * points, int x0, int y0, int x1, int y1);
 void MyLine(struct Point * points, int xs, int ys, int xe, int ye);
 
-//chasing methods
+//chasing and chasing_prob methods
 void chase(struct Params * params, struct Point * u, struct Point * v);
 int switchDirection(int x, int y, struct Point idealV);
 int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, float * prob);
@@ -81,8 +80,6 @@ void updateU(struct Point * u, char * s, int t, int prob);
 
 #define YES 1
 #define NO 0
-#define QUEUE_SIZE 16
-
 //detection
 int findRank(struct Point v, struct Point lastV, struct Point idealV);
 int detectChasing(struct Params * params, struct Point * u, struct Point * v);
@@ -91,37 +88,28 @@ int detectRandomWalk(struct Params * params, struct Point * u, struct Point * v)
 int detectFollow(struct Params * params, struct Point * u, struct Point * v);
 float getDistance(struct Point * u, struct Point * v);
 
-//queue
-void init(int * head, int * tail);
-int isFull(int head, int tail);
-int isEmpty(int head);
-void enQueue(int * head, int * tail, int element, int * queue);
-int deQueue(int * head, int * tail, int * queue);
-void display(int head, int tail, int * queue);
-//float getEntropy(int head, int tail, int * queue);
-
 #define FIFO_SIZE 65
-
-//fifo
+//FIFO Init
 void Fifo_Init();
+//FIFO Put
 int Fifo_PutYN(int data);
 int Fifo_PutRank(float data);
 int Fifo_PutDec(int data);
 int Fifo_PutDist(float data);
-
+//FIFO Get
 int Fifo_GetYN();
 float Fifo_GetRank();
 int Fifo_GetDec();
 float Fifo_GetDist();
-
+//FIFO Status
 int Fifo_StatusYN();
 int Fifo_StatusDec();
 int Fifo_StatusDist();
-
+//FIFO Display
 void displayYN();
 void displayRank();
 void displayDec();
 void displayDist();
-
+//FIFO Stats
 float getEntropy();
 float probabilityScore();
