@@ -19,7 +19,7 @@ void chase(struct Params * params, struct Point * u, struct Point * v) {
 	while (1) {
 
 		// get new line
-		findPathSofie(points, v->i, v->j, u->i, u->j);
+		findPath(points, v->i, v->j, u->i, u->j);
 		printf("prob for taking bres: %f\n", prob);
 		// add probability to if boat V will take bresenham's move
 		if (prob < take_bresenham_prob) {

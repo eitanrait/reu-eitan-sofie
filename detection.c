@@ -266,7 +266,7 @@ int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
 		// find next best point using Bresenham
 		// from V (chasing) to U (chasee)
 		printf("find best path between V: (%d, %d) U: (%d, %d)\n", v->i, v->j, u->i, u->j);	
-		findPathSofie(points, v->i, v->j, u->i, u->j);
+		findPath(points, v->i, v->j, u->i, u->j);
 		//printf("U: (%d, %d)\n", U.i, U.j);
 		idealV.i = points[1].i;
 		idealV.j = points[1].j;
@@ -466,7 +466,7 @@ int detectFollow(struct Params * params, struct Point * u, struct Point * v) {
 
 		// check bresenham
 		printf("find best path between V: (%d, %d) U: (%d, %d)\n", v->i, v->j, u->i, u->j);	
-		findPathSofie(points, v->i, v->j, u->i, u->j);
+		findPath(points, v->i, v->j, u->i, u->j);
 		idealV.i = points[1].i;
 		idealV.j = points[1].j;
 		printf("\tnext best: (%d, %d)\n", idealV.i, idealV.j);

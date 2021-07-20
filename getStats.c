@@ -2,8 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-
-#define INITIAL_WAIT 16	// wait for buffer to be full before starting calculation
+#include "diver.h"
 
 int main(int argc, char*argv[])
 {
@@ -31,7 +30,7 @@ int main(int argc, char*argv[])
     // start scan and while loop
     while (fgets(line, sizeof(line), pFile)) {
 
-    	if (i > INITIAL_WAIT) {
+    	if (i > FIFO_SIZE) {
 
     		num = atof(strtok(line, " "));
 

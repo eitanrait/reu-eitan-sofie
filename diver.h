@@ -100,7 +100,7 @@ int deQueue(int * head, int * tail, int * queue);
 void display(int head, int tail, int * queue);
 //float getEntropy(int head, int tail, int * queue);
 
-#define FIFO_SIZE 17
+#define FIFO_SIZE 65
 
 //fifo
 void Fifo_Init();
