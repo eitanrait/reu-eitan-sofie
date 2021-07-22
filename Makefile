@@ -13,15 +13,15 @@ SHELL= /bin/bash
 COPTS= -D
 COPTS= -Wall
 
-RANDOMSEED = 555
-TIME = 30000
-PROB = .5
+RANDOMSEED = 0
+TIME = 5000
+PROB = .2
 FILE_O = output.csv
 FILE_I = output.csv
 FILE_ENTROPY = entropy.csv
-BOATV = "0 0 randomwalk"
-BOATU = "10000 1000 right"
-ACTIVITY = randomwalk
+BOATV = "200 0 chasing"
+BOATU = "1000 100 up"
+ACTIVITY = chasing
 
 all:
 	make build
@@ -43,17 +43,19 @@ run-diver-detect: diver-prob
 	./diver-prob -V -R ${RANDOMSEED} -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME} -d ${FILE_I}
 	
 run-diver-prob: diver-prob
-	./diver-prob -V -R ${RANDOMSEED} -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME} -p ${PROB}
-
-run-diver-no-prob: diver-prob
-	./diver-prob -V -R ${RANDOMSEED} -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME}
+	./diver-prob -V -R ${RANDOMSEED} -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME} -c ${PROB}
 
 run-detect: diver-prob
 	./diver-prob -V -o ${FILE_I} -f ${FILE_ENTROPY} -d ${ACTIVITY}
 	
-run-synthesize-detect: diver-prob
-	./diver-prob -V -v ${BOATV} -u ${BOATU} -p ${PROB} -o ${FILE_O} -t ${TIME} -d ${ACTIVITY} -f ${FILE_ENTROPY} 
+run-diver-prob-detect: diver-prob
+	./diver-prob -V -R ${RANDOMSEED} -v ${BOATV} -u ${BOATU} -c ${PROB} -o ${FILE_O} -t ${TIME} -d ${ACTIVITY} -f ${FILE_ENTROPY} 
+	./getStats ${FILE_ENTROPY} 
 
+run-diver-no-prob-detect: diver-prob
+	./diver-prob -V -R ${RANDOMSEED} -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME} -d ${ACTIVITY} -f ${FILE_ENTROPY}
+	./getStats ${FILE_ENTROPY} 
+	
 stats: getStats
 	./getStats ${FILE_ENTROPY}
 

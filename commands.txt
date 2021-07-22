@@ -1,12 +1,7 @@
 For driver.c:
-to compile
-gcc -Wall approaching.c bresenham.c chasing.c classification.c detection.c diver.c following.c queue.c randomwalk.c uMoves.c -lm -o diver
 
-compile in queue_branch
-gcc -Wall approaching.c bresenham.c chasing.c classification.c detection.c diver.c following.c randomwalk.c uMoves.c Fifo.c -lm -o diver
-
-compile in eitan (using probability for following and chasing)
-gcc -Wall approaching.c bresenham.c chasing_prob.c classification.c detection.c diver.c following_prob.c randomwalk.c uMoves.c Fifo.c -lm -o diver
+to compile 
+gcc -Wall approaching.c bresenham.c chasing.c classification.c detection.c diver.c disguised_following.c randomwalk.c uMoves.c Fifo.c -lm -o diver
 
 to run
 following a diagonal path

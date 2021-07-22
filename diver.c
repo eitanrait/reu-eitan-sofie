@@ -16,11 +16,11 @@ int main(int argc, char * argv[]) {
 	struct Point v;
 
 	params.randomseed = DEFAULT_RAND_SEED;
-	params.output_file = DEFAULT_OUTPUT_FILE;
-	params.entropy_file = DEFAULT_ENTROPY_FILE;
+	params.output_file_csv = DEFAULT_OUTPUT_FILE_CSV;
+	params.output_file_detection = DEFAULT_OUTPUT_FILE_DETECTION;
 	params.maxsteps = DEFAULT_MAX_STEPS;
 	
-  	while ((ch = getopt(argc, argv, "VR:o:u:v:t:d:n:p:f:")) != -1) {
+  	while ((ch = getopt(argc, argv, "VR:o:u:v:t:d:n:c:f:")) != -1) {
     	switch(ch) {
     		case 'V':
 				is_verbose++;
@@ -33,10 +33,10 @@ int main(int argc, char * argv[]) {
       			params.randomseed = atoi(optarg);
       			break;
     		case 'o':
-      			params.output_file = strdup(optarg);
+      			params.output_file_csv = strdup(optarg);
       			break;
       		case 'f':
-      			params.entropy_file = strdup(optarg);
+      			params.output_file_detection = strdup(optarg);
       			break;
     		case 'u':
     			u.i = atoi(strtok(optarg, " "));
@@ -54,7 +54,7 @@ int main(int argc, char * argv[]) {
 			case 'd':
 				params.detection = strdup(optarg);
 				break;
-			case 'p':
+			case 'c':
 				use_chasing_prob++;
 				params.chasing_prob = atof(optarg);
 				break;
@@ -73,64 +73,59 @@ int main(int argc, char * argv[]) {
 		printf("\nERROR: -u - v coordinates cannot be the same\n\n");	
 		exit(1);
 	}
-	
 	if(params.maxsteps < 1) {
 		printf("\nERROR: -t time steps must be a number greater than 1\n");
 		exit(1);
-	}
+}
+	if ( params.v_activity && ( strcmp(params.v_activity,"randomwalk") == 0 || strcmp(params.v_activity,"approaching") == 0 || strcmp(params.v_activity,"chasing") == 0 || strcmp(params.v_activity,"following") == 0 ) ) {
 		
-	if(params.v_activity && (strcmp(params.v_activity,"randomwalk") == 0 || strcmp(params.v_activity,"approaching") == 0 || strcmp(params.v_activity,"chasing") == 0 || strcmp(params.v_activity,"following") == 0)) {
-		
-		if(!(params.fpt = fopen(params.output_file, "w+"))) {		
+		if(!(params.fpt = fopen(params.output_file_csv, "w+"))) {		
 			exit(1);
 		}
-		
 		printf("V      U\n");
 		printf("%d, %d   %d, %d\n", v.i, v.j, u.i, u.j);        // initial point  
 
-		if(strcmp(params.v_activity,"approaching") == 0)
+		if(strcmp(params.v_activity,"approaching") == 0) {
 			approach(&u, &v);
-		else if(strcmp(params.v_activity,"following") == 0)
+		} else if(strcmp(params.v_activity,"following") == 0) {
 			follow(&params, &u, &v);
-		else if(strcmp(params.v_activity,"chasing") == 0)
+		} else if(strcmp(params.v_activity,"chasing") == 0) {
 			chase(&params, &u, &v);
-		else if(strcmp(params.v_activity,"randomwalk") == 0)
-			randomwalk(&params, &u, &v);	
+		} 
+		else if(strcmp(params.v_activity,"randomwalk") == 0) {
+			randomwalk(&params, &u, &v);
+		}
 		
 		fclose(params.fpt);
-	
 	} else {
 		printf("\nERROR: -v unrecognized activity\n\n");
 		exit(1);
 	}
 
-	if(params.detection && (strcmp(params.detection,"chasing") == 0 || strcmp(params.detection,"randomwalk") == 0 || strcmp(params.detection,"follow") == 0)) {
+	if( params.detection && ( strcmp(params.detection,"chasing") == 0 || strcmp(params.detection,"randomwalk") == 0 || strcmp(params.detection,"follow") == 0 ) ) {
 		Fifo_Init();
-		
-		if (!(params.fpt = fopen(params.output_file, "r"))) {
-			printf("\nERROR: no file %s\n", params.output_file);
+		if (!(params.fpt = fopen(params.output_file_csv, "r"))) {
+			printf("\nERROR: no file %s\n", params.output_file_csv);
 			return 1;
 		}	
 		
-		if(!(params.fpt_ent = fopen(params.entropy_file, "w+"))) {
-			printf("\nERROR: unable to open file %s\n", params.entropy_file);		
+		if(!(params.fpt_detection = fopen(params.output_file_detection, "w+"))) {
+			printf("\nERROR: unable to open file %s\n", params.output_file_detection);		
 			exit(1);
 		}
-		
-		if(strcmp(params.detection,"chasing") == 0)
+		if(strcmp(params.detection,"chasing") == 0) {
 			detectChasing(&params, &u, &v);
-		else if(strcmp(params.detection,"randomwalk") == 0)
+		} else if(strcmp(params.detection,"randomwalk") == 0) {
 			detectRandomWalk(&params, &u, &v);
-		else if(strcmp(params.detection,"follow") == 0)
+		} else if(strcmp(params.detection,"follow") == 0) {
 			detectFollow(&params, &u, &v);
+		}
 		
 		fclose(params.fpt);
-		fclose(params.fpt_ent);
-	
-	} else {
+		fclose(params.fpt_detection);
+	} else if (params.detection) {
 		printf("\nERROR: -d unrecognized activity\n\n");
 		exit(1);
-	} 
-	
-  	return 0;
+	} 	
+	return 0;
 }
