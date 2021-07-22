@@ -17,7 +17,7 @@ int main(int argc, char * argv[]) {
 
 	params.randomseed = DEFAULT_RAND_SEED;
 	params.output_file_csv = DEFAULT_OUTPUT_FILE_CSV;
-	params.output_file_txt = DEFAULT_OUTPUT_FILE_TXT;
+	params.output_file_detection = DEFAULT_OUTPUT_FILE_DETECTION;
 	params.maxsteps = DEFAULT_MAX_STEPS;
 	
   	while ((ch = getopt(argc, argv, "VR:o:u:v:t:d:n:c:f:")) != -1) {
@@ -36,7 +36,7 @@ int main(int argc, char * argv[]) {
       			params.output_file_csv = strdup(optarg);
       			break;
       		case 'f':
-      			params.output_file_txt = strdup(optarg);
+      			params.output_file_detection = strdup(optarg);
       			break;
     		case 'u':
     			u.i = atoi(strtok(optarg, " "));
@@ -113,8 +113,8 @@ int main(int argc, char * argv[]) {
 				return 1;
 			}	
 			
-			if(!(params.fpt_txt = fopen(params.output_file_txt, "w+"))) {
-				printf("\nERROR: unable to open file %s\n", params.output_file_txt);		
+			if(!(params.fpt_detection = fopen(params.output_file_detection, "w+"))) {
+				printf("\nERROR: unable to open file %s\n", params.output_file_detection);		
   				exit(1);
   			}
   			printf("here2\n");
@@ -127,7 +127,7 @@ int main(int argc, char * argv[]) {
 			}
 			
 			fclose(params.fpt);
-			fclose(params.fpt_txt);
+			fclose(params.fpt_detection);
 		} else {
 			printf("\nERROR: -d unrecognized activity\n\n");
   			exit(1);

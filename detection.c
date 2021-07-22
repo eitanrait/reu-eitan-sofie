@@ -74,6 +74,158 @@ int findRank(struct Point v, struct Point lastV, struct Point idealV) {
 	return 0;
 }
 
+// return the amount of steps away from the idea
+// return 0 is taken ideal
+int idealNotHere = 0;
+int getStepsAway(struct Point v, struct Point lastV, struct Point idealV) {
+	// ideal is to NE
+	if (lastV.i + 1 == idealV.i && lastV.j + 1 == idealV.j) {
+
+		if ((v.i == lastV.i + 1 && v.j == lastV.j) || (v.i == lastV.i && v.j == lastV.j + 1)) {
+		
+			// actual position of V is to N or E
+			return 1;
+
+		} else if ((v.i == lastV.i - 1 && v.j == lastV.j + 1) || (v.i == lastV.i + 1 && v.j == lastV.j - 1)) {
+		
+			// actual position of V is to SE or NW
+			return 2;
+
+		} else if ((v.i == lastV.i - 1 && v.j == lastV.j) || (v.i == lastV.i && v.j == lastV.j - 1)) {
+		
+			// actual position of V is to W or S
+			return 3;
+
+		} else if (v.i == lastV.i - 1 && v.j == lastV.j - 1) {
+		
+			// actual position of V is to SW
+			return 4;
+
+		}
+
+		return 0;
+	}
+
+	// when ideal is directly E:
+	if (lastV.i + 1 == idealV.i && lastV.j == idealV.j) {
+
+		if ((v.i == lastV.i + 1 && v.j == lastV.j + 1) || (v.i == lastV.i + 1 && v.j == lastV.j - 1)) {
+		
+			// actual position of V is to NE or SE
+			return 1;
+
+		} else if ((v.i == lastV.i && v.j == lastV.j + 1) || (v.i == lastV.i && v.j == lastV.j - 1)) {
+		
+			// actual position of V is to N or S
+			return 2;
+
+		} else if ((v.i == lastV.i - 1 && v.j == lastV.j + 1) || (v.i == lastV.i - 1 && v.j == lastV.j - 1)) {
+		
+			// actual position of V is to NW or SW
+			return 3; 
+
+		} else if (v.i == lastV.i - 1 && v.j == lastV.j) {
+		
+			// actual position of V is to W
+			return 4;
+
+		}
+
+		// actual position is also E
+		return 0;
+	} 
+
+	// when ideal is directly N:
+	if (lastV.i == idealV.i && lastV.j + 1 == idealV.j) {
+
+		if ((v.i == lastV.i + 1 && v.j == lastV.j + 1) || (v.i == lastV.i - 1 && v.j == lastV.j + 1)) {
+		
+			// actual position of V is to NE or NW
+			return 1;
+
+		} else if ((v.i == lastV.i - 1 && v.j == lastV.j) || (v.i == lastV.i + 1 && v.j == lastV.j)) {
+		
+			// actual position of V is to W or E
+			return 2;
+
+		} else if ((v.i == lastV.i - 1 && v.j == lastV.j - 1) || (v.i == lastV.i + 1 && v.j == lastV.j - 1)) {
+		
+			// actual position of V is to SW or SE
+			return 3; 
+
+		} else if (v.i == lastV.i && v.j == lastV.j - 1) {
+		
+			// actual position of V is to S
+			return 4;
+
+		}
+
+		// actual position is also N
+		return 0;
+	}
+
+	// when ideal is SE:
+	if (lastV.i + 1 == idealV.i && lastV.j - 1 == idealV.j) {
+
+		if ((v.i == lastV.i + 1 && v.j == lastV.j) || (v.i == lastV.i && v.j == lastV.j - 1)) {
+		
+			// actual position of V is to E or S
+			return 1;
+
+		} else if ((v.i == lastV.i - 1 && v.j == lastV.j - 1) || (v.i == lastV.i + 1 && v.j == lastV.j + 1)) {
+		
+			// actual position of V is to SW or NE
+			return 2;
+
+		} else if ((v.i == lastV.i - 1 && v.j == lastV.j) || (v.i == lastV.i && v.j == lastV.j + 1)) {
+		
+			// actual position of V is to W or N
+			return 3; 
+
+		} else if (v.i == lastV.i - 1 && v.j == lastV.j + 1) {
+		
+			// actual position of V is to NW
+			return 4;
+
+		}
+
+		// actual position is also SE
+		return 0;
+	} 
+
+	// when ideal is to S:
+	if (lastV.i == idealV.i && lastV.j - 1 == idealV.j) {
+
+		if ((v.i == lastV.i + 1 && v.j == lastV.j - 1) || (v.i == lastV.i - 1 && v.j == lastV.j - 1)) {
+		
+			// actual position of V is to SE or SW
+			return 1;
+
+		} else if ((v.i == lastV.i - 1 && v.j == lastV.j) || (v.i == lastV.i + 1 && v.j == lastV.j)) {
+		
+			// actual position of V is to W or E
+			return 2;
+
+		} else if ((v.i == lastV.i - 1 && v.j == lastV.j + 1) || (v.i == lastV.i + 1 && v.j == lastV.j + 1)) {
+		
+			// actual position of V is to NW or NE
+			return 3; 
+
+		} else if (v.i == lastV.i && v.j == lastV.j + 1) {
+		
+			// actual position of V is to N
+			return 4;
+
+		}
+
+		// actual position is also S
+		return 0;
+	}
+
+	idealNotHere++;
+	return 0;
+}
+
 float findProb(struct Point v, struct Point lastV, struct Point idealV) {
 
 	printf("\nin findProb() \n");
@@ -258,7 +410,7 @@ int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
 			printf("running probability: %f\n", probability);
 
 			entropy = getEntropy();
-			fprintf(params->fpt_txt, "%.4f\n", entropy);
+			fprintf(params->fpt_detection, "%.4f\n", entropy);
 
 		}
 
@@ -375,8 +527,10 @@ int detectRandomWalk(struct Params * params, struct Point * u, struct Point * v)
 			Fifo_PutDec(dec);
 
 			entropy = getEntropy();
-			fprintf(params->fpt_txt, "%.4f\n", entropy);
-
+			if (t >= FIFO_SIZE) {
+				fprintf(params->fpt_detection, "%.4f\n", entropy);
+			}
+			
 		}
 		
 		displayDec();
@@ -416,6 +570,7 @@ int detectFollow(struct Params * params, struct Point * u, struct Point * v) {
 	float probability;
 	float entropy;
 	int dec;
+	int totalStepsAway;
 
 	while (fgets(line, 1024, params->fpt) != NULL) {
 
@@ -447,7 +602,7 @@ int detectFollow(struct Params * params, struct Point * u, struct Point * v) {
 
 			// check how far from bresenham 
 			// printf("V: (%d, %d) next best: (%d, %d)\n", v->i, v->j, idealV.i, idealV.j);
-			Fifo_PutRank(findProb(*v, lastV, idealV));
+			Fifo_PutRank(getStepsAway(*v, lastV, idealV));
 
 			// check if decision queue is full
 			if (Fifo_StatusDec() == FIFO_SIZE - 1) {
@@ -456,17 +611,26 @@ int detectFollow(struct Params * params, struct Point * u, struct Point * v) {
 			
 			// store decision taken into queueDecision
 			// find decision using last V and current V
+			// entropy is calculated from the decision queue
 			dec = findDecision(lastV, *v);
 			Fifo_PutDec(dec);
 
 			entropy = getEntropy();
-			fprintf(params->fpt_txt, "%.4f\n", entropy);
+			if (t >= FIFO_SIZE) {
+				fprintf(params->fpt_detection, "%.4f\n", entropy);
+			}
 
+			/*
+			totalStepsAway = getTotalStepsAway();
+			if (t > FIFO_SIZE) {
+				fprintf(params->fpt_detection, "%.4f, %d\n", entropy, totalStepsAway);
+			}
+			*/
 		}
 
 		// check bresenham
 		printf("find best path between V: (%d, %d) U: (%d, %d)\n", v->i, v->j, u->i, u->j);	
-		findPathSofie(points, v->i, v->j, u->i, u->j);
+		findPath(points, v->i, v->j, u->i, u->j);	// changed from findPathSofie()
 		idealV.i = points[1].i;
 		idealV.j = points[1].j;
 		printf("\tnext best: (%d, %d)\n", idealV.i, idealV.j);
@@ -481,13 +645,14 @@ int detectFollow(struct Params * params, struct Point * u, struct Point * v) {
 
 		if (t > params->maxsteps) {
 			printf("break\n");
+			printf("not caught in getStepsAway(): %d\n", idealNotHere);
 			break;
 		}	
 		t++;
 		printf("\n ------------------------------ \n");
 
 	}
-
+	printf("not caught in getStepsAway(): %d\n", idealNotHere);
 	return 0;
 
 }

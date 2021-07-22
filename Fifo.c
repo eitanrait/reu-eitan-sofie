@@ -221,6 +221,16 @@ void displayDist() {
 
 }
 
+int getTotalStepsAway() {
+
+	int sum = 0;
+	for (int i = GetIndexRank; i != PutIndexRank; i = (i+1) % FIFO_SIZE) {
+		sum += rankQueue[i];
+	}
+	return sum;
+
+}
+
 float getEntropy() {
 	int i;
 	float sum = 0;

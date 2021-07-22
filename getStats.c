@@ -52,11 +52,13 @@ int main(int argc, char*argv[])
     fclose(pFile);
     average = sum/N;
     std_dev = sqrt((sum_sqs/N)-(average*average));
+    float variance = (sum_sqs/N)-(average*average);
 
     printf("Smallest: %7.3lf\n", min);
     printf("Largest: %7.3lf\n", max);
     printf("Average: %7.3lf\n", average);
     printf("Standard deviation: %7.4lf\n", std_dev);
+    printf("Variance: %7.4f\n", variance);
     return(0);
 }
 

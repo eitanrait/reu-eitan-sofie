@@ -56,6 +56,17 @@
 #define step6 .80 	// 20%
 #define step7 1.0	// 20%
 
+/*
+// prefer steps 2 and 6
+#define ideal .0	// 0%
+#define step1 .0	// 0%
+#define step2 .50	// 50%
+#define step3 .0	// 0%
+#define step4 .0	// 0%
+#define step5 .0	// 0%
+#define step6 1.0 	// 50%
+#define step7 .0	// 0%
+*/
 
 struct Point points[SIZE];
 int steps[9] = {0};

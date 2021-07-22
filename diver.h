@@ -11,7 +11,7 @@
 #define DEFAULT_DIRECTORY "./csv_files/"
 #define DEFAULT_RAND_SEED 0
 #define DEFAULT_OUTPUT_FILE_CSV "output.csv"
-#define DEFAULT_OUTPUT_FILE_TXT "output_entropy.txt"
+#define DEFAULT_OUTPUT_FILE_DETECTION "detection_output.csv"
 #define DEFAULT_SIZE 100
 #define DEFAULT_MAX_STEPS 6000
 #define DEFAULT_COORD 0 
@@ -25,11 +25,11 @@ struct Params {
   int maxsteps;
   int randomseed;
   FILE * fpt;
-  FILE * fpt_txt;
+  FILE * fpt_detection;
   char * v_activity;
   char * u_activity;
   char * output_file_csv;
-  char * output_file_txt;
+  char * output_file_detection;
   //char * dir;
   //char * output_file;
   //char * path;
@@ -99,7 +99,7 @@ int deQueue(int * head, int * tail, int * queue);
 void display(int head, int tail, int * queue);
 //float getEntropy(int head, int tail, int * queue);
 
-#define FIFO_SIZE 17
+#define FIFO_SIZE 65  // buffer = 64 + 1
 
 //fifo
 void Fifo_Init();
@@ -124,3 +124,4 @@ void displayDist();
 
 float getEntropy();
 float probabilityScore();
+int getTotalStepsAway();
