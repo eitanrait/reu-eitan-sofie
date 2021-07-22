@@ -97,13 +97,15 @@ int main(int argc, char * argv[]) {
 		}
 		
 		fclose(params.fpt);
-	} else {
+	} else if (params.v_activity) {
 		printf("\nERROR: -v unrecognized activity\n\n");
 		exit(1);
 	}
 
 	if( params.detection && ( strcmp(params.detection,"chasing") == 0 || strcmp(params.detection,"randomwalk") == 0 || strcmp(params.detection,"follow") == 0 ) ) {
+		
 		Fifo_Init();
+		
 		if (!(params.fpt = fopen(params.output_file_csv, "r"))) {
 			printf("\nERROR: no file %s\n", params.output_file_csv);
 			return 1;
@@ -123,6 +125,7 @@ int main(int argc, char * argv[]) {
 		
 		fclose(params.fpt);
 		fclose(params.fpt_detection);
+		
 	} else if (params.detection) {
 		printf("\nERROR: -d unrecognized activity\n\n");
 		exit(1);

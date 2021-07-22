@@ -13,7 +13,7 @@
 #define W .7 
 #define NW .8
 #define STAY .9
-#define GONE 1
+#define GONE 1 
 
 float movements[10] = {N, NE, E, SE, S, SW, W, NW, STAY, GONE};
 
