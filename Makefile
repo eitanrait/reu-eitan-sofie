@@ -5,7 +5,7 @@
 # Note: Makefiles begin with a captal M
 #   Indentation MUST be with a tab
 #
-# targets build, test, clean and submit are required.
+# targets build, test, and clean are required.
 # 
 
 SHELL= /bin/bash
@@ -13,14 +13,14 @@ SHELL= /bin/bash
 COPTS= -D
 COPTS= -Wall
 
-RANDOMSEED = 0
-TIME = 20000
-PROB = .9
+RANDOMSEED = 555
+TIME = 30000
+PROB = .5
 FILE_O = output.csv
 FILE_I = output.csv
-FILE_ENTROPY = output_entropy.txt
-BOATV = "0 0 chasing"
-BOATU = "1000 1500 diagonal"
+FILE_ENTROPY = entropy.csv
+BOATV = "0 0 randomwalk"
+BOATU = "10000 1000 right"
 ACTIVITY = randomwalk
 
 all:
@@ -44,6 +44,9 @@ run-diver-detect: diver-prob
 	
 run-diver-prob: diver-prob
 	./diver-prob -V -R ${RANDOMSEED} -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME} -p ${PROB}
+
+run-diver-no-prob: diver-prob
+	./diver-prob -V -R ${RANDOMSEED} -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME}
 
 run-detect: diver-prob
 	./diver-prob -V -o ${FILE_I} -f ${FILE_ENTROPY} -d ${ACTIVITY}

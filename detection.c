@@ -258,7 +258,7 @@ int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
 			printf("running probability: %f\n", probability);
 
 			entropy = getEntropy();
-			fprintf(params->fpt_txt, "%.4f\n", entropy);
+			fprintf(params->fpt_ent, "%.4f\n", entropy);
 
 		}
 
@@ -375,7 +375,7 @@ int detectRandomWalk(struct Params * params, struct Point * u, struct Point * v)
 			Fifo_PutDec(dec);
 
 			entropy = getEntropy();
-			fprintf(params->fpt_txt, "%.4f\n", entropy);
+			fprintf(params->fpt_ent, "%.4f\n", entropy);
 
 		}
 		
@@ -460,7 +460,7 @@ int detectFollow(struct Params * params, struct Point * u, struct Point * v) {
 			Fifo_PutDec(dec);
 
 			entropy = getEntropy();
-			fprintf(params->fpt_txt, "%.4f\n", entropy);
+			fprintf(params->fpt_ent, "%.4f\n", entropy);
 
 		}
 

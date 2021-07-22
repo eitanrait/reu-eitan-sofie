@@ -16,8 +16,8 @@ int main(int argc, char * argv[]) {
 	struct Point v;
 
 	params.randomseed = DEFAULT_RAND_SEED;
-	params.output_file_csv = DEFAULT_OUTPUT_FILE_CSV;
-	params.output_file_txt = DEFAULT_OUTPUT_FILE_TXT;
+	params.output_file = DEFAULT_OUTPUT_FILE;
+	params.entropy_file = DEFAULT_ENTROPY_FILE;
 	params.maxsteps = DEFAULT_MAX_STEPS;
 	
   	while ((ch = getopt(argc, argv, "VR:o:u:v:t:d:n:p:f:")) != -1) {
@@ -33,10 +33,10 @@ int main(int argc, char * argv[]) {
       			params.randomseed = atoi(optarg);
       			break;
     		case 'o':
-      			params.output_file_csv = strdup(optarg);
+      			params.output_file = strdup(optarg);
       			break;
       		case 'f':
-      			params.output_file_txt = strdup(optarg);
+      			params.entropy_file = strdup(optarg);
       			break;
     		case 'u':
     			u.i = atoi(strtok(optarg, " "));
@@ -81,7 +81,7 @@ int main(int argc, char * argv[]) {
 		
 	if(params.v_activity && (strcmp(params.v_activity,"randomwalk") == 0 || strcmp(params.v_activity,"approaching") == 0 || strcmp(params.v_activity,"chasing") == 0 || strcmp(params.v_activity,"following") == 0)) {
 		
-		if(!(params.fpt = fopen(params.output_file_csv, "w+"))) {		
+		if(!(params.fpt = fopen(params.output_file, "w+"))) {		
 			exit(1);
 		}
 		
@@ -107,13 +107,13 @@ int main(int argc, char * argv[]) {
 	if(params.detection && (strcmp(params.detection,"chasing") == 0 || strcmp(params.detection,"randomwalk") == 0 || strcmp(params.detection,"follow") == 0)) {
 		Fifo_Init();
 		
-		if (!(params.fpt = fopen(params.output_file_csv, "r"))) {
-			printf("\nERROR: no file %s\n", params.output_file_csv);
+		if (!(params.fpt = fopen(params.output_file, "r"))) {
+			printf("\nERROR: no file %s\n", params.output_file);
 			return 1;
 		}	
 		
-		if(!(params.fpt_txt = fopen(params.output_file_txt, "w+"))) {
-			printf("\nERROR: unable to open file %s\n", params.output_file_txt);		
+		if(!(params.fpt_ent = fopen(params.entropy_file, "w+"))) {
+			printf("\nERROR: unable to open file %s\n", params.entropy_file);		
 			exit(1);
 		}
 		
@@ -125,7 +125,7 @@ int main(int argc, char * argv[]) {
 			detectFollow(&params, &u, &v);
 		
 		fclose(params.fpt);
-		fclose(params.fpt_txt);
+		fclose(params.fpt_ent);
 	
 	} else {
 		printf("\nERROR: -d unrecognized activity\n\n");
