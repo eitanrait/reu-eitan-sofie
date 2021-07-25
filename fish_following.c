@@ -9,6 +9,7 @@
 #include "diver.h"
 
 // not used right now
+/*
 // random walk
 #define ideal .125	// 12%
 #define step1 .25	// 12%
@@ -18,25 +19,38 @@
 #define step5 .75	// 12%
 #define step6 .875 	// 12%
 #define step7 1.0	// 12%
+*/
+
+// prefer steps 1, 2, 6, and 7 away
+#define ideal .05	// 5%
+#define step1 .25	// 20%
+#define step2 .45	// 20%
+#define step3 .50	// 5%
+#define step4 .55	// 5%
+#define step5 .60	// 5%
+#define step6 .80 	// 20%
+#define step7 1.0	// 20%
 
 struct Point points[SIZE];
 int steps[9] = {0};
-int possible_ks[10] = {9, 10, 11, 12, 13, 14, 16, 18, 20, 22};
-int possible_xs[5] = {0, 1, 2, 6, 7};
+//int possible_ks[10] = {9, 10, 11, 12, 13, 14, 16, 18, 20, 22};
+int possible_ks[10] = {50, 55, 60, 65, 70, 75, 80, 85, 90, 100};
+int possible_xs[7] = {0, 1, 2, 6, 7, 8, 0};
 
 typedef struct {
 	int offset[2];	
 } OFFSET_t;
 
-OFFSET_t directions[8] = {
+OFFSET_t directions[9] = {
 	{{0, 1}},	// N
 	{{1, 1}}, 	// NE
 	{{1, 0}},	// E
 	{{1, -1}},	// SE
 	{{0, -1}},	// S
-	{{-1, -1}},// SW
+	{{-1, -1}},	// SW
 	{{-1, 0}},	// W
-	{{-1, 1}}	// NW
+	{{-1, 1}},	// NW
+	{{0, 0}}	// STAY
 
 };
 
@@ -158,6 +172,7 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
   
  	int t = 0;
  	
+ 	double random = 0;
  	int x = 0;
 	int behind = 0; // 0 - not behind, 1 - behind                                                                                
 	double last_i, last_j;
@@ -167,8 +182,9 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
 	int count = k;
 
 	int idealDirectionIndex = 0;
-
   	int offsetIndex = 0;
+
+  	double take_bresenham_prob = (use_chasing_prob) ? params->chasing_prob : 1.0;
 
   	while (1) {    
     
@@ -182,8 +198,19 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
     	idealDirectionIndex = idealDirection(v->i, v->j, points[1]);
     	printf("idealDirectionIndex: %d\n", idealDirectionIndex);
 
+    	// if count is less than k, continue in the same direction with some randomness
+    	printf(">>> count, k  %d, %d\n", count, k);
     	if (count < k) {
-    		count++;
+    		// take a step with chasing probability
+    		prob = (rand() % 100) *.01;
+    		if (prob > take_bresenham_prob) {
+				// 50% chance to take bresenham's line
+				random++;
+				prob = (rand() % 100) *.01;
+	    		offsetIndex = checkProbability(idealDirectionIndex, prob);	
+			}
+			count++;
+
     	} else {
     		// change directions every k moves
     		printf("-------\ncount: %d\n", count);
@@ -193,10 +220,10 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
     		k = possible_ks[(int)prob];
 
     		// choose an x that does a move 1, 2, 6, or 7 steps away from the ideal
-    		prob = (rand() % 5);
+    		prob = (rand() % 7);	// change to length of possible_xs
     		x = possible_xs[(int)prob];
     		printf("x: %d\n", x);
-    		offsetIndex = (idealDirectionIndex + x) % 8;
+    		offsetIndex = (idealDirectionIndex + x) % 8;	// always mod 8
     		//prob = (rand() % 100) *.01;
     		//offsetIndex = checkProbability(idealDirectionIndex, prob);
     	}
@@ -213,7 +240,6 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
 
     	// move boat U by what is in command line
     	prob = (rand() % 100) *.01;
-    	printf("t: %d\n", t);
     	updateU(u, params->u_activity, t, prob);
     	
     	printf("%d, %d  %d, %d  %d\n", v->i, v->j, u->i, u->j, t);
@@ -227,7 +253,7 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
 				total += steps[k];
 			}
 
-			printf("steps taken randomly: %.0f\n", total);
+			printf("steps taken randomly: %.0f  %f\n", random, random/t);
 			printf("ideal   %d\t%.3f\n", steps[0], steps[0]/total);
 			printf("1 step  %d\t%.3f\n", steps[1], steps[1]/total);
 			printf("2 steps %d\t%.3f\n", steps[2], steps[2]/total);
@@ -237,6 +263,8 @@ void follow(struct Params * params, struct Point * u, struct Point * v) {
 			printf("6 steps %d\t%.3f\n", steps[6], steps[6]/total);
 			printf("7 steps %d\t%.3f\n", steps[7], steps[7]/total);
 			printf("  --    %d\t%.3f\n", steps[8], steps[8]/total);
+
+			printf("\nfollowing probability: %.2f\n", take_bresenham_prob);
 
       		break;
     	}
