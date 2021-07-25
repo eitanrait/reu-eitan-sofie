@@ -19,9 +19,9 @@ PROB = .2
 FILE_O = output.csv
 FILE_I = output.csv
 FILE_ENTROPY = entropy.csv
-BOATV = "200 0 chasing"
-BOATU = "1000 100 up"
-ACTIVITY = chasing
+BOATV = "200 0 randomwalk"
+BOATU = "5000 4000 up"
+ACTIVITY = randomwalk
 
 all:
 	make build
@@ -44,6 +44,9 @@ run-diver-detect: diver-prob
 	
 run-diver-prob: diver-prob
 	./diver-prob -V -R ${RANDOMSEED} -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME} -c ${PROB}
+
+run-diver-no-prob: diver-prob
+	./diver-prob -V -R ${RANDOMSEED} -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME}
 
 run-detect: diver-prob
 	./diver-prob -V -o ${FILE_I} -f ${FILE_ENTROPY} -d ${ACTIVITY}

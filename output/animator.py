@@ -68,7 +68,7 @@ def animate(i):
 anim = animation.FuncAnimation(fig, animate, init_func=init,
                                frames=len(u_i), interval=.1, blit=True)
 
-FFwriter = animation.FFMpegWriter(fps=1, extra_args=['-vcodec', 'libx264'])
+FFwriter = animation.FFMpegWriter(fps=30, extra_args=['-vcodec', 'libx264'])
 #print(" ", FFwriter)
 #anim.save('animation.mp4', writer = FFwriter)
 anim.save('clip1.mov')

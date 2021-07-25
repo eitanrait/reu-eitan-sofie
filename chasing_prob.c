@@ -707,7 +707,7 @@ void chase(struct Params * params, struct Point * u, struct Point * v) {
 		fprintf(params->fpt, "%d, %d, %d, %d\n", u->i, u->j, v->i, v->j);
 
 		// check for breaking 
-		if (t > params->maxsteps || (v->i == u->i && v->j == u->j)) {
+		if (t >= params->maxsteps || (v->i == u->i && v->j == u->j)) {
 			printf("break   chasing prob: %.2f\n", take_bresenham_prob);
 			break;
 		}
