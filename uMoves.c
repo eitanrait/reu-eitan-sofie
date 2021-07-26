@@ -6,7 +6,7 @@
 void updateU(struct Point * u, char * s, int t, int prob) {
 	int * coordPtr;
 	printf("\n%s %d\n",s,t);
-	if(t%2 == 0) {
+	//if(t%2 == 0) {
 
 		if(strcmp(s, "randomwalk") == 0) {
 			coordPtr = randomPoint(u->i, u->j, prob);
@@ -24,6 +24,6 @@ void updateU(struct Point * u, char * s, int t, int prob) {
 		} else if (strcmp(s,"right") == 0) {	// move to right (east)
 			u->i += 1;
 		}
-	} 
+//	} 
 	//... (can add different movement patterns)
 }
