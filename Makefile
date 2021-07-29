@@ -17,7 +17,7 @@ TIME = 1000
 PROB = .975
 FILE_O = test.csv
 FILE_D = detection.csv
-BOATV = "200 0 following"
+BOATV = "200 0 mix"
 BOATU = "1500 100 up"
 
 all:
