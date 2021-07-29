@@ -6,8 +6,9 @@ from sklearn.cluster import KMeans
 title = "1d variance of entropy, k-means colors manually labeled"
 csvfile = "exp4results.csv"
 colors = []
-
-data = np.genfromtxt(csvfile, delimiter=",",dtype=float,usecols=(0,5),skip_header=1) #read entropy and variance from csv
+col1 = 0
+col2 = 5
+data = np.genfromtxt(csvfile, delimiter=",",dtype=float,usecols=(col1,col2),skip_header=1) #read entropy and variance from csv
 activities = np.genfromtxt(csvfile,delimiter=",",usecols=(4),dtype=None,encoding=None,skip_header=1)
 for activity in activities: #assign colors to each activity that was labeled in csv
 	if activity == "chasing":
