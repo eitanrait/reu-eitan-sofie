@@ -346,7 +346,7 @@ int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, fl
 		ratios[8]++;
 	} 
 	*/
-	if (*prob <= bresenhamP + (2.0 * p)) { 		  // probability of moving in direction 1 unit away from ideal this one
+	if (*prob <= bresenhamP + (4.0 * p)) { 		  // probability of moving in direction 1 unit away from ideal this one
 		switch(ideal) {
 			case 0: // Ideal N
 				x += 1;
@@ -388,7 +388,7 @@ int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, fl
 				ratios[8]++;
 				break;
 		}
-	} else if (*prob <= bresenhamP + (4.0 * p)) { // probability of moving in direction 2 unit away from ideal
+	} else if (*prob <= bresenhamP + (0.0 * p)) { // probability of moving in direction 2 unit away from ideal
 		switch(ideal) {
 			case 0: // Ideal N
 				x += 1;
@@ -555,7 +555,7 @@ int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, fl
 				ratios[8]++;
 				break;
 		}
-	} else if (*prob <= bresenhamP + (6.0 * p)) { // probability of moving in direction 6 unit away from ideal
+	} else if (*prob <= bresenhamP + (0.0 * p)) { // probability of moving in direction 6 unit away from ideal
 		switch(ideal) {
 			case 0: // Ideal N
 				x -= 1;
