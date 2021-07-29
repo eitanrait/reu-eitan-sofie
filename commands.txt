@@ -3,6 +3,9 @@ For driver.c:
 to compile 
 gcc -Wall approaching.c bresenham.c chasing.c classification.c detection.c diver.c disguised_following.c randomwalk.c uMoves.c Fifo.c -lm -o diver
 
+to compile in following branch: 
+gcc -Wall approaching.c bresenham.c chasing_prob.c classification.c detection.c diver.c fish_following.c randomwalk.c uMoves.c Fifo.c mix_states.c -lm -o diver
+
 to run
 following a diagonal path
 ./diver -V -o following.csv -u "1000 100 diagonal" -v "0 0 following" -t 6000
@@ -13,6 +16,9 @@ chasing a vertical path
 
 random 
 ./diver -V -n 0.01 -o random_w_noise.csv -u "1000 100 diagonal" -v "500 50 randomwalk" -t 100
+
+to mix
+./diver -V -o mixed_states.csv -u "1000 100 diagonal" -v "200 0 mix" -t 5000 -c 0.9
 
 use -d <activity> for detection
 with chasing_vertical.csv as an existing file

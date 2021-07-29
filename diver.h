@@ -78,6 +78,9 @@ void chase(struct Params * params, struct Point * u, struct Point * v);
 //uMoves
 void updateU(struct Point * u, char * s, int t, int prob);
 
+//mix_states
+void mix_states(struct Params * params, struct Point * u, struct Point * v);
+
 #define YES 1
 #define NO 0
 #define QUEUE_SIZE 16

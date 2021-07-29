@@ -112,7 +112,7 @@ void randomwalk(struct Params * params, struct Point * u, struct Point * v) {
   int* coordPtr;
   int t = 0;
 
-  fprintf(params->fpt, "%d, %d, %d, %d\n", u->i, u->j, v->i, v->j); // print initial to csv file
+  //fprintf(params->fpt, "%d, %d, %d, %d\n", u->i, u->j, v->i, v->j); // print initial to csv file
 
   while (t < params->maxsteps) {
 

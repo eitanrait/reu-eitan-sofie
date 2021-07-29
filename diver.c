@@ -77,7 +77,8 @@ int main(int argc, char * argv[]) {
 		printf("\nERROR: -t time steps must be a number greater than 1\n");
 		exit(1);
 }
-	if ( params.v_activity && ( strcmp(params.v_activity,"randomwalk") == 0 || strcmp(params.v_activity,"approaching") == 0 || strcmp(params.v_activity,"chasing") == 0 || strcmp(params.v_activity,"following") == 0 ) ) {
+	if ( params.v_activity && ( strcmp(params.v_activity,"randomwalk") == 0 || strcmp(params.v_activity,"approaching") == 0 
+		|| strcmp(params.v_activity,"chasing") == 0 || strcmp(params.v_activity,"following") == 0 || strcmp(params.v_activity,"mix") == 0 ) ) {
 		
 		if(!(params.fpt = fopen(params.output_file_csv, "w+"))) {		
 			exit(1);
@@ -91,9 +92,10 @@ int main(int argc, char * argv[]) {
 			follow(&params, &u, &v);
 		} else if(strcmp(params.v_activity,"chasing") == 0) {
 			chase(&params, &u, &v);
-		} 
-		else if(strcmp(params.v_activity,"randomwalk") == 0) {
+		} else if(strcmp(params.v_activity,"randomwalk") == 0) {
 			randomwalk(&params, &u, &v);
+		} else if(strcmp(params.v_activity,"mix") == 0) {
+			mix_states(&params, &u, &v);
 		}
 		
 		fclose(params.fpt);

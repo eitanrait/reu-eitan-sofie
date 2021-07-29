@@ -704,10 +704,13 @@ void chase(struct Params * params, struct Point * u, struct Point * v) {
 		v->region = inPolarRegion(v->i, v->j, u->i, u->j);
 		
 		printf("V: %d, %d, %c U: %d, %d, t: %d\n\n", v->i, v->j, v->region, u->i, u->j, t);
-		fprintf(params->fpt, "%d, %d, %d, %d\n", u->i, u->j, v->i, v->j);
+		if (is_verbose) {
+			printf("----here----\n");
+			fprintf(params->fpt, "%d, %d, %d, %d\n", u->i, u->j, v->i, v->j);
+		}
 
 		// check for breaking 
-		if (t > params->maxsteps || (v->i == u->i && v->j == u->j)) {
+		if (t >= params->maxsteps || (v->i == u->i && v->j == u->j)) {
 			printf("break   chasing prob: %.2f\n", take_bresenham_prob);
 			break;
 		}
