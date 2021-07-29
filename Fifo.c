@@ -234,18 +234,18 @@ int getTotalStepsAway() {
 float getEntropy() {
 	int i;
 	float sum = 0;
-	float occurences[10] = {0};
+	float occurences[10] = {0}; // {0,0,0,0,0,0,0,0,0,0}
 	for (i = GetIndexDec; i != PutIndexDec; i = (i+1) % FIFO_SIZE) {
 		occurences[decisionQueue[i]]++;
 	}
-	//printf("\n 0: %d\n 1: %d\n 2: %d\n 3: %d\n 4: %d\n 5: %d\n 6: %d\n 7: %d\n 8: %d\n 9: %d\n\n",occurences[0],occurences[1],occurences[2],occurences[3],occurences[4],occurences[5],occurences[6],occurences[7],occurences[8],occurences[9]);
 	for(i = 0; i < 10; i++) {
 		if(occurences[i] != 0) {
-			//printf("\nprint i:%d %d/%d: %f\n",i,occurences[i],(temp/QUEUE_SIZE) *log2f(temp/QUEUE_SIZE));
 			sum += (occurences[i]/FIFO_SIZE) * log2f(occurences[i]/FIFO_SIZE);
-			//printf("\nprint running sum: %f\n",sum);
 		}
 	}
-	//printf("\nprint total sum: %f\n",sum);
 	return -sum;
 }
+//printf("\n 0: %d\n 1: %d\n 2: %d\n 3: %d\n 4: %d\n 5: %d\n 6: %d\n 7: %d\n 8: %d\n 9: %d\n\n",occurences[0],occurences[1],occurences[2],occurences[3],occurences[4],occurences[5],occurences[6],occurences[7],occurences[8],occurences[9]);
+//printf("\nprint total sum: %f\n",sum);
+//printf("\nprint i:%d %d/%d: %f\n",i,occurences[i],(temp/QUEUE_SIZE) *log2f(temp/QUEUE_SIZE));
+			//printf("\nprint running sum: %f\n",sum);	

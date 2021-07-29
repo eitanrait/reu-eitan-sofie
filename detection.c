@@ -348,6 +348,7 @@ int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
 	struct Point lastV;
 	int t = 0;
 	float probability;
+	int totalStepsAway;
 	float entropy;
 	int dec;
 	//int rankingSum = 0;
@@ -372,45 +373,30 @@ int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
 
 			// check if full
 			if (Fifo_StatusYN() == FIFO_SIZE - 1) {
-				//Fifo_GetYN();
 				Fifo_GetRank();
 			}
 
-			//printf("before enQueue\n");
-			
-			//printf("\nidealV.i: %d idealV.j: %d\n\n    v->i: %d     v->j: %d\n\n",idealV.i,idealV.j,v->i,v->j); // compare
-			
-			if (idealV.i == v->i && idealV.j == v->j) {
-				// next best point is equal to point actually chosen
+			if (idealV.i == v->i && idealV.j == v->j) { 				// next best point is equal to point actually chosen
 				printf("V: (%d, %d) next best: (%d, %d)\n", v->i, v->j, idealV.i, idealV.j);
-				printf("--YES--\n");
-				//Fifo_PutYN(YES);
 				Fifo_PutRank(findProb(*v, lastV, idealV));
-
 			} else {
 				printf("V: (%d, %d) next best: (%d, %d)\n", v->i, v->j, idealV.i, idealV.j);
-
-				//Fifo_PutYN(NO);
-				Fifo_PutRank(findProb(*v, lastV, idealV));
-				
+				Fifo_PutRank(findProb(*v, lastV, idealV));	
 			}
 
-			// for decision 
-			// check if full
-			if (Fifo_StatusDec() == FIFO_SIZE - 1) {
+			if (Fifo_StatusDec() == FIFO_SIZE - 1) 				    // check if decision queue is full
 				Fifo_GetDec();
-			}
 			
-			// store decision taken into queueDecision
-			// find decision using last V and current V
-			dec = findDecision(lastV, *v);
-			Fifo_PutDec(dec);
-
+			dec = findDecision(lastV, *v);  // store decision taken into queueDecision
+			Fifo_PutDec(dec); 				// find decision using last V and current V
+			
 			probability = probabilityScore();
 			printf("running probability: %f\n", probability);
-
+			
+			totalStepsAway = getTotalStepsAway();
 			entropy = getEntropy();
-			fprintf(params->fpt_detection, "%.4f\n", entropy);
+			//fprintf(params->fpt_detection, "%.4f,%.4f\n", entropy, steps);
+			fprintf(params->fpt_detection, "%.4f\n", steps);
 
 		}
 
@@ -527,6 +513,7 @@ int detectRandomWalk(struct Params * params, struct Point * u, struct Point * v)
 			Fifo_PutDec(dec);
 
 			entropy = getEntropy();
+
 			if (t >= FIFO_SIZE) {
 				fprintf(params->fpt_detection, "%.4f\n", entropy);
 			}
@@ -568,6 +555,7 @@ int detectFollow(struct Params * params, struct Point * u, struct Point * v) {
 	int t = 0;
 	float distance;
 	float probability;
+	float steps;
 	float entropy;
 	int dec;
 	int totalStepsAway;
@@ -614,18 +602,11 @@ int detectFollow(struct Params * params, struct Point * u, struct Point * v) {
 			// entropy is calculated from the decision queue
 			dec = findDecision(lastV, *v);
 			Fifo_PutDec(dec);
-
+			steps = getStepsAway(*v, lastV, idealV);
 			entropy = getEntropy();
 			if (t >= FIFO_SIZE) {
-				fprintf(params->fpt_detection, "%.4f\n", entropy);
+				fprintf(params->fpt_detection, "%.4f,%.4f\n", entropy, steps);
 			}
-
-			/*
-			totalStepsAway = getTotalStepsAway();
-			if (t > FIFO_SIZE) {
-				fprintf(params->fpt_detection, "%.4f, %d\n", entropy, totalStepsAway);
-			}
-			*/
 		}
 
 		// check bresenham
