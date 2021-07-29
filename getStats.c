@@ -33,7 +33,6 @@ int main(int argc, char*argv[])
 
 		num_ent = atof(strtok(line, ","));
 		num_steps = atof(strtok(NULL, " "));
-		printf("%f\n",num_ent);
 		if (num_ent < min_ent || N == 0) 
 			min_ent = num_ent;
 		if (num_ent > max_ent || N == 0)
@@ -41,7 +40,6 @@ int main(int argc, char*argv[])
 		sum_ent += num_ent;
 		sum_sqs_ent += (num_ent*num_ent);
 	
-		printf("%f\n",num_steps);
 		if (num_steps < min_steps || N == 0) 
 			min_steps = num_steps;
 		if (num_steps > max_steps || N == 0)
