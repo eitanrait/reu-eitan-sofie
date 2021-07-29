@@ -46,11 +46,8 @@ int* moveWithProbability(int x, int y, struct Point idealV, float bresenhamP, fl
 	int * coord_ptr = coord;
 	int ideal = 0;
 	ideal = switchDirection(x, y, idealV);
-	//printf("value of ideal: %d\n",ideal);
 	float p = (1.0 - bresenhamP) / 8.0;
-	//printf("bresenhamP+(1*p): %f\n",bresenhamP+(1*p));
 	printf("random number is %.2f\n",*prob);
-	//printf("split probability: %f\n", p);
 	/*
 	if (*prob <= bresenhamP + (1.0 * p)) { 		  // probability of moving in direction 1 unit away from ideal this one
 		switch(ideal) {
@@ -681,20 +678,6 @@ void chase(struct Params * params, struct Point * u, struct Point * v) {
 		
 		printf("Move Direction Count:\n\tN: %d\n\tNE: %d\n\tE: %d\n\tSE: %d\n\tS: %d\n\tSW: %d\n\tW: %d\n\tNW: %d\n\tSTAY: %d\n",ratios[0],ratios[1],ratios[2],ratios[3],ratios[4],ratios[5],ratios[6],ratios[7],ratios[8]);
 		
-		/*
-		else {
-			// 50% chance to take random walk
-			// with all 8 directions, stay, and inv having 10% chance each
-			coordPtr = randomPoint(v->i, v->j, prob);
-			v->i = *coordPtr;
-			v->j = *(coordPtr + 1);
-		}
-		*/
-		// take bresenham every time
-		//v->i = points[1].i;
-		//v->j = points[1].j;
-		
-		// new prob?
 		prob = (rand() % 100) * .01;
 		printf("random number changed to %.2f\n",prob);
 		
@@ -711,7 +694,6 @@ void chase(struct Params * params, struct Point * u, struct Point * v) {
 			printf("break   chasing prob: %.2f\n", take_bresenham_prob);
 			break;
 		}
-
 		t++;
 	}
 }

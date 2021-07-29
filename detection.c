@@ -440,18 +440,12 @@ int detect(struct Params * params, struct Point * u, struct Point * v) {
 			// entropy is calculated from the decision queue
 			dec = findDecision(lastV, *v);
 			Fifo_PutDec(dec);
-
-			entropy = getEntropy();
-			if (t >= FIFO_SIZE) {
-				fprintf(params->fpt_detection, "%.4f\n", entropy);
-			}
-
-			/*
+			
 			totalStepsAway = getTotalStepsAway();
-			if (t > FIFO_SIZE) {
-				fprintf(params->fpt_detection, "%.4f, %d\n", entropy, totalStepsAway);
-			}
-			*/
+			entropy = getEntropy();
+			if (t >= FIFO_SIZE)
+				fprintf(params->fpt_detection, "%.4f,%d\n", entropy, totalStepsAway);
+			
 		}
 
 		// check bresenham
@@ -480,5 +474,4 @@ int detect(struct Params * params, struct Point * u, struct Point * v) {
 	}
 	printf("not caught in getStepsAway(): %d\n", idealNotHere);
 	return 0;
-
 }

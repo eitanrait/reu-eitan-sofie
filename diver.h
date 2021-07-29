@@ -33,7 +33,7 @@ struct Params {
   //char * dir;
   //char * output_file;
   //char * path;
-  char * detection;
+  int detection;
   float noise_offset;
   float chasing_prob;
 };

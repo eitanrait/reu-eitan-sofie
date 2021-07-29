@@ -20,7 +20,7 @@ int main(int argc, char * argv[]) {
 	params.output_file_detection = DEFAULT_OUTPUT_FILE_DETECTION;
 	params.maxsteps = DEFAULT_MAX_STEPS;
 	
-  	while ((ch = getopt(argc, argv, "VR:o:u:v:t:d:n:c:f:")) != -1) {
+  	while ((ch = getopt(argc, argv, "VR:o:u:v:t:dn:c:f:")) != -1) {
     	switch(ch) {
     		case 'V':
 				is_verbose++;
@@ -52,7 +52,7 @@ int main(int argc, char * argv[]) {
 				params.maxsteps = atoi(optarg);
 				break;
 			case 'd':
-				params.detection = strdup(optarg);
+				params.detection++;
 				break;
 			case 'c':
 				use_chasing_prob++;
@@ -77,34 +77,31 @@ int main(int argc, char * argv[]) {
 		printf("\nERROR: -t time steps must be a number greater than 1\n");
 		exit(1);
 }
-	if ( params.v_activity && ( strcmp(params.v_activity,"randomwalk") == 0 || strcmp(params.v_activity,"approaching") == 0 
-		|| strcmp(params.v_activity,"chasing") == 0 || strcmp(params.v_activity,"following") == 0 || strcmp(params.v_activity,"mix") == 0 ) ) {
+	if (params.v_activity) {
 		
-		if(!(params.fpt = fopen(params.output_file_csv, "w+"))) {		
+		if(!(params.fpt = fopen(params.output_file_csv, "w+")))		
 			exit(1);
-		}
-		printf("V      U\n");
-		printf("%d, %d   %d, %d\n", v.i, v.j, u.i, u.j);        // initial point  
-
-		if(strcmp(params.v_activity,"approaching") == 0) {
+	
+		if(strcmp(params.v_activity,"approaching") == 0)
 			approach(&u, &v);
-		} else if(strcmp(params.v_activity,"following") == 0) {
+		else if(strcmp(params.v_activity,"following") == 0)
 			follow(&params, &u, &v);
-		} else if(strcmp(params.v_activity,"chasing") == 0) {
+		else if(strcmp(params.v_activity,"chasing") == 0)
 			chase(&params, &u, &v);
-		} else if(strcmp(params.v_activity,"randomwalk") == 0) {
+		else if(strcmp(params.v_activity,"randomwalk") == 0)
 			randomwalk(&params, &u, &v);
-		} else if(strcmp(params.v_activity,"mix") == 0) {
+		else if(strcmp(params.v_activity,"mix") == 0)
 			mix_states(&params, &u, &v);
+		else {
+			printf("\nERROR: -v unrecognized activity\n\n");			
+			fclose(params.fpt);
+			exit(1);
 		}
 		
 		fclose(params.fpt);
-	} else if (params.v_activity) {
-		printf("\nERROR: -v unrecognized activity\n\n");
-		exit(1);
 	}
-
-	if( params.detection && ( strcmp(params.detection,"chasing") == 0 || strcmp(params.detection,"randomwalk") == 0 || strcmp(params.detection,"follow") == 0 ) ) {
+	
+	if(params.detection) {	
 		
 		Fifo_Init();
 		if (!(params.fpt = fopen(params.output_file_csv, "r"))) {
@@ -115,14 +112,12 @@ int main(int argc, char * argv[]) {
 			printf("\nERROR: unable to open file %s\n", params.output_file_detection);		
 			exit(1);
 		}
+		
 		detect(&params,&u,&v);
 
 		fclose(params.fpt);
 		fclose(params.fpt_detection);
 		
-	} else if (params.detection) {
-		printf("\nERROR: -d unrecognized activity\n\n");
-		exit(1);
 	} 	
 	return 0;
 }
