@@ -3,28 +3,39 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.cluster import KMeans
 
-title = "2d avg x var, k-means colors manually labeled"
-csvfile = "2d-avg-var.csv"
-df = pd.read_csv(csvfile,usecols=['ent','var']) #read entropy and variance from csv
-activity = pd.read_csv(csvfile,usecols=['act']) #read activity of each sample from csv
-color = []
-for i in activity.index: #assign colors to each activity that was labeled in csv
-	if activity['act'][i] == "chasing":
-		color.append('green')
-	if activity['act'][i] == "following":
-		color.append('orange')
-	if activity['act'][i] == "random":
-		color.append('red')
-km = KMeans(n_clusters=3) #kmeans with n clusters
-km.fit(df) #fit data from dataframe into kmeans
-y_km = km.predict(df) #store predicted cluster of sample points, automatically set color
-cdf = pd.DataFrame(km.cluster_centers_,columns=["ent","var"]) #store cluster centers in dataframe
-print(cdf)
-ax = df.plot.scatter(x="ent",y="var",c=color,s=5) #plot points
-cdf.plot.scatter(x="ent",y="var",s=200,alpha=0.3,ax=ax) #plot clusters
+title = "1d variance of entropy, k-means colors manually labeled"
+csvfile = "exp4results.csv"
+colors = []
 
-plt.title(title)
+data = np.genfromtxt(csvfile, delimiter=",",dtype=float,usecols=(0,5),skip_header=1) #read entropy and variance from csv
+activities = np.genfromtxt(csvfile,delimiter=",",usecols=(4),dtype=None,encoding=None,skip_header=1)
+for activity in activities: #assign colors to each activity that was labeled in csv
+	if activity == "chasing":
+		colors.append('green')
+	if activity == "following":
+		colors.append('orange')
+	if activity == "random":
+		colors.append('red')
+
+kmeans = KMeans(n_clusters=3) #k means with n clusters
+
+kmeans.fit(data[:,:2]) 				
+y_kmeans = kmeans.predict(data[:,:2]) #cluster index for each coordinate
+centers = kmeans.cluster_centers_ #center coordinates
+
+fig = plt.figure()
+#ax = fig.add_subplot(111)
+ax = fig.add_subplot(611)
+ax.grid(True)
+#ax.set_xlim(-.1,3.2)
+#ax.set_ylim(-.1,1.6)
+#ax.set_xlim(-.1,3.2)
+#ax.set_ylim(-.1,.1)
+ax.set_title(title)
+
+ax.scatter(data[:,0], data[:,1], c=colors, s=10)
+ax.scatter(centers[:,0],centers[:,1],c='black',s = 10, alpha = 1)
+
+path = 'graphs/kmeans/'+title+'.png'
+plt.savefig(path,dpi=400)
 plt.show()
-path = 'graphs/'+title+'.png'
-fig = ax.get_figure()
-fig.savefig(path)
