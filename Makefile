@@ -30,11 +30,8 @@ all:
 build:
 	make diver-prob getStats
 
-diver-prob: diver.c approaching.o bresenham.o chasing_prob.o classification.o detection.o Fifo.o fish_following.o randomwalk.o uMoves.o diver.h
-	cc ${COPTS} -o $@ $< approaching.o bresenham.o chasing_prob.o classification.o detection.o Fifo.o fish_following.o randomwalk.o uMoves.o
-
-diver-time: diver.c approaching.o bresenham.o chasing.o classification.o detection.o Fifo.o following.o randomwalk.o uMoves.o diver.h
-	cc ${COPTS} -o $@ $< approaching.o bresenham.o chasing.o classification.o detection.o Fifo.o following.o randomwalk.o uMoves.o
+diver-prob: diver.c approaching.o bresenham.o chasing_prob.o classification.o detection.o Fifo.o fish_following.o randomwalk.o uMoves.o mix_states.o diver.h
+	cc ${COPTS} -o $@ $< approaching.o bresenham.o chasing_prob.o classification.o detection.o Fifo.o fish_following.o randomwalk.o uMoves.o mix_states.o
 
 getStats: getStats.c diver.h
 	cc ${COPTS} -o $@ $<
@@ -99,7 +96,7 @@ stats: getStats
 	./getStats ${FILE_ENTROPY}
 
 clean:
-	-rm diver-prob diver-time getStats approaching.o bresenham.o chasing.o chasing_prob.o classification.o detection.o Fifo.o fish_following.o disguised_following.o randomwalk.o uMoves.o *.out *.csv
+	-rm diver-prob getStats approaching.o bresenham.o chasing.o chasing_prob.o classification.o detection.o Fifo.o fish_following.o disguised_following.o randomwalk.o uMoves.o *.out *.csv
 
 clean-csv:
 	-rm *.csv
