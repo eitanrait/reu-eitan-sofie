@@ -22,6 +22,7 @@ cdf = pd.DataFrame(km.cluster_centers_,columns=["ent","var"]) #store cluster cen
 print(cdf)
 ax = df.plot.scatter(x="ent",y="var",c=color,s=5) #plot points
 cdf.plot.scatter(x="ent",y="var",s=200,alpha=0.3,ax=ax) #plot clusters
+
 plt.title(title)
 plt.show()
 path = 'graphs/'+title+'.png'

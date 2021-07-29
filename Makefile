@@ -12,7 +12,7 @@ SHELL= /bin/bash
 COPTS= -D
 COPTS= -Wall
 
-RANDOMSEED =  0
+RANDOMSEED =  123
 TIME = 1000
 PROB = .975
 FILE_O = test.csv
@@ -57,54 +57,61 @@ stats: getStats
 
 tests: diver-prob
 	make getStats
-	./diver-prob -V -R 21 -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME} -d -f ${FILE_D}
-	./getStats detection.csv | grep 'Average Entropy:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Variance of Entropy:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Average Steps Away:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Variance of Steps Away:' | sed 's/^.*: //' >> test.out
-	./diver-prob -V -R 32 -v ${BOATV} -u ${BOATU} -c .975 -o ${FILE_O} -t ${TIME} -d -f ${FILE_D} 
-	./getStats detection.csv | grep 'Average Entropy:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Variance of Entropy:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Average Steps Away:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Variance of Steps Away:' | sed 's/^.*: //' >> test.out
-	./diver-prob -V -R 43 -v ${BOATV} -u ${BOATU} -c .95 -o ${FILE_O} -t ${TIME} -d -f ${FILE_D} 
-	./getStats detection.csv | grep 'Average Entropy:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Variance of Entropy:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Average Steps Away:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Variance of Steps Away:' | sed 's/^.*: //' >> test.out
-	
-	./diver-prob -V -R 54 -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME} -d -f ${FILE_D}
-	./getStats detection.csv | grep 'Average Entropy:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Variance of Entropy:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Average Steps Away:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Variance of Steps Away:' | sed 's/^.*: //' >> test.out
-	./diver-prob -V -R 65 -v ${BOATV} -u ${BOATU} -c .975 -o ${FILE_O} -t ${TIME} -d -f ${FILE_D} 
-	./getStats detection.csv | grep 'Average Entropy:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Variance of Entropy:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Average Steps Away:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Variance of Steps Away:' | sed 's/^.*: //' >> test.out
-	./diver-prob -V -R 76 -v ${BOATV} -u ${BOATU} -c .95 -o ${FILE_O} -t ${TIME} -d -f ${FILE_D} 
-	./getStats detection.csv | grep 'Average Entropy:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Variance of Entropy:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Average Steps Away:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Variance of Steps Away:' | sed 's/^.*: //' >> test.out
-	
-	./diver-prob -V -R 87 -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME} -d -f ${FILE_D}
-	./getStats detection.csv | grep 'Average Entropy:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Variance of Entropy:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Average Steps Away:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Variance of Steps Away:' | sed 's/^.*: //' >> test.out
-	./diver-prob -V -R 98 -v ${BOATV} -u ${BOATU} -c .975 -o ${FILE_O} -t ${TIME} -d -f ${FILE_D} 
-	./getStats detection.csv | grep 'Average Entropy:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Variance of Entropy:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Average Steps Away:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Variance of Steps Away:' | sed 's/^.*: //' >> test.out
-	./diver-prob -V -R 9 -v ${BOATV} -u ${BOATU} -c .95 -o ${FILE_O} -t ${TIME} -d -f ${FILE_D} 
-	./getStats detection.csv | grep 'Average Entropy:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Variance of Entropy:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Average Steps Away:' | sed 's/^.*: //' >> test.out
-	./getStats detection.csv | grep 'Variance of Steps Away:' | sed 's/^.*: //' >> test.out
 
+	make run-diver-detect
+	make stats | grep 'Average Entropy:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Variance of Entropy:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Average Steps Away:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Variance of Steps Away:' | sed 's/^.*: //' >> test.out
+	
+	./diver-prob -V -R ${RANDOMSEED} -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME} -c.975  -d -f ${FILE_D} 
+	make stats | grep 'Average Entropy:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Variance of Entropy:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Average Steps Away:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Variance of Steps Away:' | sed 's/^.*: //' >> test.out
+	
+	./diver-prob -V -R ${RANDOMSEED} -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME} -c .95  -d -f ${FILE_D} 
+	make stats | grep 'Average Entropy:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Variance of Entropy:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Average Steps Away:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Variance of Steps Away:' | sed 's/^.*: //' >> test.out
+	
+	./diver-prob -V -R ${RANDOMSEED} -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME} -c .925  -d -f ${FILE_D} 
+	make stats | grep 'Average Entropy:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Variance of Entropy:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Average Steps Away:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Variance of Steps Away:' | sed 's/^.*: //' >> test.out
+	
+	./diver-prob -V -R ${RANDOMSEED} -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME} -c .9  -d -f ${FILE_D} 
+	make stats | grep 'Average Entropy:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Variance of Entropy:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Average Steps Away:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Variance of Steps Away:' | sed 's/^.*: //' >> test.out
+	
+	./diver-prob -V -R ${RANDOMSEED} -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME} -c .875  -d -f ${FILE_D} 
+	make stats | grep 'Average Entropy:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Variance of Entropy:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Average Steps Away:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Variance of Steps Away:' | sed 's/^.*: //' >> test.out
+	
+	./diver-prob -V -R ${RANDOMSEED} -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME} -c .85  -d -f ${FILE_D} 
+	make stats | grep 'Average Entropy:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Variance of Entropy:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Average Steps Away:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Variance of Steps Away:' | sed 's/^.*: //' >> test.out
+	
+	./diver-prob -V -R ${RANDOMSEED} -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME} -c .825  -d -f ${FILE_D} 
+	make stats | grep 'Average Entropy:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Variance of Entropy:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Average Steps Away:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Variance of Steps Away:' | sed 's/^.*: //' >> test.out
+	
+	./diver-prob -V -R ${RANDOMSEED} -v ${BOATV} -u ${BOATU} -o ${FILE_O} -t ${TIME} -c .8  -d -f ${FILE_D} 
+	make stats | grep 'Average Entropy:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Variance of Entropy:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Average Steps Away:' | sed 's/^.*: //' >> test.out
+	make stats | grep 'Variance of Steps Away:' | sed 's/^.*: //' >> test.out
+	
 clean:
 	-rm diver-prob getStats *.o *.out *.csv
 

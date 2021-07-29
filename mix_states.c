@@ -91,5 +91,5 @@ void mix_states(struct Params * params, struct Point * u, struct Point * v) {
 
 
   }
-  
+  params->maxsteps = total_t;
 }

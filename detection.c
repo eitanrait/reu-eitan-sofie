@@ -462,7 +462,6 @@ int detect(struct Params * params, struct Point * u, struct Point * v) {
 		// multiply all probabilities
 		probability = probabilityScore();
 		printf("running probability: %f\n", probability);
-
 		if (t > params->maxsteps) {
 			printf("break\n");
 			printf("not caught in getStepsAway(): %d\n", idealNotHere);

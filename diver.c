@@ -20,7 +20,7 @@ int main(int argc, char * argv[]) {
 	params.output_file_detection = DEFAULT_OUTPUT_FILE_DETECTION;
 	params.maxsteps = DEFAULT_MAX_STEPS;
 	
-  	while ((ch = getopt(argc, argv, "VR:o:u:v:t:dn:c:f:")) != -1) {
+  	while ((ch = getopt(argc, argv, "dVR:o:u:v:t:n:c:f:")) != -1) {
     	switch(ch) {
     		case 'V':
 				is_verbose++;
@@ -66,7 +66,6 @@ int main(int argc, char * argv[]) {
   	
   	argc -= optind;
   	argv += optind;
-
 	srand(params.randomseed);
 	
 	if(params.u_activity && params.v_activity && v.i == u.i && v.j == u.j) {
@@ -76,7 +75,7 @@ int main(int argc, char * argv[]) {
 	if(params.maxsteps < 1) {
 		printf("\nERROR: -t time steps must be a number greater than 1\n");
 		exit(1);
-}
+	}
 	if (params.v_activity) {
 		
 		if(!(params.fpt = fopen(params.output_file_csv, "w+")))		
@@ -112,7 +111,7 @@ int main(int argc, char * argv[]) {
 			printf("\nERROR: unable to open file %s\n", params.output_file_detection);		
 			exit(1);
 		}
-		
+		printf("maxsteps: %d\n",params.maxsteps);
 		detect(&params,&u,&v);
 
 		fclose(params.fpt);
