@@ -329,110 +329,6 @@ float findProb(struct Point v, struct Point lastV, struct Point idealV) {
 	return 1.0/100;
 }
 
-// classify which region V is in
-// if in B,
-// needs to know current location of V, draw bresenham using current locations, compare with actual next movement of V
-// push "yes" (1) and "no" (0) to queue
-// classify as chasing if... 
-// consider:
-// more yes's than no's
-// consecuitive no's to disqualify
-
-// two queues, one storing locations and one storing yes or nos 
-// might be limited if just storing hits and misses
-
-int detectChasing(struct Params * params, struct Point * u, struct Point * v) {
-
-	char line[1024];
-	struct Point idealV;
-	struct Point lastV;
-	int t = 0;
-	float probability;
-	int totalStepsAway;
-	float entropy;
-	int dec;
-	//int rankingSum = 0;
-	
-	while (fgets(line, 1024, params->fpt) != NULL) {
-
-		printf("\n\ncount %d\n", t);
-		// find current U and V positions
-		lastV.i = v->i;
-		lastV.j = v->j;
-		u->i = atoi(strtok(line, ","));
-		u->j = atoi(strtok(NULL, ","));
-		v->i = atoi(strtok(NULL, ","));
-		v->j = atoi(strtok(NULL, " "));
-		
-		//printf("U: (%d, %d) V: (%d, %d)\n", u->i, u->j, v->i, v->j);
-
-		// compare with next actual point of V
-		// check if first move
-		// if not first move, compare
-		if (t != 0) {
-
-			// check if full
-			if (Fifo_StatusYN() == FIFO_SIZE - 1) {
-				Fifo_GetRank();
-			}
-
-			if (idealV.i == v->i && idealV.j == v->j) { 				// next best point is equal to point actually chosen
-				printf("V: (%d, %d) next best: (%d, %d)\n", v->i, v->j, idealV.i, idealV.j);
-				Fifo_PutRank(findProb(*v, lastV, idealV));
-			} else {
-				printf("V: (%d, %d) next best: (%d, %d)\n", v->i, v->j, idealV.i, idealV.j);
-				Fifo_PutRank(findProb(*v, lastV, idealV));	
-			}
-
-			if (Fifo_StatusDec() == FIFO_SIZE - 1) 				    // check if decision queue is full
-				Fifo_GetDec();
-			
-			dec = findDecision(lastV, *v);  // store decision taken into queueDecision
-			Fifo_PutDec(dec); 				// find decision using last V and current V
-			
-			probability = probabilityScore();
-			printf("running probability: %f\n", probability);
-			
-			totalStepsAway = getTotalStepsAway();
-			entropy = getEntropy();
-			//fprintf(params->fpt_detection, "%.4f,%.4f\n", entropy, steps);
-			fprintf(params->fpt_detection, "%.4f\n", steps);
-
-		}
-
-		// store position of V in position queue
-		// find next best point using Bresenham
-		// from V (chasing) to U (chasee)
-		printf("find best path between V: (%d, %d) U: (%d, %d)\n", v->i, v->j, u->i, u->j);	
-		findPathSofie(points, v->i, v->j, u->i, u->j);
-		//printf("U: (%d, %d)\n", U.i, U.j);
-		idealV.i = points[1].i;
-		idealV.j = points[1].j;
-		
-		displayDec();
-		printf("\nEntropy: %f\n\n", entropy);
-
-		// print contents of queue
-		if(is_verbose) {
-			//displayYN();
-			displayRank();
-
-		}
-		
-		if (t > params->maxsteps) {
-			printf("break\n");
-			break;
-		}
-		
-		t++;
-	} 
-
-	// find next best point
-	// compare with next actual point of V
-	return 0;
-
-}
-
 // returns an integer corresponding with the decision that took the boat
 // from last to current point
 int findDecision(struct Point lastPoint, struct Point currPoint) {
@@ -475,63 +371,6 @@ int findDecision(struct Point lastPoint, struct Point currPoint) {
 	return 0;
 }
 
-int detectRandomWalk(struct Params * params, struct Point * u, struct Point * v) {
-
-	char line[1024];
-	struct Point lastV;
-	int t = 0;
-	float entropy;
-	int dec;
-	
-	while (fgets(line, 1024, params->fpt) != NULL) {
-
-		printf("\ncount %d\n", t);
-		// store last coordinates of V
-		lastV.i = v->i;
-		lastV.j = v->j;
-		// find current U and V positions
-		u->i = atoi(strtok(line, ","));
-		u->j = atoi(strtok(NULL, ","));
-		v->i = atoi(strtok(NULL, ","));
-		v->j = atoi(strtok(NULL, " "));
-
-		printf("U: (%d, %d) V: (%d, %d)\n", u->i, u->j, v->i, v->j);
-	
-		// compare with next actual point of V	
-		// check if first move
-		// if not first move, compare
-		if (t != 0) {
-
-			// check if full
-			if (Fifo_StatusDec() == FIFO_SIZE - 1) {
-				Fifo_GetDec();
-			}
-			
-			// store decision taken into queueDecision
-			// find decision using last V and current V
-			dec = findDecision(lastV, *v);
-			Fifo_PutDec(dec);
-
-			entropy = getEntropy();
-
-			if (t >= FIFO_SIZE) {
-				fprintf(params->fpt_detection, "%.4f\n", entropy);
-			}
-			
-		}
-		
-		displayDec();
-		printf("\nEntropy: %f\n\n", entropy);
-
-		if (t > params->maxsteps) {
-			printf("break\n");
-			break;
-		}	
-		t++;
-	} 
-	return 0;
-}
-
 // returns distance between points u and v
 float getDistance(struct Point * u, struct Point * v) {
 	float dist;
@@ -547,7 +386,7 @@ float getDistance(struct Point * u, struct Point * v) {
 
 }
 
-int detectFollow(struct Params * params, struct Point * u, struct Point * v) {
+int detect(struct Params * params, struct Point * u, struct Point * v) {
 
 	char line[1024];
 	struct Point idealV;
@@ -555,7 +394,6 @@ int detectFollow(struct Params * params, struct Point * u, struct Point * v) {
 	int t = 0;
 	float distance;
 	float probability;
-	float steps;
 	float entropy;
 	int dec;
 	int totalStepsAway;
@@ -602,11 +440,18 @@ int detectFollow(struct Params * params, struct Point * u, struct Point * v) {
 			// entropy is calculated from the decision queue
 			dec = findDecision(lastV, *v);
 			Fifo_PutDec(dec);
-			steps = getStepsAway(*v, lastV, idealV);
+
 			entropy = getEntropy();
 			if (t >= FIFO_SIZE) {
-				fprintf(params->fpt_detection, "%.4f,%.4f\n", entropy, steps);
+				fprintf(params->fpt_detection, "%.4f\n", entropy);
 			}
+
+			/*
+			totalStepsAway = getTotalStepsAway();
+			if (t > FIFO_SIZE) {
+				fprintf(params->fpt_detection, "%.4f, %d\n", entropy, totalStepsAway);
+			}
+			*/
 		}
 
 		// check bresenham

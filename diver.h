@@ -78,16 +78,17 @@ void chase(struct Params * params, struct Point * u, struct Point * v);
 //uMoves
 void updateU(struct Point * u, char * s, int t, int prob);
 
+//mix_states
+void mix_states(struct Params * params, struct Point * u, struct Point * v);
+
 #define YES 1
 #define NO 0
 #define QUEUE_SIZE 16
 
 //detection
 int findRank(struct Point v, struct Point lastV, struct Point idealV);
-int detectChasing(struct Params * params, struct Point * u, struct Point * v);
 int findDecision(struct Point lastPoint, struct Point currPoint);
-int detectRandomWalk(struct Params * params, struct Point * u, struct Point * v);
-int detectFollow(struct Params * params, struct Point * u, struct Point * v);
+int detect(struct Params * params, struct Point * u, struct Point * v);
 float getDistance(struct Point * u, struct Point * v);
 
 //queue
