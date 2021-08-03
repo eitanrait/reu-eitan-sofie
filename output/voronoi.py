@@ -7,7 +7,7 @@ title = "2d avg x var, k-means colors manually labeled"
 csvfile = "exp4results.csv"
 
 colors = []
-data = np.genfromtxt(csvfile, delimiter=",",dtype=float,usecols=(0,1),skip_header=1) #read entropy and variance from csv
+data = np.genfromtxt(csvfile, delimiter=",",dtype=float,usecols=(0,2),skip_header=1) #read entropy and variance from csv
 activities = np.genfromtxt(csvfile,delimiter=",",usecols=(4),dtype=None,encoding=None,skip_header=1)
 
 kmeans = KMeans(n_clusters=3) #k means with n clusters
